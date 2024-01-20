@@ -23,8 +23,11 @@ public class Constants {
     public static final String CANbusName = "Bobby";
     public static final int pigeon2Id = 0;
 
-    public static final class Swerve {
+    public static final class SwerveConstants {
         // TODO: All the constants
+        public static double maxDriveSpeed = 5.0; // m/s
+        public static double maxRotSpeed = 4*Math.PI; // rad/s
+
         private static final double swerveWidth = Units.inchesToMeters(24); // width between centers of swerve modules from left to right
         private static final double swerveLength = Units.inchesToMeters(24); // length between centers of swerve modules from front to back
         private static final double driveMotorGearRatio = (8.14 / 1.0); // 8.14:1
@@ -51,9 +54,9 @@ public class Constants {
         //private static final double driveInertia;
         private static final SteerFeedbackType feedbackSource = SteerFeedbackType.FusedCANcoder;
         private static final double couplingGearRatio = 50.0/14.0;
-        private static final boolean steerMotorInverted = false;
+        //private static final boolean steerMotorInverted = false;
 
-        public static final double velocityDeadband = 0.1; // in m/s
+        public static final double velocityDeadband = 0.5; // in m/s
         public static final double rotationDeadband = 0.1; // in radians
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
@@ -70,32 +73,39 @@ public class Constants {
             //.withDriveInertia(driveInertia)
             .withFeedbackSource(feedbackSource)
             .withCouplingGearRatio(couplingGearRatio)
-            .withSteerMotorInverted(steerMotorInverted);
+            //.withSteerMotorInverted(steerMotorInverted)
+            ;
 
         private static final class FrontLeft {
             private static final int steerId = 7;
             private static final int driveId = 22;
             private static final int encoderId = 2;
-            private static final double encoderOffset = 0.0;
+            private static final double encoderOffset = 0.05;
             private static final double xPos = swerveLength / 2; // to front
             private static final double yPos = swerveWidth / 2; // to left
-            private static final boolean invertedDrive = false;
+            private static final boolean invertedSteer = false;
+            private static final boolean invertedDrive = true;
 
-            public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
-            steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive);
+            public static final SwerveModuleConstants moduleConstants = constantsCreator
+                .withSteerMotorInverted(invertedSteer).createModuleConstants(
+                steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
+            );
         }
 
         private static final class FrontRight {
             private static final int steerId = 1;
             private static final int driveId = 6;
             private static final int encoderId = 0;
-            private static final double encoderOffset = 0.0;
+            private static final double encoderOffset = -0.151;
             private static final double xPos = swerveLength / 2; // to front
             private static final double yPos = -swerveWidth / 2; // to left
+            private static final boolean invertedSteer = true;
             private static final boolean invertedDrive = false;
 
-            public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
-            steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive);
+            public static final SwerveModuleConstants moduleConstants = constantsCreator
+                .withSteerMotorInverted(invertedSteer).createModuleConstants(
+                steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
+            );
         }
 
         private static final class BackLeft {
@@ -105,23 +115,29 @@ public class Constants {
             private static final double encoderOffset = 0;
             private static final double xPos = -swerveLength / 2; // to front
             private static final double yPos = swerveWidth / 2; // to left
+            private static final boolean invertedSteer = true;
             private static final boolean invertedDrive = false;
 
-            public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
-            steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive);
+            public static final SwerveModuleConstants moduleConstants = constantsCreator
+                .withSteerMotorInverted(invertedSteer).createModuleConstants(
+                steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
+            );
         }
 
         private static final class BackRight {
-            private static final int steerId = 24;
+            private static final int steerId = 5;
             private static final int driveId = 23;
             private static final int encoderId = 3;
-            private static final double encoderOffset = 0;
+            private static final double encoderOffset = -0.405;
             private static final double xPos = -swerveLength / 2; // to front
             private static final double yPos = -swerveWidth / 2; // to left
-            private static final boolean invertedDrive = false;
+            private static final boolean invertedSteer = false;
+            private static final boolean invertedDrive = true;
 
-            public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
-            steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive);
+            public static final SwerveModuleConstants moduleConstants = constantsCreator
+                .withSteerMotorInverted(invertedSteer).createModuleConstants(
+                steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
+            );
         }
         
         private static final SwerveDrivetrainConstants drivetrainConstants = new SwerveDrivetrainConstants()

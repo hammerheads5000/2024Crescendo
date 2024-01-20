@@ -25,20 +25,20 @@ public class Swerve extends SubsystemBase {
 
   /** Creates a new Swerve. */
   public Swerve() {
-    drivetrain = Constants.Swerve.drivetrain;
+    drivetrain = Constants.SwerveConstants.drivetrain;
 
-    drivetrain.configNeutralMode(Constants.Swerve.driveNeutralMode);
+    drivetrain.configNeutralMode(Constants.SwerveConstants.driveNeutralMode);
     for (int i = 0; i < 4; i++) {
       TalonFXConfigurator driveMotorConfig = drivetrain.getModule(i).getDriveMotor().getConfigurator();
-      driveMotorConfig.apply(Constants.Swerve.driveCurrentLimits);
-      driveMotorConfig.apply(Constants.Swerve.closedLoopRampsConfig);
+      driveMotorConfig.apply(Constants.SwerveConstants.driveCurrentLimits);
+      driveMotorConfig.apply(Constants.SwerveConstants.closedLoopRampsConfig);
       
       TalonFXConfigurator angleMotorConfig = drivetrain.getModule(i).getSteerMotor().getConfigurator();
-      angleMotorConfig.apply(Constants.Swerve.closedLoopRampsConfig);
+      angleMotorConfig.apply(Constants.SwerveConstants.closedLoopRampsConfig);
     }
     driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(Constants.Swerve.velocityDeadband)
-      .withRotationalDeadband(Constants.Swerve.rotationDeadband)
+      .withDeadband(Constants.SwerveConstants.velocityDeadband)
+      .withRotationalDeadband(Constants.SwerveConstants.rotationDeadband)
       .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagicExpo);
   }
@@ -50,12 +50,16 @@ public class Swerve extends SubsystemBase {
    * @param rot angular velocity in radians / sec
    */
   public void drive(double xVel, double yVel, double rot) {
-    
+
     drivetrain.setControl(
       driveRequest.withVelocityX(xVel)
         .withVelocityY(yVel)
         .withRotationalRate(rot)
     );
+  }
+
+  public void zeroFOC() {
+    drivetrain.seedFieldRelative();
   }
 
   @Override
