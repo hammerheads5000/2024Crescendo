@@ -25,6 +25,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
+    swerve.zeroFOC();
     configureBindings();
   }
 

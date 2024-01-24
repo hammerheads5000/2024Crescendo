@@ -42,7 +42,7 @@ public class Swerve extends SubsystemBase {
     driveRequest = new SwerveRequest.FieldCentric()
       .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
       .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
-      .withDriveRequestType(DriveRequestType.Velocity)
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
       .withSteerRequestType(SteerRequestType.MotionMagic);
   }
 

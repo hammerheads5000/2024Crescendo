@@ -58,6 +58,7 @@ public class Constants {
 
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1); // in m/s
         public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1); // in rad/s
+        public static final double controllerDeadband = 0.1;
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
             .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -81,7 +82,7 @@ public class Constants {
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
-            private static final boolean invertedDrive = true;
+            private static final boolean invertedDrive = false;
 
             public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
                 steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
@@ -111,7 +112,7 @@ public class Constants {
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
-            private static final boolean invertedDrive = false;
+            private static final boolean invertedDrive = true;
 
             public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
                 steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive
