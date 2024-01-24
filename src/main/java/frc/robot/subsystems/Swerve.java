@@ -4,20 +4,21 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
@@ -27,7 +28,10 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
     drivetrain = Constants.SwerveConstants.drivetrain;
 
+    // config
     drivetrain.configNeutralMode(Constants.SwerveConstants.driveNeutralMode);
+
+    // apply ramps and current limits
     for (int i = 0; i < 4; i++) {
       TalonFXConfigurator driveMotorConfig = drivetrain.getModule(i).getDriveMotor().getConfigurator();
       driveMotorConfig.apply(Constants.SwerveConstants.driveCurrentLimits);
@@ -36,25 +40,27 @@ public class Swerve extends SubsystemBase {
       TalonFXConfigurator angleMotorConfig = drivetrain.getModule(i).getSteerMotor().getConfigurator();
       angleMotorConfig.apply(Constants.SwerveConstants.closedLoopRampsConfig);
     }
+    
+    // setup drive request
     driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(Constants.SwerveConstants.velocityDeadband)
-      .withRotationalDeadband(Constants.SwerveConstants.rotationDeadband)
-      .withDriveRequestType(DriveRequestType.Velocity)
-      .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+      .withDeadband(Constants.SwerveConstants.velocityDeadband.in(MetersPerSecond))
+      .withRotationalDeadband(Constants.SwerveConstants.rotationDeadband.in(RadiansPerSecond))
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withSteerRequestType(SteerRequestType.MotionMagic);
   }
 
   /**
    * Drive robot with respect to field
-   * @param xVel x velocity in meters / sec
-   * @param yVel y velocity in meters / sec
-   * @param rot angular velocity in radians / sec
+   * @param xVel forward velocity in meters / sec
+   * @param yVel left velocity in meters / sec
+   * @param rot angular velocity counterclockwise in radians / sec
    */
-  public void drive(double xVel, double yVel, double rot) {
+  public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Measure<Velocity<Angle>> rot) {
 
     drivetrain.setControl(
-      driveRequest.withVelocityX(xVel)
-        .withVelocityY(yVel)
-        .withRotationalRate(rot)
+      driveRequest.withVelocityX(xVel.in(MetersPerSecond))
+        .withVelocityY(yVel.in(MetersPerSecond))
+        .withRotationalRate(rot.in(RadiansPerSecond))
     );
   }
 
@@ -63,5 +69,5 @@ public class Swerve extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() { }
 }

@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
@@ -28,8 +27,10 @@ public class TeleopSwerve extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerve.drive(controller.getLeftX()*SwerveConstants.maxDriveSpeed, controller.getLeftY()*SwerveConstants.maxDriveSpeed, controller.getRightX()*SwerveConstants.maxRotSpeed);
-    //System.out.println(controller.getLeftX()+" "+controller.getLeftY());
+    swerve.drive(SwerveConstants.maxDriveSpeed.times(controller.getLeftX()), 
+                SwerveConstants.maxDriveSpeed.times(controller.getLeftY()), 
+                SwerveConstants.maxRotSpeed.times(-controller.getRightX())
+    );
   }
 
   // Called once the command ends or is interrupted.
