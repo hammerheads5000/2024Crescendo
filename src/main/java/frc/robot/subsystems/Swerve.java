@@ -18,7 +18,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
@@ -26,26 +26,23 @@ public class Swerve extends SubsystemBase {
 
   /** Creates a new Swerve. */
   public Swerve() {
-    drivetrain = Constants.SwerveConstants.drivetrain;
+    drivetrain = SwerveConstants.drivetrain;
 
-    // config
-    drivetrain.configNeutralMode(Constants.SwerveConstants.driveNeutralMode);
-
-    // apply ramps and current limits
+    drivetrain.configNeutralMode(SwerveConstants.driveNeutralMode);
     for (int i = 0; i < 4; i++) {
       TalonFXConfigurator driveMotorConfig = drivetrain.getModule(i).getDriveMotor().getConfigurator();
-      driveMotorConfig.apply(Constants.SwerveConstants.driveCurrentLimits);
-      driveMotorConfig.apply(Constants.SwerveConstants.closedLoopRampsConfig);
+      driveMotorConfig.apply(SwerveConstants.driveCurrentLimits);
+      driveMotorConfig.apply(SwerveConstants.closedLoopRampsConfig);
       
       TalonFXConfigurator angleMotorConfig = drivetrain.getModule(i).getSteerMotor().getConfigurator();
-      angleMotorConfig.apply(Constants.SwerveConstants.closedLoopRampsConfig);
+      angleMotorConfig.apply(SwerveConstants.closedLoopRampsConfig);
     }
     
     // setup drive request
     driveRequest = new SwerveRequest.FieldCentric()
-      .withDeadband(Constants.SwerveConstants.velocityDeadband.in(MetersPerSecond))
-      .withRotationalDeadband(Constants.SwerveConstants.rotationDeadband.in(RadiansPerSecond))
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+      .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
+      .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
+      .withDriveRequestType(DriveRequestType.Velocity)
       .withSteerRequestType(SteerRequestType.MotionMagic);
   }
 
