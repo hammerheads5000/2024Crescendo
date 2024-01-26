@@ -25,12 +25,12 @@ public class RobotContainer {
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
-    swerve.zeroFOC();
+    swerve.resetPose();
     configureBindings();
   }
 
   private void configureBindings() {
-    zeroTrigger.onTrue(new InstantCommand(() -> swerve.zeroFOC()));
+    zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
   }
 
   public Command getAutonomousCommand() {
