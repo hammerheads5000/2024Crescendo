@@ -26,7 +26,7 @@ public class Constants {
 
     public static final class SwerveConstants {
         // TODO: All the constants
-        public static Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
         public static Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5*Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules from left to right
@@ -37,21 +37,21 @@ public class Constants {
         private static final Measure<Current> slipCurrent = Amps.of(400);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                                                            .withKP(100) // output (V) per unit error in position (rotations)
+                                                            .withKP(50.0) // output (V) per unit error in position (rotations)
                                                             .withKI(0.0) // output (V) per unit integrated error (rotations*s)
-                                                            .withKD(0.2) // output (V) per unit of error derivative (rps)
+                                                            .withKD(50.0) // output (V) per unit of error derivative (rps)
                                                             .withKS(0) // output (V) to overcome static friction
-                                                            .withKV(0.12); // output (V) per unit of velocity (rps)
+                                                            .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
-                                                            .withKP(1) // output (V) per unit error in position (rps)
+                                                            .withKP(1.0) // output (V) per unit error in position (rps)
                                                             .withKI(0.0) // output (V) per unit integrated error (rotations)
                                                             .withKD(0.0) // output (V) per unit of error derivative (rps/s)
                                                             .withKS(0) // output (V) to overcome static friction
-                                                            .withKV(.14) // output (V) per unit of velocity (rps)
+                                                            .withKV(0.123) // output (V) per unit of velocity (rps)
                                                             .withKA(0); // output (V) per unit of acceleration (rps/s)
 
-        private static final ClosedLoopOutputType steerMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
-        private static final ClosedLoopOutputType driveMotorClosedLoopOutput = ClosedLoopOutputType.Voltage;
+        private static final ClosedLoopOutputType steerMotorClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
+        private static final ClosedLoopOutputType driveMotorClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
         private static final Measure<Velocity<Distance>> speedAt12Volts = FeetPerSecond.of(13.0);
         private static final SteerFeedbackType feedbackSource = SteerFeedbackType.FusedCANcoder;
         private static final double couplingGearRatio = 50.0/14.0;
@@ -156,10 +156,14 @@ public class Constants {
                                             .withSupplyTimeThreshold(0.1);
         
         public static final OpenLoopRampsConfigs openLoopRampsConfig = new OpenLoopRampsConfigs()
-                            .withDutyCycleOpenLoopRampPeriod(0.25);
+                            .withDutyCycleOpenLoopRampPeriod(0.25)
+                            .withVoltageOpenLoopRampPeriod(0.25)
+                            .withTorqueOpenLoopRampPeriod(0.25);
         
         public static final ClosedLoopRampsConfigs closedLoopRampsConfig = new ClosedLoopRampsConfigs()
-                            .withDutyCycleClosedLoopRampPeriod(0.0);
+                            .withDutyCycleClosedLoopRampPeriod(0.0)
+                            .withVoltageClosedLoopRampPeriod(0.0)
+                            .withTorqueClosedLoopRampPeriod(0.0);
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
