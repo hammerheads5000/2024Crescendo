@@ -21,23 +21,39 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.*;
 import frc.robot.subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.*;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /** Add your docs here. */
 public class Constants {
     public static final String CANbusName = "Bobby";
     public static final int pigeon2Id = 0;
 
+    public static final class UnitConstants {
+        public static final long secondsToMicroseconds = 1000000;
+        public static final double microsecondsToSeconds = 1.0 / secondsToMicroseconds;
+    }
+
     public static final class SwerveConstants {
         // TODO: All the constants
-        public static Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
-        public static Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
+        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
+        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
                                                                             // from left to right
@@ -187,6 +203,18 @@ public class Constants {
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
+    }
+
+    public static final class VisionConstants {
+        public static final PhotonCamera aprilTagCam = new PhotonCamera("Camera_Module_v1");
+        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        
+        public static final Transform3d robotToAprilTagCam = new Transform3d(
+                        new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Meters.zero()),
+                        new Rotation3d(0.0, 0.0, 0.0));
+        
+        public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        public static final DoubleArrayTopic poseTopic = NetworkTableInstance.getDefault().getDoubleArrayTopic("/Vision/Estimated Pose");
     }
 
     public static final class AutoConstants {
