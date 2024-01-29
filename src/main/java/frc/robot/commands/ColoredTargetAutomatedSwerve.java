@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
@@ -45,7 +46,13 @@ public class ColoredTargetAutomatedSwerve extends Command {
     {
       double[] TargetPose = TargetPoseSubScriber.get();
       double Yangle = TargetPose[5];
-      swerve.drive(SwerveConstants.maxDriveSpeed.times(0),SwerveConstants.maxDriveSpeed.times(0),  SwerveConstants.maxRotSpeed.times(Yangle));
+      if(Math.abs(Yangle) > Constants.SwerveConstants.ColoredTargetAngleDeadband)
+      {
+        swerve.drive(
+        SwerveConstants.maxDriveSpeed.times(0),
+        SwerveConstants.maxDriveSpeed.times(0), 
+        SwerveConstants.maxRotSpeed.times(Yangle));
+      }
     }
   }
 
