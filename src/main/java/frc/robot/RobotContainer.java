@@ -7,24 +7,38 @@ package frc.robot;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.BooleanTopic;
+import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.commands.ColoredTargetAutomatedSwerve;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
+  NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  NetworkTable Photon = inst.getTable("photonvision");
+  NetworkTable ColorVison = Photon.getSubTable("Camera_Module_v1");
+  DoubleTopic nTop = ColorVison.getDoubleTopic("pipelineIndexState");
+  DoubleArrayTopic ColorTargetPoseTopic = ColorVison.getDoubleArrayTopic("targetPose");
+  BooleanTopic ColorHasTargetsTopic = ColorVison.getBooleanTopic("hasTarget");
+
   private Swerve swerve = new Swerve();
   private CommandXboxController controller = new CommandXboxController(0);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
-  
+  private ColoredTargetAutomatedSwerve CTAS = new ColoredTargetAutomatedSwerve(ColorTargetPoseTopic, ColorHasTargetsTopic, swerve);
+
   private Trigger zeroTrigger = controller.y();
 
   public RobotContainer() {
-    swerve.setDefaultCommand(teleopSwerve);
+    swerve.setDefaultCommand(CTAS);
     swerve.zeroFOC();
     configureBindings();
   }
