@@ -17,29 +17,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.ColoredTargetAutomatedSwerve;
+import frc.robot.commands.TargetNoteCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable Photon = inst.getTable("photonvision");
-  NetworkTable ColorVision = Photon.getSubTable("Camera_Module_v1");
-  DoubleTopic nTop = ColorVision.getDoubleTopic("pipelineIndexState");
-  DoubleTopic TargetYawTop = ColorVision.getDoubleTopic("targetYaw");
-  DoubleArrayTopic ColorTargetPoseTopic = ColorVision.getDoubleArrayTopic("targetPose");
-  BooleanTopic ColorHasTargetsTopic = ColorVision.getBooleanTopic("hasTarget");
-
   private Swerve swerve = new Swerve();
   private CommandXboxController controller = new CommandXboxController(0);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
 
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
-  private ColoredTargetAutomatedSwerve CTAS = new ColoredTargetAutomatedSwerve(ColorTargetPoseTopic,TargetYawTop, ColorHasTargetsTopic, swerve, controller);
+  private TargetNoteCommand targetNoteCommand = new TargetNoteCommand(swerve);
 
   private Trigger zeroTrigger = controller.y();
+  private Trigger targetTrigger = controller.rightTrigger();
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -49,6 +42,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
+    targetTrigger.whileTrue(targetNoteCommand);
   }
 
   public Command getAutonomousCommand() {

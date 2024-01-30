@@ -29,7 +29,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.*;
@@ -44,6 +47,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 public class Constants {
     public static final String CANbusName = "Bobby";
     public static final int pigeon2Id = 0;
+
+    public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
@@ -215,7 +220,12 @@ public class Constants {
                         new Rotation3d(0.0, 0.0, 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-        public static final DoubleArrayTopic poseTopic = NetworkTableInstance.getDefault().getDoubleArrayTopic("/Vision/Estimated Pose");
+        public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
+
+        private static final NetworkTable colorVisionTable = inst.getTable("/photonvision/"+aprilTagCam.getName()+"/");
+
+        public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
+        public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
     }
 
     public static final class AutoConstants {

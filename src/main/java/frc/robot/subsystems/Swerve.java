@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.EnumSet;
@@ -15,7 +16,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.units.Angle;
@@ -33,8 +36,13 @@ public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
+  private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
+  private DoubleSubscriber noteYawSubscriber;
+  private BooleanSubscriber hasNoteTargetSubscriber;
+
+  public boolean targetingNote = false;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -54,7 +62,15 @@ public class Swerve extends SubsystemBase {
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
 
+    facingAngleRequest = new SwerveRequest.FieldCentricFacingAngle()
+        .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
+        .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
+        .withDriveRequestType(SwerveConstants.driveRequestType)
+        .withSteerRequestType(SwerveConstants.steerRequestType);
+
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
+    noteYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
+    hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
@@ -66,6 +82,23 @@ public class Swerve extends SubsystemBase {
         });
   }
 
+  /**
+   * General drive method
+   * 
+   * @param xVel field relative forward velocity
+   * @param yVel field relative left velocity
+   * @param rot  angular velocity counterclockwise
+   */
+  public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
+      Measure<Velocity<Angle>> rot) {
+    if (targetingNote && hasNoteTargetSubscriber.get()) {
+      driveFacingAngle(xVel, yVel, robotToFieldAngle(Rotation2d.fromDegrees(noteYawSubscriber.get())));
+    }
+    else {
+      driveFieldCentric(xVel, yVel, rot);
+    }
+  }
+    
   /**
    * Drive robot with respect to field
    * 
@@ -80,6 +113,21 @@ public class Swerve extends SubsystemBase {
         fieldCentricRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
             .withRotationalRate(rot.in(RadiansPerSecond)));
+  }
+
+  /**
+   * Drive robot while facing angle
+   * 
+   * @param xVel field centric forward velocity
+   * @param yVel field centric left velocity
+   * @param angle angle to face (field centric)
+   */
+  public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
+    // apply request with params
+    drivetrain.setControl(
+        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
+            .withVelocityY(yVel.in(MetersPerSecond))
+            .withTargetDirection(angle));
   }
 
   /**
@@ -144,6 +192,11 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
     double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds
     drivetrain.addVisionMeasurement(pose, timestampSeconds);
+  }
+
+  // Transforms an angle from the robot forward direction to absolute field coordinates
+  private Rotation2d robotToFieldAngle(Rotation2d robotAngle) {
+    return robotAngle.rotateBy(getPose().getRotation());
   }
 
   @Override
