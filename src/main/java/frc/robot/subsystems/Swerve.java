@@ -6,34 +6,35 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
+import java.util.EnumSet;
 
+import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.UnitConstants;
+import frc.robot.Constants.VisionConstants;
 
 public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
-  private SwerveRequest.ApplyChassisSpeeds applyChassisSpeedsRequest;
+
+  private DoubleArraySubscriber aprilTagSubscriber;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -52,6 +53,17 @@ public class Swerve extends SubsystemBase {
         .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
+
+    aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
+    
+    // creates listener such that when the pose estimate NetworkTables topic
+    //  is updated, it calls applyVisionMeasurement to update pose
+    NetworkTableListener.createListener(
+        aprilTagSubscriber,
+        EnumSet.of(NetworkTableEvent.Kind.kValueAll), // listens for any value change
+        event -> {
+          applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());
+        });
   }
 
   /**
@@ -111,13 +123,27 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Applies estimated pose from AprilTag vision measurement
+   * Applies estimated pose from AprilTags to pose estimation
    * 
-   * @param pose Pose of robot found with {@link org.photonvision.PhotonUtils#estimateFieldToRobotAprilTag(Transform3d, Pose3d, Transform3d) PhotonUtils.estimateFieldToRobotAprilTag}
-   * @param timestamp Timestamp since FPGA startup found with {@link org.photonvision.targeting.PhotonPipelineResult#getTimestampSeconds() PhotonPipelineResult.getTimestampSeconds}
+   * @param estimatedRobotPose Returned from {@link org.photonvision.PhotonPoseEstimator#update() photonPoseEstimator.update()}
+   * Contains a Pose3d and a timestamp
    */
-  public void applyVisionMeasurement(Pose3d pose, Measure<Time> timestamp) {
-    drivetrain.addVisionMeasurement(getPose(), timestamp.in(Seconds));
+  public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
+    drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+  }
+
+  /**
+   * Applies vision measurement from NetworkTables data
+   * 
+   * @param poseArray double array storing the data of a Pose2d of format {x (meters), y (meters), rotation (radians)}
+   * @param timestamp timestamp in microseconds
+   */
+  public void applyVisionMeasurement(double[] poseArray, long timestamp) {
+    SmartDashboard.putNumberArray("Robot Pose", poseArray);
+    // converts array of format {x (m), y (m), rotation (rad)} to Pose2d
+    Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
+    double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds
+    drivetrain.addVisionMeasurement(pose, timestampSeconds);
   }
 
   @Override
