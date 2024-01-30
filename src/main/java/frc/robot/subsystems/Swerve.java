@@ -13,6 +13,8 @@ import java.util.EnumSet;
 import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -43,6 +45,7 @@ public class Swerve extends SubsystemBase {
   private BooleanSubscriber hasNoteTargetSubscriber;
 
   public boolean targetingNote = false;
+  private Rotation2d targetRotation;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -67,6 +70,10 @@ public class Swerve extends SubsystemBase {
         .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
+    
+    facingAngleRequest.HeadingController = SwerveConstants.headingPID;
+    facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
     noteYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
@@ -92,7 +99,7 @@ public class Swerve extends SubsystemBase {
   public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
       Measure<Velocity<Angle>> rot) {
     if (targetingNote && hasNoteTargetSubscriber.get()) {
-      driveFacingAngle(xVel, yVel, robotToFieldAngle(Rotation2d.fromDegrees(noteYawSubscriber.get())));
+      driveFacingAngle(xVel, yVel, targetRotation);
     }
     else {
       driveFieldCentric(xVel, yVel, rot);
@@ -124,6 +131,7 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
     // apply request with params
+    System.out.println(facingAngleRequest.HeadingController.getLastAppliedOutput());
     drivetrain.setControl(
         facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
@@ -197,6 +205,16 @@ public class Swerve extends SubsystemBase {
   // Transforms an angle from the robot forward direction to absolute field coordinates
   private Rotation2d robotToFieldAngle(Rotation2d robotAngle) {
     return robotAngle.rotateBy(getPose().getRotation());
+  }
+
+  public void targetNote() {
+    targetingNote = true;
+    Rotation2d angleToTarget = Rotation2d.fromDegrees(noteYawSubscriber.get());
+    targetRotation = robotToFieldAngle(angleToTarget);
+  }
+
+  public void stopTargetingNote() {
+    targetingNote = false;
   }
 
   @Override

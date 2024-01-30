@@ -16,6 +16,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -95,6 +96,9 @@ public class Constants {
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1); // in m/s
         public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1); // in rad/s
         public static final double controllerDeadband = 0.1;
+
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5, 0, 0);
+        public static final Measure<Angle> rotationalTolerance = Degrees.of(5.0);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -205,7 +209,7 @@ public class Constants {
                 .withVoltageClosedLoopRampPeriod(0.0)
                 .withTorqueClosedLoopRampPeriod(0.0);
 
-        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
         public static final double ColoredTargetAngleDeadband = .05;
         public static final double ColoredTargetRotationMultiplier = 2;
@@ -222,7 +226,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("/photonvision/"+aprilTagCam.getName()+"/");
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Camera_Module_v1");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");

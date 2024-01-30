@@ -32,7 +32,7 @@ public class RobotContainer {
   private TargetNoteCommand targetNoteCommand = new TargetNoteCommand(swerve);
 
   private Trigger zeroTrigger = controller.y();
-  private Trigger targetTrigger = controller.rightTrigger();
+  private Trigger targetTrigger = controller.rightBumper();
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -42,7 +42,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
-    targetTrigger.whileTrue(targetNoteCommand);
+    targetTrigger.onTrue(new InstantCommand(() -> swerve.targetNote()));
+    targetTrigger.onFalse(new InstantCommand(() -> swerve.stopTargetingNote()));
   }
 
   public Command getAutonomousCommand() {

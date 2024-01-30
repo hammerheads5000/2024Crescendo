@@ -9,16 +9,17 @@ import frc.robot.subsystems.Swerve;
 
 public class TargetNoteCommand extends Command {
   private Swerve swerve;
-
-  /** Creates a new TargetNote. */
+  /** Creates a new TargetNoteCommand. */
   public TargetNoteCommand(Swerve swerve) {
+    this.swerve = swerve;
     addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerve.targetingNote = true;
+    swerve.targetNote();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -28,7 +29,7 @@ public class TargetNoteCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.targetingNote = false;
+    swerve.stopTargetingNote();
   }
 
   // Returns true when the command should end.
