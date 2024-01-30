@@ -39,13 +39,13 @@ public class RobotContainer {
   private Trigger zeroTrigger = controller.y();
 
   public RobotContainer() {
-    swerve.setDefaultCommand(CTAS);
-    swerve.zeroFOC();
+    swerve.setDefaultCommand(teleopSwerve);
+    swerve.resetPose();
     configureBindings();
   }
 
   private void configureBindings() {
-    zeroTrigger.onTrue(new InstantCommand(() -> swerve.zeroFOC()));
+    zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
   }
 
   public Command getAutonomousCommand() {
