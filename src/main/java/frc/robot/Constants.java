@@ -167,6 +167,7 @@ public class Constants {
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-
+        public static final double ColoredTargetAngleDeadband = .05;
+        public static final double ColoredTargetRotationMultiplier = 2;
     }
 }

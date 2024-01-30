@@ -25,15 +25,16 @@ import frc.robot.subsystems.Swerve;
 public class RobotContainer {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   NetworkTable Photon = inst.getTable("photonvision");
-  NetworkTable ColorVison = Photon.getSubTable("Camera_Module_v1");
-  DoubleTopic nTop = ColorVison.getDoubleTopic("pipelineIndexState");
-  DoubleArrayTopic ColorTargetPoseTopic = ColorVison.getDoubleArrayTopic("targetPose");
-  BooleanTopic ColorHasTargetsTopic = ColorVison.getBooleanTopic("hasTarget");
+  NetworkTable ColorVision = Photon.getSubTable("Camera_Module_v1");
+  DoubleTopic nTop = ColorVision.getDoubleTopic("pipelineIndexState");
+  DoubleTopic TargetYawTop = ColorVision.getDoubleTopic("targetYaw");
+  DoubleArrayTopic ColorTargetPoseTopic = ColorVision.getDoubleArrayTopic("targetPose");
+  BooleanTopic ColorHasTargetsTopic = ColorVision.getBooleanTopic("hasTarget");
 
   private Swerve swerve = new Swerve();
   private CommandXboxController controller = new CommandXboxController(0);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
-  private ColoredTargetAutomatedSwerve CTAS = new ColoredTargetAutomatedSwerve(ColorTargetPoseTopic, ColorHasTargetsTopic, swerve);
+  private ColoredTargetAutomatedSwerve CTAS = new ColoredTargetAutomatedSwerve(ColorTargetPoseTopic,TargetYawTop, ColorHasTargetsTopic, swerve, controller);
 
   private Trigger zeroTrigger = controller.y();
 

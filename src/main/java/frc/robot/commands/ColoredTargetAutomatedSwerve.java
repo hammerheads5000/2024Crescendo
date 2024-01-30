@@ -8,6 +8,8 @@ import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,12 +27,15 @@ public class ColoredTargetAutomatedSwerve extends Command {
   BooleanTopic HasTargetsTopic;
   DoubleArraySubscriber TargetPoseSubScriber;
   BooleanSubscriber HasTargetsSubscriber;
-  public ColoredTargetAutomatedSwerve(DoubleArrayTopic TargetPoseTopic, BooleanTopic HasTargetsTopic, Swerve swerve, CommandXboxController controller) {
+  DoubleTopic TargetYawTopic;
+  DoubleSubscriber TargetYawSubscriber;
+  public ColoredTargetAutomatedSwerve(DoubleArrayTopic TargetPoseTopic, DoubleTopic TargetYawTopic, BooleanTopic HasTargetsTopic, Swerve swerve, CommandXboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.TargetPoseTopic = TargetPoseTopic;
     this.HasTargetsTopic = HasTargetsTopic;
     this.swerve = swerve;
     this.controller = controller;
+    this.TargetYawTopic = TargetYawTopic;
     addRequirements(swerve);
   }
 
@@ -38,6 +43,7 @@ public class ColoredTargetAutomatedSwerve extends Command {
   @Override
   public void initialize() 
   {
+    TargetYawSubscriber = TargetYawTopic.subscribe(0);
     TargetPoseSubScriber = TargetPoseTopic.subscribe(blank);
     HasTargetsSubscriber = HasTargetsTopic.subscribe(false);
   }
@@ -48,14 +54,15 @@ public class ColoredTargetAutomatedSwerve extends Command {
     if(HasTargetsSubscriber.get())
     {
       double[] TargetPose = TargetPoseSubScriber.get();
-      double YAngle = TargetPose[5];
-      double AngleRequest = YAngle >= Constants.SwerveConstants.ColoredTargetAngleDeadband ? YAngle : 0 ;
-      double ControllerRequest = (Math.abs(controller.getLeftY()) >= Constants.SwerveConstants.controllerDeadband ? controller.getLeftY() : 0);
-      double CurrentAngle = Constants.SwerveConstants.drivetrain.getState().Pose.getRotation().getDegrees();
+      double YAngle = TargetYawSubscriber.get() * (Math.PI/180);
+      double AngleRequest = Math.abs(YAngle) >= Constants.SwerveConstants.ColoredTargetAngleDeadband ? Constants.SwerveConstants.ColoredTargetRotationMultiplier * YAngle * Math.abs(YAngle) : 0 ;
+      double ControllerRequest = (Math.abs(controller.getLeftY()) >= Constants.SwerveConstants.controllerDeadband ? -controller.getLeftY() : 0);
+      double CurrentAngle = Constants.SwerveConstants.drivetrain.getState().Pose.getRotation().getRadians();
       swerve.drive(
-      SwerveConstants.maxDriveSpeed.times(/*ControllerRequest * Math.cos(CurrentAngle)*/ 0),
-      SwerveConstants.maxDriveSpeed.times( /*ControllerRequest * Math.sin(CurrentAngle) */ 0), 
+      SwerveConstants.maxDriveSpeed.times(ControllerRequest * Math.sin(CurrentAngle)),
+      SwerveConstants.maxDriveSpeed.times(ControllerRequest * Math.cos(CurrentAngle)), 
       SwerveConstants.maxRotSpeed.times(AngleRequest));
+      System.out.println("X: " + ControllerRequest * Math.cos(CurrentAngle) + "  Y: " + ControllerRequest * Math.sin(CurrentAngle));
     }
   }
 
