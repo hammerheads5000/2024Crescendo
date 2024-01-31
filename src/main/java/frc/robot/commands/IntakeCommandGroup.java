@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.VisionConstants;
@@ -16,9 +17,10 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
   /** Creates a new IntakeCommandGroup. */
   public IntakeCommandGroup(Swerve swerve) {
     DoubleSubscriber noteTargetYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
+    BooleanSubscriber hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     
     addCommands(
-      new AlignToNoteCommand(swerve, noteTargetYawSubscriber),
+      new AlignToNoteCommand(swerve, noteTargetYawSubscriber, hasNoteTargetSubscriber),
       //startIntake,
       new MoveOverNoteCommand(swerve)//,
       //loadNote

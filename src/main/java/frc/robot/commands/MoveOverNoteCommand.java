@@ -13,7 +13,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Swerve;
 
 public class MoveOverNoteCommand extends Command {
-  DigitalInput irSensor = new DigitalInput(IntakeConstants.lidarSensorChannel);
+  DigitalInput lidarSensor = new DigitalInput(IntakeConstants.lidarSensorChannel);
   Swerve swerve;
 
   /** Creates a new MoveOverNoteCommand. */
@@ -26,7 +26,7 @@ public class MoveOverNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerve.driveRobotCentric(IntakeConstants.moveOverVelocity, MetersPerSecond.zero(), RadiansPerSecond.zero()); // drive forward
+    swerve.driveRobotCentric(IntakeConstants.moveOverVelocity.negate(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // drive forward
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,6 +42,6 @@ public class MoveOverNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return irSensor.get();
+    return lidarSensor.get();
   }
 }

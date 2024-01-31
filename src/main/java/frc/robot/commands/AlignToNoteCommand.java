@@ -4,41 +4,42 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlignToNoteCommand extends ProfiledPIDCommand {
+public class AlignToNoteCommand extends PIDCommand {
   /** Creates a new AlignToNoteCommand. */
-  public AlignToNoteCommand(Swerve swerve, DoubleSubscriber targetHeadingSubscriber) {
+  public AlignToNoteCommand(Swerve swerve, DoubleSubscriber targetHeadingSubscriber, BooleanSubscriber hasTargetSubscriber) {
     super(
-        // The ProfiledPIDController used by the command
+        // The PIDController used by the command
         SwerveConstants.alignPID,
-        // This should return the measurement
+        // Measurement is the yaw to note
         targetHeadingSubscriber::get,
-        // This should return the goal (can also be a constant)
-        () -> new TrapezoidProfile.State(Radians.zero(), RadiansPerSecond.zero()),
+        // Setpoint at 0 meaning the goal is to align with note so angle between is 0
+        0,
         // This uses the output
-        (output, setpoint) -> {
-          swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.of(output));
+        output -> {
+          if (!hasTargetSubscriber.get()) { return; } // do nothing if no targets
+          swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), DegreesPerSecond.of(-output));
         },
         swerve);
-    // Use addRequirements() here to declare subsystem dependencies.
-    // Configure additional PID options by calling `getController` here.
+
+    getController().enableContinuousInput(-180, 180); // not strictly necessary, but good practice
+    getController().setTolerance(SwerveConstants.rotationalTolerance.in(Degrees));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return getController().atSetpoint();
   }
 }
