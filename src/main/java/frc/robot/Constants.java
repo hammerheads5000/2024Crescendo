@@ -25,11 +25,13 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -93,11 +95,12 @@ public class Constants {
         public static final DriveRequestType driveRequestType = DriveRequestType.Velocity;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
-        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1); // in m/s
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1); // in rad/s
+        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1);
+        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1);
         public static final double controllerDeadband = 0.1;
 
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5, 0, 0);
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5, 0, 0); // radians in and rad/s out
+        public static final ProfiledPIDController alignPID = new ProfiledPIDController(5.0, 0, 0, new TrapezoidProfile.Constraints(maxRotSpeed, maxRotSpeed.per(Second)));
         public static final Measure<Angle> rotationalTolerance = Degrees.of(5.0);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
@@ -213,6 +216,11 @@ public class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
         public static final double ColoredTargetAngleDeadband = .05;
         public static final double ColoredTargetRotationMultiplier = 2;
+    }
+
+    public static final class IntakeConstants {
+        public static final int irSensorChannel = 0;
+        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.5); // velocity to move over note for intake
     }
 
     public static final class VisionConstants {

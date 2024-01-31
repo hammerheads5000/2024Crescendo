@@ -41,11 +41,8 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
-  private DoubleSubscriber noteYawSubscriber;
-  private BooleanSubscriber hasNoteTargetSubscriber;
 
-  public boolean targetingNote = false;
-  private Rotation2d targetRotation;
+  public boolean targetingSpeaker = false;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -76,8 +73,6 @@ public class Swerve extends SubsystemBase {
     facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
-    noteYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
-    hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
@@ -98,8 +93,8 @@ public class Swerve extends SubsystemBase {
    */
   public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
       Measure<Velocity<Angle>> rot) {
-    if (targetingNote && hasNoteTargetSubscriber.get()) {
-      driveFacingAngle(xVel, yVel, targetRotation);
+    if (targetingSpeaker) {
+      //driveFacingAngle(xVel, yVel, );
     }
     else {
       driveFieldCentric(xVel, yVel, rot);
@@ -131,7 +126,6 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
     // apply request with params
-    System.out.println(facingAngleRequest.HeadingController.getLastAppliedOutput());
     drivetrain.setControl(
         facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
@@ -200,21 +194,6 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
     double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds
     drivetrain.addVisionMeasurement(pose, timestampSeconds);
-  }
-
-  // Transforms an angle from the robot forward direction to absolute field coordinates
-  private Rotation2d robotToFieldAngle(Rotation2d robotAngle) {
-    return robotAngle.rotateBy(getPose().getRotation());
-  }
-
-  public void targetNote() {
-    targetingNote = true;
-    Rotation2d angleToTarget = Rotation2d.fromDegrees(noteYawSubscriber.get());
-    targetRotation = robotToFieldAngle(angleToTarget);
-  }
-
-  public void stopTargetingNote() {
-    targetingNote = false;
   }
 
   @Override

@@ -4,22 +4,29 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Swerve;
 
-public class TargetNoteCommand extends Command {
-  private Swerve swerve;
-  /** Creates a new TargetNoteCommand. */
-  public TargetNoteCommand(Swerve swerve) {
+public class MoveOverNoteCommand extends Command {
+  DigitalInput irSensor = new DigitalInput(IntakeConstants.irSensorChannel);
+  Swerve swerve;
+
+  /** Creates a new MoveOverNoteCommand. */
+  public MoveOverNoteCommand(Swerve swerve) {
     this.swerve = swerve;
+
     addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerve.targetNote();
-
+    swerve.driveRobotCentric(IntakeConstants.moveOverVelocity, MetersPerSecond.zero(), RadiansPerSecond.zero()); // drive forward
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,12 +36,12 @@ public class TargetNoteCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.stopTargetingNote();
+    swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // stop
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return irSensor.get();
   }
 }

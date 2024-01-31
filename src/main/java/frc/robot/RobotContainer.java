@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.ColoredTargetAutomatedSwerve;
-import frc.robot.commands.TargetNoteCommand;
+import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -29,7 +29,7 @@ public class RobotContainer {
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
 
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
-  private TargetNoteCommand targetNoteCommand = new TargetNoteCommand(swerve);
+  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
 
   private Trigger zeroTrigger = controller.y();
   private Trigger targetTrigger = controller.rightBumper();
@@ -42,8 +42,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
-    targetTrigger.onTrue(new InstantCommand(() -> swerve.targetNote()));
-    targetTrigger.onFalse(new InstantCommand(() -> swerve.stopTargetingNote()));
+    targetTrigger.whileTrue(intakeCommandGroup);
   }
 
   public Command getAutonomousCommand() {
