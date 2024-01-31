@@ -13,7 +13,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Swerve;
 
 public class MoveOverNoteCommand extends Command {
-  DigitalInput irSensor = new DigitalInput(IntakeConstants.irSensorChannel);
+  DigitalInput irSensor = new DigitalInput(IntakeConstants.lidarSensorChannel);
   Swerve swerve;
 
   /** Creates a new MoveOverNoteCommand. */

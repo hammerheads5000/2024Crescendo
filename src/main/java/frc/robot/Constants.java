@@ -24,7 +24,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -37,10 +36,7 @@ import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.Topic;
 import edu.wpi.first.units.*;
-import frc.robot.subsystems.Swerve;
-
 import static edu.wpi.first.units.Units.*;
 
 import org.photonvision.PhotonCamera;
@@ -59,7 +55,6 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        // TODO: All the constants
         public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
         public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
 
@@ -219,7 +214,7 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int irSensorChannel = 0;
+        public static final int lidarSensorChannel = 0;
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.5); // velocity to move over note for intake
     }
 
