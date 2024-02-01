@@ -8,11 +8,13 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -22,6 +24,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,8 +37,10 @@ public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
+  private SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngleRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
+  private Pose3d speakerPose;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -54,7 +60,22 @@ public class Swerve extends SubsystemBase {
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
 
+    fieldCentricFacingAngleRequest = new SwerveRequest.FieldCentricFacingAngle()
+        .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
+        .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
+        .withDriveRequestType(SwerveConstants.driveRequestType)
+        .withSteerRequestType(SwerveConstants.steerRequestType);
+
+    fieldCentricFacingAngleRequest.HeadingController = 
+
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
+
+    Optional<Alliance> team = DriverStation.getAlliance();
+    if (team.isPresent() && team.get() == Alliance.Red){
+      speakerPose = SwerveConstants.redSpeakerPose;
+    }else{ //auto blue if there is no team because why not
+      speakerPose = SwerveConstants.blueSpeakerPose;
+    }
     
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
@@ -96,6 +117,22 @@ public class Swerve extends SubsystemBase {
         robotCentricRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
             .withRotationalRate(rot.in(RadiansPerSecond)));
+  }
+
+  /**
+   * Drive robot with respect to the field but facing the speakers
+   * 
+   * @param xVel robot forward velocity
+   * @param yVel robot left velocity
+   */
+  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel) {
+    // apply request with params
+    Rotation2d targetAngle = new Rotation2d(speakerPose.getX() - getPose().getX(),speakerPose.getY() - getPose().getY());
+    SmartDashboard.putNumber("AprilTag targetAngle in degrees", targetAngle.getDegrees());
+    drivetrain.setControl(
+        fieldCentricFacingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
+            .withVelocityY(yVel.in(MetersPerSecond))
+            .withTargetDirection(targetAngle));
   }
 
   /**
