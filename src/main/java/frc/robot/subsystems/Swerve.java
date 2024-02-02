@@ -137,10 +137,8 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel) {
     // apply request with params
-    Rotation2d targetAngle = new Rotation2d(speakerPose.getX() - getPose().getX(), speakerPose.getY() - getPose().getY());
-    SmartDashboard.putNumber("AprilTag targetAngle in degrees", targetAngle.getDegrees());
-    SmartDashboard.putNumber("PID Output", fieldCentricFacingAngleRequest.HeadingController.getLastAppliedOutput());
-    SmartDashboard.putNumber("Pigeon rotation", drivetrain.getPigeon2().getAngle());
+    Rotation2d targetAngle = new Rotation2d(getPose().getX() - speakerPose.getX(), getPose().getY() - speakerPose.getY());
+
     drivetrain.setControl(
         fieldCentricFacingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))

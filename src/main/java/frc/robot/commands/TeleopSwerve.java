@@ -29,10 +29,9 @@ public class TeleopSwerve extends Command {
   @Override
   public void execute() {
     swerve.driveFieldCentric(SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0), 
-                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? controller.getLeftX() : 0), 
-                SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? controller.getRightX() : 0)
+                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? -controller.getLeftX() : 0), 
+                SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? -controller.getRightX() : 0)
     );
-    SmartDashboard.putNumber("rot velocity",swerve.getChassisSpeeds().omegaRadiansPerSecond);
   }
 
   // Called once the command ends or is interrupted.

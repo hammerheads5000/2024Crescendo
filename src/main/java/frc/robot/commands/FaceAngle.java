@@ -30,7 +30,7 @@ public class FaceAngle extends Command {
   @Override
   public void execute() {
     swerve.driveFieldCentricFacingAngle(SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0), 
-                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? controller.getLeftX() : 0)
+                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? -controller.getLeftX() : 0)
     );
   }
 
