@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
@@ -16,7 +17,9 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -25,6 +28,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -71,6 +75,9 @@ public class Constants {
         private static final double steerMotorGearRatio = (150.0 / 7 / 1.0); // 7:1
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
+
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(.9,0,0);
+        public static final Measure<Angle> rotationalTolerance = Degrees.of(5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -212,7 +219,7 @@ public class Constants {
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
         public static final Pose3d redSpeakerPose = new Pose3d(652.73,196.17,57.13,new Rotation3d(0,0,180));
-        public static final Pose3d blueSpeakerPose = new Pose3d(-1.50,218.42,57.13,new Rotation3d(0,0,0));
+        public static final Pose3d blueSpeakerPose = new Pose3d(Inches.of(-1.50).in(Meters),Inches.of(218.42).in(Meters),Inches.of(57.13).in(Meters),new Rotation3d(0,0,0));
 
     }
 

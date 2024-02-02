@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveConstants;
@@ -31,6 +32,7 @@ public class TeleopSwerve extends Command {
                 SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? controller.getLeftX() : 0), 
                 SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? controller.getRightX() : 0)
     );
+    SmartDashboard.putNumber("rot velocity",swerve.getChassisSpeeds().omegaRadiansPerSecond);
   }
 
   // Called once the command ends or is interrupted.
