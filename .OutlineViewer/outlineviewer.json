@@ -1,0 +1,13 @@
+{
+  "NetworkTables Settings": {
+    "mode": "Client (NT3)"
+  },
+  "transitory": {
+    "photonvision": {
+      "Camera_Module_v1": {
+        "open": true
+      },
+      "open": true
+    }
+  }
+}
