@@ -211,9 +211,11 @@ public class Constants {
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
+        public static final double ColoredTargetAngleDeadband = .05;
+        public static final double ColoredTargetRotationMultiplier = 2;
+
         public static final Pose3d redSpeakerPose = new Pose3d(652.73,196.17,57.13,new Rotation3d(0,0,180));
         public static final Pose3d blueSpeakerPose = new Pose3d(-1.50,218.42,57.13,new Rotation3d(0,0,0));
-
     }
 
     public static final class VisionConstants {
