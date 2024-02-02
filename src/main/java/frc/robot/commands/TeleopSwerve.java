@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveConstants;
@@ -28,8 +29,8 @@ public class TeleopSwerve extends Command {
   @Override
   public void execute() {
     swerve.driveFieldCentric(SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0), 
-                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? controller.getLeftX() : 0), 
-                SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? controller.getRightX() : 0)
+                SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? -controller.getLeftX() : 0), 
+                SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? -controller.getRightX() : 0)
     );
   }
 

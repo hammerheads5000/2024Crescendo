@@ -18,8 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.ColoredTargetAutomatedSwerve;
-import frc.robot.commands.FaceAngle;
+import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -37,10 +36,9 @@ public class RobotContainer {
   private CommandXboxController controller = new CommandXboxController(0);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
   
-  private FaceAngle faceAngle = new FaceAngle(swerve, controller);
+  private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
  
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
-  private ColoredTargetAutomatedSwerve CTAS = new ColoredTargetAutomatedSwerve(ColorTargetPoseTopic,TargetYawTop, ColorHasTargetsTopic, swerve, controller);
 
   private Trigger zeroTrigger = controller.y();
   private Trigger faceAngleTrigger = controller.leftBumper();

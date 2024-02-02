@@ -5,14 +5,21 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.EnumSet;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
+
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Pigeon2FeaturesConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,6 +36,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -66,17 +74,12 @@ public class Swerve extends SubsystemBase {
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
 
-    fieldCentricFacingAngleRequest.HeadingController = 
+    fieldCentricFacingAngleRequest.HeadingController = SwerveConstants.headingPID;
+    fieldCentricFacingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+    fieldCentricFacingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
-    Optional<Alliance> team = DriverStation.getAlliance();
-    if (team.isPresent() && team.get() == Alliance.Red){
-      speakerPose = SwerveConstants.redSpeakerPose;
-    }else{ //auto blue if there is no team because why not
-      speakerPose = SwerveConstants.blueSpeakerPose;
-    }
-    
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
     NetworkTableListener.createListener(
@@ -125,10 +128,7 @@ public class Swerve extends SubsystemBase {
    * @param xVel robot forward velocity
    * @param yVel robot left velocity
    */
-  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel) {
-    // apply request with params
-    Rotation2d targetAngle = new Rotation2d(speakerPose.getX() - getPose().getX(),speakerPose.getY() - getPose().getY());
-    SmartDashboard.putNumber("AprilTag targetAngle in degrees", targetAngle.getDegrees());
+  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d targetAngle) {
     drivetrain.setControl(
         fieldCentricFacingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
