@@ -76,8 +76,8 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
 
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(5);
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
+        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -102,8 +102,8 @@ public class Constants {
         public static final DriveRequestType driveRequestType = DriveRequestType.Velocity;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
-        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1); // in m/s
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1); // in rad/s
+        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1);
+        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1);
         public static final double controllerDeadband = 0.1;
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
@@ -217,12 +217,9 @@ public class Constants {
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-
-        public static final double ColoredTargetAngleDeadband = .05;
-        public static final double ColoredTargetRotationMultiplier = 2;
-
-        public static final Pose3d redSpeakerPose = new Pose3d(652.73,196.17,57.13,new Rotation3d(0,0,180));
-        public static final Pose3d blueSpeakerPose = new Pose3d(Inches.of(-1.50).in(Meters),Inches.of(218.42).in(Meters),Inches.of(57.13).in(Meters),new Rotation3d(0,0,0));
+        
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73),Inches.of(196.17),Inches.of(57.13));
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50),Inches.of(218.42),Inches.of(57.13));
 
     }
 

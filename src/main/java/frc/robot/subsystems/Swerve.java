@@ -80,13 +80,6 @@ public class Swerve extends SubsystemBase {
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
-    Optional<Alliance> team = DriverStation.getAlliance();
-    if (team.isPresent() && team.get() == Alliance.Red){
-      speakerPose = SwerveConstants.redSpeakerPose;
-    }else{ //auto blue if there is no team because why not
-      speakerPose = SwerveConstants.blueSpeakerPose;
-    }
-    
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
     NetworkTableListener.createListener(
@@ -135,10 +128,7 @@ public class Swerve extends SubsystemBase {
    * @param xVel robot forward velocity
    * @param yVel robot left velocity
    */
-  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel) {
-    // apply request with params
-    Rotation2d targetAngle = new Rotation2d(getPose().getX() - speakerPose.getX(), getPose().getY() - speakerPose.getY());
-
+  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d targetAngle) {
     drivetrain.setControl(
         fieldCentricFacingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
