@@ -38,24 +38,31 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Current;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.*;
+import static edu.wpi.first.units.Units.*;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /** Add your docs here. */
 public class Constants {
     public static final String CANbusName = "Bobby";
     public static final int pigeon2Id = 0;
+
+    public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
@@ -63,7 +70,6 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        // TODO: All the constants
         public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
         public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
 
@@ -102,9 +108,14 @@ public class Constants {
         public static final DriveRequestType driveRequestType = DriveRequestType.Velocity;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
-        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.1);
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.1);
+        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
+        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
+
         public static final double controllerDeadband = 0.1;
+
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5, 0, 0); // radians in and rad/s out
+        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
+        public static final Measure<Angle> rotationalTolerance = Degrees.of(5.0);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -215,12 +226,17 @@ public class Constants {
                 .withVoltageClosedLoopRampPeriod(0.0)
                 .withTorqueClosedLoopRampPeriod(0.0);
 
-        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
         
         public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73),Inches.of(196.17),Inches.of(57.13));
         public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50),Inches.of(218.42),Inches.of(57.13));
 
+    }
+
+    public static final class IntakeConstants {
+        public static final int lidarSensorChannel = 0;
+        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
     }
 
     public static final class VisionConstants {
@@ -232,7 +248,12 @@ public class Constants {
                         new Rotation3d(0.0, 0.0, 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-        public static final DoubleArrayTopic poseTopic = NetworkTableInstance.getDefault().getDoubleArrayTopic("/Vision/Estimated Pose");
+        public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
+
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Camera_Module_v1");
+
+        public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
+        public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
     }
 
     public static final class AutoConstants {

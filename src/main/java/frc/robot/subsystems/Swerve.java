@@ -45,10 +45,12 @@ public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
-  private SwerveRequest.FieldCentricFacingAngle fieldCentricFacingAngleRequest;
+  private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
   private Pose3d speakerPose;
+
+  public boolean targetingSpeaker = false;
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -68,15 +70,15 @@ public class Swerve extends SubsystemBase {
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
 
-    fieldCentricFacingAngleRequest = new SwerveRequest.FieldCentricFacingAngle()
+    facingAngleRequest = new SwerveRequest.FieldCentricFacingAngle()
         .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
         .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
 
-    fieldCentricFacingAngleRequest.HeadingController = SwerveConstants.headingPID;
-    fieldCentricFacingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    fieldCentricFacingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
+    facingAngleRequest.HeadingController = SwerveConstants.headingPID;
+    facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
@@ -91,6 +93,23 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
+   * General drive method
+   * 
+   * @param xVel field relative forward velocity
+   * @param yVel field relative left velocity
+   * @param rot  angular velocity counterclockwise
+   */
+  public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
+      Measure<Velocity<Angle>> rot) {
+    if (targetingSpeaker) {
+      //driveFacingAngle(xVel, yVel, );
+    }
+    else {
+      driveFieldCentric(xVel, yVel, rot);
+    }
+  }
+    
+  /**
    * Drive robot with respect to field
    * 
    * @param xVel field relative forward velocity
@@ -104,6 +123,21 @@ public class Swerve extends SubsystemBase {
         fieldCentricRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
             .withRotationalRate(rot.in(RadiansPerSecond)));
+  }
+
+  /**
+   * Drive robot while facing angle
+   * 
+   * @param xVel field centric forward velocity
+   * @param yVel field centric left velocity
+   * @param angle angle to face (field centric)
+   */
+  public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
+    // apply request with params
+    drivetrain.setControl(
+        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
+            .withVelocityY(yVel.in(MetersPerSecond))
+            .withTargetDirection(angle));
   }
 
   /**
