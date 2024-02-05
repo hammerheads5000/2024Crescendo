@@ -81,8 +81,9 @@ public class Constants {
         private static final double steerMotorGearRatio = (150.0 / 7 / 1.0); // 7:1
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
-
+        
         public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
+        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
         public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
@@ -113,9 +114,6 @@ public class Constants {
 
         public static final double controllerDeadband = 0.1;
 
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5, 0, 0); // radians in and rad/s out
-        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(5.0);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)

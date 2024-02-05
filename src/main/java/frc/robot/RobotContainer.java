@@ -27,11 +27,9 @@ public class RobotContainer {
 
   private Trigger zeroTrigger = controller.y();
   private Trigger faceAngleTrigger = controller.leftBumper();
+  private Trigger targetTrigger = controller.rightBumper();
 
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
-
-  private Trigger zeroTrigger = controller.y();
-  private Trigger targetTrigger = controller.rightBumper();
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);

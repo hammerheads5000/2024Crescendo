@@ -164,7 +164,7 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d targetAngle) {
     drivetrain.setControl(
-        fieldCentricFacingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
+        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
             .withTargetDirection(targetAngle));
   }
