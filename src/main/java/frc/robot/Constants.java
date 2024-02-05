@@ -83,8 +83,9 @@ public class Constants {
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
         public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
-        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
+        public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
+        public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
+        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)

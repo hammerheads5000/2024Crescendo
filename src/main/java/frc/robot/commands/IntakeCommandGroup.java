@@ -18,12 +18,10 @@ import frc.robot.subsystems.Swerve;
 public class IntakeCommandGroup extends SequentialCommandGroup {
   /** Creates a new IntakeCommandGroup. */
   public IntakeCommandGroup(Swerve swerve) {
-    DoubleSubscriber noteTargetYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
-    BooleanSubscriber hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     TalonFX intakeMotor = new TalonFX(0);
     
     addCommands(
-      new AlignToNoteCommand(swerve, noteTargetYawSubscriber, hasNoteTargetSubscriber),
+      new AlignToNoteCommand(swerve),
       new StartIntake(intakeMotor),
       new MoveOverNoteCommand(swerve),
       new LoadNote(),

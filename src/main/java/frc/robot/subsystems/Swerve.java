@@ -78,7 +78,7 @@ public class Swerve extends SubsystemBase {
 
     facingAngleRequest.HeadingController = SwerveConstants.headingPID;
     facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
+    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.speakerRotationalTolerance.in(Radians));
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
