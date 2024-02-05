@@ -24,10 +24,10 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
     
     addCommands(
       new AlignToNoteCommand(swerve, noteTargetYawSubscriber, hasNoteTargetSubscriber),
-      new startIntake(intakeMotor),
+      new StartIntake(intakeMotor),
       new MoveOverNoteCommand(swerve),
-      new loadNote(),
-      new stopIntake(intakeMotor)
+      new LoadNote(),
+      new StopIntake(intakeMotor)
     );
   }
 }
