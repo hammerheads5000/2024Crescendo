@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -18,12 +20,14 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
   public IntakeCommandGroup(Swerve swerve) {
     DoubleSubscriber noteTargetYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
     BooleanSubscriber hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
+    TalonFX intakeMotor = new TalonFX(0);
     
     addCommands(
       new AlignToNoteCommand(swerve, noteTargetYawSubscriber, hasNoteTargetSubscriber),
-      //startIntake,
-      new MoveOverNoteCommand(swerve)//,
-      //loadNote
+      new startIntake(intakeMotor),
+      new MoveOverNoteCommand(swerve),
+      new loadNote(),
+      new stopIntake(intakeMotor)
     );
   }
 }

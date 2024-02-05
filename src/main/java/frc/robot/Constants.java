@@ -233,7 +233,8 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int lidarSensorChannel = 0;
+        public static final int frontLidarSensorChannel = 0;
+        public static final int loadLiderSensorChannel = 0;
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
     }
 
