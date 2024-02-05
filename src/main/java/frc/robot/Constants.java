@@ -254,6 +254,10 @@ public class Constants {
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
     }
 
+    public static final class ShooterConstants {
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(400*Math.PI);
+    }
+
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(0.5, 0.0, 0.0), // translational PID
