@@ -278,6 +278,9 @@ public class Constants {
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(-9.81);
+
+        // PID used to move to correct distance from speaker
+        public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
     }
 
     public static final class FieldConstants {

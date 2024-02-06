@@ -34,6 +34,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -51,6 +52,8 @@ public class Swerve extends SubsystemBase {
   private Pose3d speakerPose;
 
   public boolean targetingSpeaker = false;
+
+  public Field2d field = new Field2d();
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -90,6 +93,8 @@ public class Swerve extends SubsystemBase {
         event -> {
           applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());
         });
+
+    SmartDashboard.putData("Field", field);
   }
 
   /**
@@ -206,5 +211,6 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    field.setRobotPose(getPose());
   }
 }

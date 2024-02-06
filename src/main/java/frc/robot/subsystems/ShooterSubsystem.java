@@ -18,7 +18,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   VelocityTorqueCurrentFOC topRequest;
   VelocityTorqueCurrentFOC bottomRequest;
-
+  public ShooterSubsystem() {}
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem(TalonFX topMotor, TalonFX bottomMotor) {
     this.topMotor = topMotor;
