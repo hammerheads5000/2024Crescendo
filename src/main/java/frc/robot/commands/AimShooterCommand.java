@@ -76,7 +76,8 @@ public class AimShooterCommand extends Command {
             ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
     
     Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
-    approachVelocityVec = approachVelocityVec.times(distancePID.calculate(getDistanceToSpeaker().in(Meters)));
+    approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
+    approachVelocityVec = approachVelocityVec.times(distancePID.calculate(getDistanceToSpeaker().in(Meters))); // scale with PID
 
     Translation2d totalVelocityVec = strafeVelocityVec.plus(approachVelocityVec);
     Rotation2d angleToFace = speakerToRobot.getAngle();
