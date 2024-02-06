@@ -157,19 +157,6 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Drive robot with respect to the field but facing the speakers
-   * 
-   * @param xVel robot forward velocity
-   * @param yVel robot left velocity
-   */
-  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d targetAngle) {
-    drivetrain.setControl(
-        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
-            .withVelocityY(yVel.in(MetersPerSecond))
-            .withTargetDirection(targetAngle));
-  }
-
-  /**
    * Get robot centric speeds
    * @return robot centric chassis speeds
    */

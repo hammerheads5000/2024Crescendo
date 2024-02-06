@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
@@ -63,13 +65,20 @@ public class AimShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Rotation2d targetAngle = new Rotation2d(swerve.getPose().getX() - speakerPos.getX(), swerve.getPose().getY() - speakerPos.getY());
-    swerve.driveFieldCentricFacingAngle(
-        SwerveConstants.maxDriveSpeed
-            .times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0),
-        SwerveConstants.maxDriveSpeed
-            .times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? -controller.getLeftX() : 0),
-        targetAngle);
+    Translation2d speakerToRobot = swerve.getPose().getTranslation().minus(speakerPos.toTranslation2d());
+    Translation2d velocityVec = speakerToRobot.rotateBy(new Rotation2d(Degrees.of(90))); // use tangent as velocity
+    velocityVec.div(velocityVec.getNorm()); // normalize
+
+    velocityVec.times(SwerveConstants.maxDriveSpeed.times(
+        Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband
+            ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
+
+    Rotation2d angleToFace = speakerToRobot.getAngle().unaryMinus();
+
+    swerve.driveFacingAngle(
+        MetersPerSecond.of(velocityVec.getX()), 
+        MetersPerSecond.of(velocityVec.getY()),
+        angleToFace);
   }
 
   private Measure<Distance> distanceFromAngle(Measure<Angle> angle) {
