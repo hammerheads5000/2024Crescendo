@@ -8,6 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Swerve;
@@ -16,16 +18,19 @@ import frc.robot.subsystems.Swerve;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCommandGroup extends SequentialCommandGroup {
+  public static boolean isFinished;
   /** Creates a new IntakeCommandGroup. */
   public IntakeCommandGroup(Swerve swerve) {
-    TalonFX intakeMotor = new TalonFX(0);
-    
+    TalonFX intakeMotor = new TalonFX(0);//fix later
+    DoubleSolenoid armPneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 2);//fix later    
+
     addCommands(
       new AlignToNoteCommand(swerve),
-      new StartIntake(intakeMotor),
+      new LowerArmCommand(armPneumatic),
+      new StartIntakeCommand(intakeMotor),
       new MoveOverNoteCommand(swerve),
-      new LoadNote(),
-      new StopIntake(intakeMotor)
+      new LoadNoteCommand(),
+      new StopIntakeCommand(intakeMotor)
     );
   }
 }

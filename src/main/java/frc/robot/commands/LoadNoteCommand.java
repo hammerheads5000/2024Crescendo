@@ -8,12 +8,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 
-public class LoadNote extends Command {
+public class LoadNoteCommand extends Command {
   DigitalInput lidarSensor = new DigitalInput(IntakeConstants.loadLiderSensorChannel);//fix channel
   /** Creates a new loadNote. */
-  public LoadNote() {
-      
-
+  public LoadNoteCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

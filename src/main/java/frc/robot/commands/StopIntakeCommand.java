@@ -6,19 +6,24 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class StopIntake extends Command {
+public class StopIntakeCommand extends Command {
   /** Creates a new stopIntake. */
-  public StopIntake(TalonFX motor) {
-      motor.set(0);
+  TalonFX motor;
+  public StopIntakeCommand(TalonFX motor) {
+      this.motor = motor;
 
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    motor.set(0);
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

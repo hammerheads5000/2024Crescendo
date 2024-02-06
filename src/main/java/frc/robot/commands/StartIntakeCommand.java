@@ -8,9 +8,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class StartIntake extends Command {
+public class StartIntakeCommand extends Command {
   /** Creates a new startIntake. */
-  public StartIntake(TalonFX motor){
+  public StartIntakeCommand(TalonFX motor){
     motor.set(1);//set constant later
     // Use addRequirements() here to declare subsystem dependencies.
   }
