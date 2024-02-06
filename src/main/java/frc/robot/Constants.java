@@ -17,10 +17,14 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
@@ -81,10 +85,11 @@ public class Constants {
         private static final double steerMotorGearRatio = (150.0 / 7 / 1.0); // 7:1
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
-        
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
+
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0, 0, 0); // controls PID
+                                                                                                   // rotating to angle
         public static final PIDController alignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
+        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); //
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -113,7 +118,6 @@ public class Constants {
         public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
 
         public static final double controllerDeadband = 0.1;
-
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -226,45 +230,75 @@ public class Constants {
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-        
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73),Inches.of(196.17),Inches.of(57.13));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50),Inches.of(218.42),Inches.of(57.13));
-
     }
 
     public static final class IntakeConstants {
         public static final int lidarSensorChannel = 0;
-        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
+        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move
+                                                                                                   // over note for
+                                                                                                   // intake
     }
 
     public static final class VisionConstants {
         public static final PhotonCamera aprilTagCam = new PhotonCamera("Camera_Module_v1");
-        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-        
+        public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo
+                .loadAprilTagLayoutField();
+
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Meters.zero()),
-                        new Rotation3d(0.0, 0.0, 0.0));
-        
+                new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Meters.zero()),
+                new Rotation3d(0.0, 0.0, 0.0));
+
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Camera_Module_v1");
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision")
+                .getSubTable("Camera_Module_v1");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(400*Math.PI);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(400 * Math.PI);
+        public static final Measure<Angle> farAngle = Degrees.of(30);
+        public static final Measure<Angle> closeAngle = Degrees.of(60);
+
+        public static final Slot0Configs flywheelGains = new Slot0Configs()
+                .withKP(0.0) // output (V) per unit error in position (rps)
+                .withKI(0.0) // output (V) per unit integrated error (rotations)
+                .withKD(0.0) // output (V) per unit of error derivative (rps/s)
+                .withKS(0) // output (V) to overcome static friction
+                .withKV(0.123) // output (V) per unit of velocity (rps)
+                .withKA(0); // output (V) per unit of acceleration (rps/s)
+
+        public static final TalonFX topFlywheel = new TalonFX(0);
+        public static final TalonFX bottomFlywheel = new TalonFX(0);
+
+        public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
+        public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
+
+        public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(-9.81);
+    }
+
+    public static final class FieldConstants {
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(196.17),
+                Inches.of(80.5));
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
+                Inches.of(80.5));
     }
 
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
-            new PIDConstants(0.5, 0.0, 0.0), // translational PID
-            new PIDConstants(0.5, 0.0, 0.0), // rotational PID
-            SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
-            new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(), // radius of drivetrain (distance from center to furthest module)
-            new ReplanningConfig() // default replanning config
+                new PIDConstants(0.5, 0.0, 0.0), // translational PID
+                new PIDConstants(0.5, 0.0, 0.0), // rotational PID
+                SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
+                new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(), // radius of
+                                                                                                        // drivetrain
+                                                                                                        // (distance
+                                                                                                        // from center
+                                                                                                        // to furthest
+                                                                                                        // module)
+                new ReplanningConfig() // default replanning config
         );
     }
 }
