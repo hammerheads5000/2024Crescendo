@@ -9,19 +9,11 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.util.EnumSet;
-import java.util.Optional;
-
 import org.photonvision.EstimatedRobotPose;
 
-import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.configs.Pigeon2FeaturesConfigs;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -31,12 +23,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -48,7 +35,6 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
-  private Pose3d speakerPose;
 
   public boolean targetingSpeaker = false;
 
@@ -90,23 +76,6 @@ public class Swerve extends SubsystemBase {
         event -> {
           applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());
         });
-  }
-
-  /**
-   * General drive method
-   * 
-   * @param xVel field relative forward velocity
-   * @param yVel field relative left velocity
-   * @param rot  angular velocity counterclockwise
-   */
-  public void drive(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
-      Measure<Velocity<Angle>> rot) {
-    if (targetingSpeaker) {
-      //driveFacingAngle(xVel, yVel, );
-    }
-    else {
-      driveFieldCentric(xVel, yVel, rot);
-    }
   }
     
   /**
@@ -157,19 +126,6 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * Drive robot with respect to the field but facing the speakers
-   * 
-   * @param xVel robot forward velocity
-   * @param yVel robot left velocity
-   */
-  public void driveFieldCentricFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d targetAngle) {
-    drivetrain.setControl(
-        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
-            .withVelocityY(yVel.in(MetersPerSecond))
-            .withTargetDirection(targetAngle));
-  }
-
-  /**
    * Get robot centric speeds
    * @return robot centric chassis speeds
    */
@@ -210,7 +166,6 @@ public class Swerve extends SubsystemBase {
    * @param timestamp timestamp in microseconds
    */
   public void applyVisionMeasurement(double[] poseArray, long timestamp) {
-    SmartDashboard.putNumberArray("Robot Pose", poseArray);
     // converts array of format {x (m), y (m), rotation (rad)} to Pose2d
     Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
     double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds

@@ -13,12 +13,13 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Swerve;
 
 public class MoveOverNoteCommand extends Command {
-  DigitalInput lidarSensor = new DigitalInput(IntakeConstants.frontLidarSensorChannel);
+  DigitalInput lidarSensor;
   Swerve swerve;
 
   /** Creates a new MoveOverNoteCommand. */
   public MoveOverNoteCommand(Swerve swerve) {
     this.swerve = swerve;
+    lidarSensor = IntakeConstants.frontLidarSensor;
 
     addRequirements(swerve);
   }

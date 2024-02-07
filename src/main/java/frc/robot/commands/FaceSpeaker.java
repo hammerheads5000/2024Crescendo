@@ -6,12 +6,10 @@ package frc.robot.commands;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveConstants;
@@ -45,7 +43,7 @@ public class FaceSpeaker extends Command {
   @Override
   public void execute() {
     Rotation2d targetAngle = new Rotation2d(swerve.getPose().getX() - speakerPos.getX(), swerve.getPose().getY() - speakerPos.getY());
-    swerve.driveFieldCentricFacingAngle(
+    swerve.driveFacingAngle(
         SwerveConstants.maxDriveSpeed
             .times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0),
         SwerveConstants.maxDriveSpeed

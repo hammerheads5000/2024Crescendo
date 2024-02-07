@@ -17,10 +17,9 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
@@ -38,24 +37,18 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
-import static edu.wpi.first.units.Units.*;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 /** Add your docs here. */
 public class Constants {
@@ -234,9 +227,21 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int frontLidarSensorChannel = 0;
-        public static final int loadLiderSensorChannel = 0;
+        // TODO: Figure these out
+        public static final DigitalInput frontLidarSensor = new DigitalInput(0);
+        public static final DigitalInput loadLiderSensor = new DigitalInput(0);
+        public static final DigitalInput armLimitSwitch = new DigitalInput(0);
+        
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
+        
+        public static final TalonFX intakeFeedMotor = new TalonFX(0);
+        public static final TalonFX shooterFeedMotor = new TalonFX(0);
+        public static final TalonFX armFeedMotor = new TalonFX(0);
+        public static final TalonFX armRaiseMotor = new TalonFX(0);
+
+        public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
+        public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
+        public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
     }
 
     public static final class VisionConstants {
