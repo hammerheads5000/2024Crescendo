@@ -45,7 +45,7 @@ public class FaceSpeaker extends Command {
   @Override
   public void execute() {
     Rotation2d targetAngle = new Rotation2d(swerve.getPose().getX() - speakerPos.getX(), swerve.getPose().getY() - speakerPos.getY());
-    swerve.driveFieldCentricFacingAngle(
+    swerve.driveFacingAngle(
         SwerveConstants.maxDriveSpeed
             .times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0),
         SwerveConstants.maxDriveSpeed

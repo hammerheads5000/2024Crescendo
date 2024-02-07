@@ -8,8 +8,11 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import org.photonvision.PhotonCamera;
@@ -17,10 +20,9 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
@@ -38,24 +40,17 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
-import static edu.wpi.first.units.Units.*;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /** Add your docs here. */
 public class Constants {
@@ -252,6 +247,38 @@ public class Constants {
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
+    }
+
+    public static final class ShooterConstants {
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(400 * Math.PI);
+        public static final Measure<Angle> farAngle = Degrees.of(30);
+        public static final Measure<Angle> closeAngle = Degrees.of(60);
+
+        public static final Slot0Configs flywheelGains = new Slot0Configs()
+                .withKP(0.0) // output (V) per unit error in position (rps)
+                .withKI(0.0) // output (V) per unit integrated error (rotations)
+                .withKD(0.0) // output (V) per unit of error derivative (rps/s)
+                .withKS(0) // output (V) to overcome static friction
+                .withKV(0.123) // output (V) per unit of velocity (rps)
+                .withKA(0); // output (V) per unit of acceleration (rps/s)
+
+        public static final TalonFX topFlywheel = new TalonFX(0);
+        public static final TalonFX bottomFlywheel = new TalonFX(0);
+
+        public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
+        public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
+
+        public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(-9.81);
+
+        // PID used to move to correct distance from speaker
+        public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
+    }
+
+    public static final class FieldConstants {
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(196.17),
+                Inches.of(80.5));
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
+                Inches.of(80.5));
     }
 
     public static final class AutoConstants {
