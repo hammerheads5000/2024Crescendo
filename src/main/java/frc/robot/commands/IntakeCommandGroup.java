@@ -16,6 +16,7 @@ import frc.robot.subsystems.Swerve;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCommandGroup extends SequentialCommandGroup {
+  public static boolean isFinished;
   /** Creates a new IntakeCommandGroup. */
   public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {
     DigitalInput loadedLidarSensor = IntakeConstants.loadLiderSensor;
