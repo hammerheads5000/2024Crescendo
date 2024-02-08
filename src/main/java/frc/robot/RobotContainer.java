@@ -18,6 +18,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.ExpelTrapNoteCommand;
 import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommandGroup;
+import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.RaiseToAmpCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
@@ -33,6 +34,7 @@ public class RobotContainer {
   private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
   private RaiseToAmpCommand raiseToAmpCommand = new RaiseToAmpCommand(trapMechanismSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
+  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapMechanismSubsystem);
  
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
 
@@ -76,7 +78,7 @@ public class RobotContainer {
       NamedCommands.registerCommand("Raise To Amp", raiseToAmpCommand);
       NamedCommands.registerCommand("Flip Trap Down", null);
       NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
-      NamedCommands.registerCommand("Lower Trap Arm", null);
+      NamedCommands.registerCommand("Lower Trap Arm", lowerArmCommand);
   }
 
   public Command getAutonomousCommand() {
