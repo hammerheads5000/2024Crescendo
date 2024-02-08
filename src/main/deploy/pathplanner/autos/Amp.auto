@@ -12,7 +12,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Raise Trap Arm"
+                  "name": "Raise To Amp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Flip Trap Down"
                 }
               },
               {

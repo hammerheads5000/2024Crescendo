@@ -51,6 +51,8 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Servo;
 
 /** Add your docs here. */
 public class Constants {
@@ -279,6 +281,24 @@ public class Constants {
                 Inches.of(80.5));
         public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
                 Inches.of(80.5));
+    }
+
+    public static final class TrapConstants {
+        // TODO: ids
+        public static final TalonFX heightControlMotor = new TalonFX(0);
+        public static final TalonFX rollerMotor = new TalonFX(0);
+
+        public static final Servo linearActuator = new Servo(0); // flips mechanism down
+
+        public static final DigitalInput ampLimitSwitch = new DigitalInput(0); // limit switch to stop at for amp
+        public static final DigitalInput trapLimitSwitch = new DigitalInput(0); // limit switch to stop at for trap
+        public static final DigitalInput homeLimitSwitch = new DigitalInput(0); // limit switch at lowered position
+
+        public static final DigitalInput noteSensor = new DigitalInput(0);
+
+        public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
+        public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
+        public static final double raiseSpeed = 0.5; // out of 1, how fast to raise/lower
     }
 
     public static final class AutoConstants {
