@@ -310,4 +310,7 @@ public class Constants {
             new ReplanningConfig() // default replanning config
         );
     }
+    public static final class ClimberConstants{
+        public static final TalonFX climberMotor = new TalonFX(0);
+    }
 }

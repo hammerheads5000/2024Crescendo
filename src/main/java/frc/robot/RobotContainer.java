@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -22,6 +23,7 @@ import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.RaiseToAmpCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TrapMechanismSubsystem;
 
@@ -37,10 +39,12 @@ public class RobotContainer {
   private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapMechanismSubsystem);
  
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
+  private ClimberSubsystem climberSubsystem = new ClimberSubsystem(Constants.ClimberConstants.climberMotor);
 
   private Trigger zeroTrigger = controller.y();
   private Trigger faceAngleTrigger = controller.leftBumper();
   private Trigger targetTrigger = controller.rightBumper();
+  private Trigger climberTrigger = controller.a();
 
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
@@ -56,6 +60,7 @@ public class RobotContainer {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
     faceAngleTrigger.whileTrue(faceAngle);
     targetTrigger.whileTrue(intakeCommandGroup);
+    climberTrigger.onTrue(new InstantCommand(() -> climberSubsystem.extendClimber()));
   }
 
   private void configureAuto() {
