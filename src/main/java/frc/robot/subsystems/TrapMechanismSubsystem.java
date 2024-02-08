@@ -28,7 +28,8 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     heightControlMotor = TrapConstants.heightControlMotor;
     rollerMotor = TrapConstants.rollerMotor;
 
-    linearActuator = TrapConstants.linearActuator;
+    linearActuator = TrapConstants.linearActuator;    
+    linearActuator.setBoundsMicroseconds(2000, 0, 1500, 0, 1000);
 
     ampLimitSwitch = TrapConstants.ampLimitSwitch;
     trapLimitSwitch = TrapConstants.trapLimitSwitch;
@@ -77,6 +78,16 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     rollerMotor.stopMotor();
   }
 
+public double getActuator(){
+  return linearActuator.get();
+}
+
+  public void extendActuator(){
+    linearActuator.set(1.0);
+  }
+  public void contractActuator(){
+    linearActuator.set(0.0);
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

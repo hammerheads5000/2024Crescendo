@@ -76,7 +76,7 @@ public class RobotContainer {
       swerve);
       
       NamedCommands.registerCommand("Raise To Amp", raiseToAmpCommand);
-      NamedCommands.registerCommand("Flip Trap Down", null);
+      NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(() -> trapMechanismSubsystem.extendActuator()));
       NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
       NamedCommands.registerCommand("Lower Trap Arm", lowerArmCommand);
   }
