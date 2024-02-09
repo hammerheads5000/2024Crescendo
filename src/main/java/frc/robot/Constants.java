@@ -56,6 +56,9 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
 import static edu.wpi.first.units.Units.*;
 
 import org.photonvision.PhotonCamera;
@@ -281,6 +284,8 @@ public class Constants {
 
         // PID used to move to correct distance from speaker
         public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
+
+        public static final DoubleSolenoid positioningSoleniod = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     }
 
     public static final class FieldConstants {

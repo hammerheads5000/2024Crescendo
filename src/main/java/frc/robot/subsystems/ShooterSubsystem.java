@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -18,11 +20,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   VelocityTorqueCurrentFOC topRequest;
   VelocityTorqueCurrentFOC bottomRequest;
-  public ShooterSubsystem() {}
+
+  DoubleSolenoid solenoid;
+
   /** Creates a new ShooterSubsystem. */
-  public ShooterSubsystem(TalonFX topMotor, TalonFX bottomMotor) {
-    this.topMotor = topMotor;
-    this.bottomMotor = bottomMotor;
+  public ShooterSubsystem() {
+    this.topMotor = ShooterConstants.topFlywheel;
+    this.bottomMotor = ShooterConstants.bottomFlywheel;
+    this.solenoid = ShooterConstants.positioningSoleniod;
 
     topMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
     bottomMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
@@ -39,6 +44,18 @@ public class ShooterSubsystem extends SubsystemBase {
   public void stop() {
     topMotor.stopMotor();
     bottomMotor.stopMotor();
+  }
+
+  public boolean isRaised() {
+    return solenoid.get() == Value.kForward;
+  }
+
+  public void raise() {
+    solenoid.set(Value.kForward);
+  }
+
+  public void lower() {
+    solenoid.set(Value.kReverse);
   }
 
   @Override
