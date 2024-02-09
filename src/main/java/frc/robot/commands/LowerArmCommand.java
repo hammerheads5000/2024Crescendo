@@ -31,6 +31,7 @@ public class LowerArmCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     trapSubsystem.stopHeight();
+    trapSubsystem.resetEncoder();
   }
 
   // Returns true when the command should end.

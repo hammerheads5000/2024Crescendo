@@ -14,6 +14,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -52,6 +53,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Servo;
 
 /** Add your docs here. */
@@ -289,12 +291,20 @@ public class Constants {
         public static final TalonFX rollerMotor = new TalonFX(0);
 
         public static final Servo linearActuator = new Servo(0); // flips mechanism down
+        public static final int maxMicroseconds = 2000;
+        public static final int centerMicroseconds = 1500;
+        public static final int minMicroseconds = 1000;
 
-        public static final DigitalInput ampLimitSwitch = new DigitalInput(0); // limit switch to stop at for amp
-        public static final DigitalInput trapLimitSwitch = new DigitalInput(0); // limit switch to stop at for trap
+        public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
+        public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
         public static final DigitalInput homeLimitSwitch = new DigitalInput(0); // limit switch at lowered position
 
         public static final DigitalInput noteSensor = new DigitalInput(0);
+
+        public static final Encoder heightEncoder = new Encoder(0, 1); // encoder for vertical movement
+        private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
+        public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
+        public static final Measure<Distance> heightTolerance = Inches.of(0.25);
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
