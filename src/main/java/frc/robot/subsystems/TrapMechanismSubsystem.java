@@ -15,22 +15,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrapConstants;
 
 public class TrapMechanismSubsystem extends SubsystemBase {
-  TalonFX heightControlMotor;
   TalonFX rollerMotor;
 
   Servo linearActuator;
 
-  DigitalInput ampLimitSwitch;
-  DigitalInput trapLimitSwitch;
-  DigitalInput homeLimitSwitch;
-
   DigitalInput noteSensor;
-
-  Encoder encoder;
 
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
-    heightControlMotor = TrapConstants.heightControlMotor;
     rollerMotor = TrapConstants.rollerMotor;
 
     linearActuator = TrapConstants.linearActuator;    
@@ -38,40 +30,11 @@ public class TrapMechanismSubsystem extends SubsystemBase {
                                         TrapConstants.centerMicroseconds, 0, 
                                         TrapConstants.minMicroseconds);
 
-    homeLimitSwitch = TrapConstants.homeLimitSwitch;
-
-    encoder = TrapConstants.heightEncoder;
-    encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));
-
     noteSensor = TrapConstants.noteSensor;
-  }
-
-  public void raise() {
-    heightControlMotor.set(TrapConstants.raiseSpeed);
-  }
-
-  public void lower() {
-    heightControlMotor.set(-TrapConstants.raiseSpeed);
-  }
-
-  public void stopHeight() {
-    heightControlMotor.stopMotor();
   }
 
   public boolean isNoteDetected() {
     return noteSensor.get();
-  }
-
-  public boolean isLowered() {
-    return homeLimitSwitch.get();
-  }
-
-  public boolean isAtAmp() {
-    return Math.abs(encoder.getDistance() - TrapConstants.ampPosition.in(Inches)) <= TrapConstants.heightTolerance.in(Inches);
-  }
-
-  public boolean isAtTrap() {
-    return Math.abs(encoder.getDistance() - TrapConstants.trapPosition.in(Inches)) <= TrapConstants.heightTolerance.in(Inches);
   }
 
   public void intake() {
@@ -93,15 +56,11 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   public void extendActuator(){
     linearActuator.set(1.0);
   }
-  
+
   public void contractActuator(){
     linearActuator.set(0.0);
   }
 
-  public void resetEncoder() {
-    encoder.reset();
-  }
-  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

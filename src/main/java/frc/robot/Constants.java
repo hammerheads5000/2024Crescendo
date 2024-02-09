@@ -305,10 +305,12 @@ public class Constants {
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
         public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
+        public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
-        public static final double raiseSpeed = 0.5; // out of 1, how fast to raise/lower
+        public static final double raiseSpeed = 0.5; // out of 1, how max speed to raise
+        public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
     }
 
     public static final class AutoConstants {
