@@ -4,17 +4,13 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.FeetPerSecond;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -34,6 +30,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -57,9 +54,13 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.units.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import static edu.wpi.first.units.Units.*;
+
+import java.sql.Time;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -285,7 +286,28 @@ public class Constants {
         // PID used to move to correct distance from speaker
         public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
 
-        public static final DoubleSolenoid positioningSoleniod = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+        // Linkage characterization
+
+        // Horizontal distance from shooter hinge to bar pivot
+        public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(9);
+        // Height of bar pivot compared to shooter hinge
+        public static final Measure<Distance> pivotHeight = Inches.of(0.3);
+        public static final Measure<Distance> topBarLength = Inches.of(3);
+        public static final Measure<Distance> bottomBarLength = Inches.of(7.5);
+        public static final Measure<Distance> motorMountHeight = Inches.of(1.5); // height of motor above shooter
+        public static final Measure<Distance> motorDistance = Inches.of(8); // distance of motor along shooter
+
+        public static final TalonSRX heightMotor = new TalonSRX(0); // PG71 RS775
+        public static final double heightMotorGearRatio = 71/1;
+        public static final Measure<Velocity<Angle>> maxHeightMotrSpeed = RPM.of(5700); // before gearbox
+        private static final SlotConfiguration heightMotorGains = new SlotConfiguration().kF;
+        public static final Unit<edu.wpi.first.units.Time> OneHundredMilliseconds = new Unit<edu.wpi.first.units.Time>(Milliseconds, 100, "100 Milliseconds", "100ms");
+        public static final double kF = 1023 * 1.0 / maxHeightMotrSpeed.in();
+        public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0);
+        public static final int minPulseMicroseconds = 1;
+        public static final int maxPulseMicroseconds = 1024;
+          
+
     }
 
     public static final class FieldConstants {
@@ -300,12 +322,8 @@ public class Constants {
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
                 new PIDConstants(0.5, 0.0, 0.0), // rotational PID
                 SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
-                new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(), // radius of
-                                                                                                        // drivetrain
-                                                                                                        // (distance
-                                                                                                        // from center
-                                                                                                        // to furthest
-                                                                                                        // module)
+                // radius of drivetrain (distance from center to furthest module)
+                new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(),
                 new ReplanningConfig() // default replanning config
         );
     }
