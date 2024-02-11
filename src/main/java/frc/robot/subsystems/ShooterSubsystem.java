@@ -6,14 +6,20 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -27,17 +33,32 @@ public class ShooterSubsystem extends SubsystemBase {
 
   DoubleSolenoid solenoid;
 
+  TalonSRX heightMotor;
+  DutyCycleEncoder encoder;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     this.topMotor = ShooterConstants.topFlywheel;
     this.bottomMotor = ShooterConstants.bottomFlywheel;
-    this.solenoid = ShooterConstants.positioningSoleniod;
-
+    
     topMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
     bottomMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
     
     topRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
     bottomRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
+
+    this.heightMotor = ShooterConstants.heightMotor;
+    this.encoder = ShooterConstants.heightMotorEncoder;
+
+    SlotConfiguration gains = new SlotConfiguration();
+    gains.kF = ShooterConstants.kF;
+    gains.kP = ShooterConstants.kP;
+    gains.kI = ShooterConstants.kI;
+    gains.kD = ShooterConstants.kD;
+    heightMotor.configureSlot(gains);
+    heightMotor.configMotionAcceleration(ShooterConstants.motionMagicAccel);
+    heightMotor.configMotionCruiseVelocity(ShooterConstants.motionMagicVel);
+    heightMotor.configMotionSCurveStrength(ShooterConstants.motionMagicSCurve);
   }
 
   public void start() {
@@ -50,16 +71,17 @@ public class ShooterSubsystem extends SubsystemBase {
     bottomMotor.stopMotor();
   }
 
-  public boolean isRaised() {
-    return solenoid.get() == Value.kForward;
+  public void setTargetAngle(Measure<Angle> angle) {
+    Measure<Angle> motorAngle = angleToMotorPosition(angle);
+    heightMotor.set(TalonSRXControlMode.MotionMagic, angleToEncoderRelative(motorAngle));
   }
 
-  public void raise() {
-    solenoid.set(Value.kForward);
-  }
+  private double angleToEncoderRelative(Measure<Angle> angle) {
+    double currentEncoderRelative = heightMotor.getSelectedSensorPosition();
+    Measure<Angle> currentAbsolutePosToAngle = angle.minus(Rotations.of(encoder.getAbsolutePosition()));
+    double angleDiffEncoderUnits = currentAbsolutePosToAngle.in(Rotations) * ShooterConstants.sensorUnitsPerRotation;
 
-  public void lower() {
-    solenoid.set(Value.kReverse);
+    return currentEncoderRelative + angleDiffEncoderUnits;
   }
 
   public Measure<Angle> angleToMotorPosition(Measure<Angle> angle) {

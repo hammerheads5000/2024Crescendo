@@ -52,15 +52,20 @@ import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.*;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Current;
+import edu.wpi.first.units.Dimensionless;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.sql.Time;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -299,15 +304,24 @@ public class Constants {
 
         public static final TalonSRX heightMotor = new TalonSRX(0); // PG71 RS775
         public static final double heightMotorGearRatio = 71/1;
-        public static final Measure<Velocity<Angle>> maxHeightMotrSpeed = RPM.of(5700); // before gearbox
-        private static final SlotConfiguration heightMotorGains = new SlotConfiguration().kF;
-        public static final Unit<edu.wpi.first.units.Time> OneHundredMilliseconds = new Unit<edu.wpi.first.units.Time>(Milliseconds, 100, "100 Milliseconds", "100ms");
-        public static final double kF = 1023 * 1.0 / maxHeightMotrSpeed.in();
+        public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
+        public static final double sensorUnitsPerRotation = 7;
+        
+        // height motor PID
+        // 1023 * dutycycle / sensor velocity ( in sensor units / 100ms)
+        public static final double kF = 1023 * 1.0 / (maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation);
+        public static final double kP = 1.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
+        // motion magic
+        public static final double motionMagicAccel = maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation * 0.25; // accel to max in 0.25 secs;
+        public static final double motionMagicVel = maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation * 0.8; // 80% of max speed to cruise
+        public static final int motionMagicSCurve = 1; // [0,8] how much smoothing to apply
+
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0);
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-          
-
     }
 
     public static final class FieldConstants {
