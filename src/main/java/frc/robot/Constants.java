@@ -268,8 +268,8 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(400 * Math.PI);
-        public static final Measure<Angle> farAngle = Degrees.of(30);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(577.5);
+        public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(60);
 
         public static final Slot0Configs flywheelGains = new Slot0Configs()
@@ -286,7 +286,7 @@ public class Constants {
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
 
-        public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(-9.81);
+        public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
         // PID used to move to correct distance from speaker
         public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
