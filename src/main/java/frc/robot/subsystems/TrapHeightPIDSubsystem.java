@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.TrapConstants;
 
 public class TrapHeightPIDSubsystem extends PIDSubsystem {
-  TalonFX heightControlMotor;
+  CANSparkMax heightControlMotor;
 
   DigitalInput homeLimitSwitch;
   Encoder encoder;
