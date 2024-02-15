@@ -4,30 +4,21 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Swerve;
 
-public class MoveOverNoteCommand extends Command {
-  DigitalInput lidarSensor;
-  Swerve swerve;
-
-  /** Creates a new MoveOverNoteCommand. */
-  public MoveOverNoteCommand(Swerve swerve) {
-    this.swerve = swerve;
-    lidarSensor = IntakeConstants.frontLidarSensor;
-
-    addRequirements(swerve);
+public class LoadNoteCommand extends Command {
+  DigitalInput lidarSensor = new DigitalInput(IntakeConstants.loadLiderSensorChannel);//fix channel
+  /** Creates a new loadNote. */
+  public LoadNoteCommand() {
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    swerve.driveRobotCentric(IntakeConstants.moveOverVelocity.negate(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // drive forward
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,9 +27,7 @@ public class MoveOverNoteCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // stop
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
@@ -46,3 +35,4 @@ public class MoveOverNoteCommand extends Command {
     return lidarSensor.get();
   }
 }
+

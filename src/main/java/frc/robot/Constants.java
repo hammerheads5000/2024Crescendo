@@ -14,6 +14,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -55,6 +56,9 @@ import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
@@ -100,8 +104,9 @@ public class Constants {
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
         public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
-        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
+        public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
+        public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
+        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -250,8 +255,21 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int lidarSensorChannel = 0;
+        // TODO: Figure these out
+        public static final DigitalInput frontLidarSensor = new DigitalInput(0);
+        public static final DigitalInput loadLiderSensor = new DigitalInput(0);
+        public static final DigitalInput armLimitSwitch = new DigitalInput(0);
+        
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
+        
+        public static final TalonFX intakeFeedMotor = new TalonFX(0);
+        public static final TalonFX shooterFeedMotor = new TalonFX(0);
+        public static final TalonFX armFeedMotor = new TalonFX(0);
+        public static final TalonFX armRaiseMotor = new TalonFX(0);
+
+        public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
+        public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
+        public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
     }
 
     public static final class VisionConstants {
@@ -333,6 +351,34 @@ public class Constants {
                 Inches.of(80.5));
         public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
                 Inches.of(80.5));
+    }
+
+    public static final class TrapConstants {
+        // TODO: ids
+        public static final TalonFX heightControlMotor = new TalonFX(0);
+        public static final TalonFX rollerMotor = new TalonFX(0);
+
+        public static final Servo linearActuator = new Servo(0); // flips mechanism down
+        public static final int maxMicroseconds = 2000;
+        public static final int centerMicroseconds = 1500;
+        public static final int minMicroseconds = 1000;
+
+        public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
+        public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
+        public static final DigitalInput homeLimitSwitch = new DigitalInput(0); // limit switch at lowered position
+
+        public static final DigitalInput noteSensor = new DigitalInput(0);
+
+        public static final Encoder heightEncoder = new Encoder(0, 1); // encoder for vertical movement
+        private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
+        public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
+        public static final Measure<Distance> heightTolerance = Inches.of(0.25);
+        public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
+
+        public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
+        public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
+        public static final double raiseSpeed = 0.5; // out of 1, how max speed to raise
+        public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
     }
 
     public static final class AutoConstants {
