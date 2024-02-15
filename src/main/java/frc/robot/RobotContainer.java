@@ -25,8 +25,10 @@ public class RobotContainer {
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
 
   private Trigger zeroTrigger = controller.y();
-  private Trigger faceAngleTrigger = controller.leftBumper();
-  private Trigger targetTrigger = controller.rightBumper();
+
+  private Trigger aimShooterTrigger = controller.leftBumper();
+  private Trigger intakeTrigger = controller.rightBumper();
+
 
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
 
@@ -38,8 +40,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
-    faceAngleTrigger.whileTrue(faceAngle);
-    targetTrigger.whileTrue(intakeCommandGroup);
+    aimShooterTrigger.whileTrue(aimShooterCommand);
+    intakeTrigger.whileTrue(intakeCommandGroup);
   }
 
   public Command getAutonomousCommand() {

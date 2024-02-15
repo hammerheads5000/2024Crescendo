@@ -35,15 +35,17 @@ public class AimShooterCommand extends Command {
   CommandXboxController controller;
   Translation3d speakerPos;
   ShooterSubsystem shooterSubsystem;
-  Measure<Distance> targetDistance;
-  PIDController distancePID;
 
-  /** Creates a new TeleopSwerve. */
+  /**
+   * Constructor with automatic selection of distance
+   * @param swerve
+   * @param controller
+   * @param shooterSubsystem
+   */
   public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterSubsystem shooterSubsystem) {
     this.swerve = swerve;
     this.controller = controller;
     this.shooterSubsystem = shooterSubsystem;
-    this.distancePID = ShooterConstants.moveToDistancePID;
 
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();
@@ -59,25 +61,29 @@ public class AimShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    //shooterSubsystem.start();
-    targetDistance = getClosestDistance();
-    distancePID.setSetpoint(targetDistance.in(Meters));
+    shooterSubsystem.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Translation2d speakerToRobot = swerve.getPose().getTranslation().minus(speakerPos.toTranslation2d());
+
+    // strafing
     Translation2d strafeVelocityVec = new Translation2d().plus(speakerToRobot).rotateBy(new Rotation2d(Degrees.of(90))); // use tangent as velocity
     strafeVelocityVec = strafeVelocityVec.div(strafeVelocityVec.getNorm()); // normalize
     strafeVelocityVec = strafeVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
         Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband
             ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
     
+    // approaching to correct distance
     Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
     approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
-    approachVelocityVec = approachVelocityVec.times(distancePID.calculate(getDistanceToSpeaker().in(Meters))); // scale with PID
+    approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
+      Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband
+            ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
 
+    // driving
     Translation2d totalVelocityVec = strafeVelocityVec.plus(approachVelocityVec);
     Rotation2d angleToFace = speakerToRobot.getAngle();
 
@@ -87,17 +93,22 @@ public class AimShooterCommand extends Command {
         angleToFace);
 
     SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker().in(Meters));
-    SmartDashboard.putNumber("Target distance", targetDistance.in(Meters));
+
+    Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
+    shooterSubsystem.setTargetAngle(shooterAngle);
+
+    SmartDashboard.putNumber("Target angle", shooterAngle.in(Degrees));
   }
 
-  private Measure<Distance> distanceFromAngle(Measure<Angle> angle) {
+  private Measure<Angle> angleFromDistance(Measure<Distance> distance) {
     double v = ShooterConstants.exitVelocity.in(MetersPerSecond);
     double g = ShooterConstants.gravity.in(MetersPerSecondPerSecond);
-    double theta = angle.in(Radians);
+    double d = distance.in(Meters);
     double h = speakerPos.getZ();
 
-    return Meters.of(v*v/g * Math.sin(theta)*Math.cos(theta)
-        - v/g * Math.cos(theta) * Math.sqrt(v*v*Math.sin(theta)-2*g*h)); // formula!
+    double a = Math.atan2(h, d);
+    
+    return Radians.of(0.5 * Math.asin( (d*g*Math.pow(Math.cos(a),2)) / (v*v) + Math.sin(a)) + a/2); // formula!
   }
 
   /**
@@ -108,29 +119,10 @@ public class AimShooterCommand extends Command {
     return Meters.of(swerve.getPose().getTranslation().getDistance(speakerPos.toTranslation2d()));
   }
 
-  private Measure<Distance> getClosestDistance() {
-    Measure<Distance> closeDistance = distanceFromAngle(ShooterConstants.closeAngle);
-    Measure<Distance> farDistance = distanceFromAngle(ShooterConstants.farAngle);
-    Measure<Distance> currentDistance = getDistanceToSpeaker();
-
-    // check first if closer than close or farther than far
-    if (currentDistance.lte(closeDistance)) {
-      return closeDistance;
-    }
-    if (currentDistance.gte(farDistance)) {
-      return farDistance;
-    }
-
-    Measure<Distance> distToClose = currentDistance.minus(closeDistance);
-    Measure<Distance> distToFar = farDistance.minus(currentDistance);
-
-    return distToClose.lte(distToFar) ? closeDistance : farDistance; // return closer distance
-  }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //shooterSubsystem.stop();
+    shooterSubsystem.stop();
   }
 
   // Returns true when the command should end.
