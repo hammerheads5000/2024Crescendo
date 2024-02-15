@@ -19,24 +19,28 @@ import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class RobotContainer {
-  private Swerve swerve = new Swerve();
   private CommandXboxController controller = new CommandXboxController(0);
-  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
-  
-  private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
- 
-  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
 
+  // subsystems
+  private Swerve swerve = new Swerve();
+  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
+  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  
+  // commands
+  private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
+  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
+  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
+  
+  // triggers
   private Trigger zeroTrigger = controller.y();
 
   private Trigger aimShooterTrigger = controller.leftBumper();
   private Trigger intakeTrigger = controller.rightBumper();
 
-
-  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
 
   public RobotContainer() {

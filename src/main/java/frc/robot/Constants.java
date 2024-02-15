@@ -55,6 +55,7 @@ import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
@@ -100,8 +101,9 @@ public class Constants {
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
         public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
-        public static final PIDController alignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> rotationalTolerance = Degrees.of(1); // 
+        public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
+        public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
+        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -250,8 +252,21 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int lidarSensorChannel = 0;
+        // TODO: Figure these out
+        public static final DigitalInput frontLidarSensor = new DigitalInput(0);
+        public static final DigitalInput loadLiderSensor = new DigitalInput(0);
+        public static final DigitalInput armLimitSwitch = new DigitalInput(0);
+        
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
+        
+        public static final TalonFX intakeFeedMotor = new TalonFX(0);
+        public static final TalonFX shooterFeedMotor = new TalonFX(0);
+        public static final TalonFX armFeedMotor = new TalonFX(0);
+        public static final TalonFX armRaiseMotor = new TalonFX(0);
+
+        public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
+        public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
+        public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
     }
 
     public static final class VisionConstants {
