@@ -69,7 +69,7 @@ public class Swerve extends SubsystemBase {
 
     facingAngleRequest.HeadingController = SwerveConstants.headingPID;
     facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
+    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.speakerRotationalTolerance.in(Radians));
 
     chassisSpeedsRequest = new SwerveRequest.ApplyChassisSpeeds()
         .withDriveRequestType(SwerveConstants.driveRequestType)
@@ -190,7 +190,6 @@ public class Swerve extends SubsystemBase {
    * @param timestamp timestamp in microseconds
    */
   public void applyVisionMeasurement(double[] poseArray, long timestamp) {
-    SmartDashboard.putNumberArray("Robot Pose", poseArray);
     // converts array of format {x (m), y (m), rotation (rad)} to Pose2d
     Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
     double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds

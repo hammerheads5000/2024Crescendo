@@ -4,26 +4,30 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.networktables.BooleanSubscriber;
-import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.VisionConstants;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeCommandGroup extends SequentialCommandGroup {
+  public static boolean isFinished;
   /** Creates a new IntakeCommandGroup. */
-  public IntakeCommandGroup(Swerve swerve) {
-    DoubleSubscriber noteTargetYawSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
-    BooleanSubscriber hasNoteTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
+  public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {
+    DigitalInput loadedLidarSensor = IntakeConstants.loadLiderSensor;
     
     addCommands(
-      new AlignToNoteCommand(swerve, noteTargetYawSubscriber, hasNoteTargetSubscriber),
-      //startIntake,
-      new MoveOverNoteCommand(swerve)//,
-      //loadNote
+      new AlignToNoteCommand(swerve),
+      new InstantCommand(() -> intakeSubsystem.startAll()), // start intake
+      new MoveOverNoteCommand(swerve),
+      new InstantCommand(() -> intakeSubsystem.raiseArm()), // stop arm
+      new WaitUntilCommand(loadedLidarSensor::get), // wait for load lidar sensor to detect note
+      new InstantCommand(() -> intakeSubsystem.stopFeeding())
     );
   }
 }

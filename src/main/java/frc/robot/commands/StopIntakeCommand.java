@@ -4,24 +4,25 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.TrapHeightPIDSubsystem;
 
-public class LowerArmCommand extends Command {
-  /** Creates a new LowerArm. */
-  TrapHeightPIDSubsystem trapSubsystem;
+public class StopIntakeCommand extends Command {
+  /** Creates a new stopIntake. */
+  TalonFX motor;
+  public StopIntakeCommand(TalonFX motor) {
+      this.motor = motor;
 
-  public LowerArmCommand(TrapHeightPIDSubsystem trapSubsystem) {
-    this.trapSubsystem = trapSubsystem;
-    addRequirements(trapSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    trapSubsystem.disable();
+    motor.set(0);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,15 +31,12 @@ public class LowerArmCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    trapSubsystem.stop();
-    trapSubsystem.resetEncoder();
-    trapSubsystem.enable();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return trapSubsystem.getLimitSwitch();
+    return false;
   }
 }
+

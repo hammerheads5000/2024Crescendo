@@ -5,41 +5,51 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import edu.wpi.first.networktables.BooleanSubscriber;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Swerve;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlignToNoteCommand extends PIDCommand {
-  /** Creates a new AlignToNoteCommand. */
-  public AlignToNoteCommand(Swerve swerve, DoubleSubscriber targetHeadingSubscriber, BooleanSubscriber hasTargetSubscriber) {
-    super(
-        // The PIDController used by the command
-        SwerveConstants.alignPID,
-        // Measurement is the yaw to note
-        targetHeadingSubscriber::get,
-        // Setpoint at 0 meaning the goal is to align with note so angle between is 0
-        0,
-        // This uses the output
-        output -> {
-          if (!hasTargetSubscriber.get()) { return; } // do nothing if no targets
-          swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), DegreesPerSecond.of(-output));
-        },
-        swerve);
+public class AlignToNoteCommand extends Command {
+  Swerve swerve;
+  DoubleSubscriber angleSubscriber;
 
-    getController().enableContinuousInput(-180, 180); // not strictly necessary, but good practice
-    getController().setTolerance(SwerveConstants.rotationalTolerance.in(Degrees));
+  /** Creates a new AlignToNoteCommand. */
+  public AlignToNoteCommand(Swerve swerve) {
+    this.swerve = swerve;
+
+    angleSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
+
+    addRequirements(swerve);
   }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    Rotation2d robotAngle = swerve.getPose().getRotation();
+    Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
+
+    swerve.driveFacingAngle(
+        MetersPerSecond.zero(),
+        MetersPerSecond.zero(),
+        robotAngle.rotateBy(robotToNoteRotation)); // turn to face note
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return getController().atSetpoint();
+    return Math.abs(angleSubscriber.get()) <= SwerveConstants.noteRotationalTolerance.in(Degrees);
   }
 }

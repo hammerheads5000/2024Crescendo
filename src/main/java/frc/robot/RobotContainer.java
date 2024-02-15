@@ -24,28 +24,34 @@ import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.TrapMechanismSubsystem;
 
 public class RobotContainer {
-  private Swerve swerve = new Swerve();
   private CommandXboxController controller = new CommandXboxController(0);
+
+  // subsystems
+  private Swerve swerve = new Swerve();
+  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
+  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private TrapHeightPIDSubsystem trapPIDSubsystem = new TrapHeightPIDSubsystem();
   
-  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
+  // commands
   private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
+  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
+  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapPIDSubsystem);
- 
-  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
-
+  
+  // triggers
   private Trigger zeroTrigger = controller.y();
-  private Trigger faceAngleTrigger = controller.leftBumper();
-  private Trigger targetTrigger = controller.rightBumper();
 
-  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
+  private Trigger aimShooterTrigger = controller.leftBumper();
+  private Trigger intakeTrigger = controller.rightBumper();
+
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
 
   public RobotContainer() {
@@ -57,8 +63,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
-    faceAngleTrigger.whileTrue(faceAngle);
-    targetTrigger.whileTrue(intakeCommandGroup);
+    aimShooterTrigger.whileTrue(aimShooterCommand);
+    intakeTrigger.whileTrue(intakeCommandGroup);
   }
 
   private void configureAuto() {
