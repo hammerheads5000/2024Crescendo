@@ -35,6 +35,7 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
   private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
+  private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
 
@@ -69,6 +70,10 @@ public class Swerve extends SubsystemBase {
     facingAngleRequest.HeadingController = SwerveConstants.headingPID;
     facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     facingAngleRequest.HeadingController.setTolerance(SwerveConstants.rotationalTolerance.in(Radians));
+
+    chassisSpeedsRequest = new SwerveRequest.ApplyChassisSpeeds()
+        .withDriveRequestType(SwerveConstants.driveRequestType)
+        .withSteerRequestType(SwerveConstants.steerRequestType);
 
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
@@ -132,6 +137,15 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
+   * Drive robot with respect to robot
+   * 
+   * @param chassisSpeeds chassis speeds to set
+   */
+  public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
+    drivetrain.setControl(chassisSpeedsRequest.withSpeeds(chassisSpeeds));
+  }
+
+  /**
    * Get robot centric speeds
    * @return robot centric chassis speeds
    */
@@ -143,7 +157,11 @@ public class Swerve extends SubsystemBase {
    * Reset swerve odometry/pose tracking to 0,0
    */
   public void resetPose() {
-    drivetrain.tareEverything();
+    drivetrain.seedFieldRelative();
+  }
+
+  public void resetPose(Pose2d pose) {
+    drivetrain.seedFieldRelative(pose);
   }
 
   /**

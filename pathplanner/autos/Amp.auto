@@ -1,0 +1,50 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 2.1910690724036312,
+      "y": 6.794311287737619
+    },
+    "rotation": 90.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Approach Amp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Arm"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Expel Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Arm"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Teleop Autos",
+  "choreoAuto": false
+}

@@ -1,0 +1,44 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Trap Arm"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Approach Amp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Expel Trap Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Trap Arm"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Teleop Autos",
+  "choreoAuto": false
+}
