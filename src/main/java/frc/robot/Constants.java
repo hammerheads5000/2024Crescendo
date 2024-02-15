@@ -14,15 +14,10 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
-import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
@@ -37,7 +32,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -62,21 +56,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
-import edu.wpi.first.units.Dimensionless;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Time;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-
 import static edu.wpi.first.units.Units.*;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 /** Add your docs here. */
 public class Constants {

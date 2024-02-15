@@ -18,13 +18,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.TrapConstants;
+import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
-import frc.robot.commands.FaceSpeaker;
 import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.TrapMechanismSubsystem;
@@ -34,25 +35,28 @@ public class RobotContainer {
 
   // subsystems
   private Swerve swerve = new Swerve();
-  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem();
+  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private TrapHeightPIDSubsystem trapPIDSubsystem = new TrapHeightPIDSubsystem();
+  private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   
   // commands
-  private FaceSpeaker faceAngle = new FaceSpeaker(swerve, controller);
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, controller, shooterSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapPIDSubsystem);
   
+  // autos
+  private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
+
   // triggers
   private Trigger zeroTrigger = controller.y();
-
+  private Trigger ampTrigger = controller.a();
   private Trigger aimShooterTrigger = controller.leftBumper();
   private Trigger intakeTrigger = controller.rightBumper();
 
-  private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -65,6 +69,7 @@ public class RobotContainer {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
     aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
+    ampTrigger.whileTrue(ampAuto);
   }
 
   private void configureAuto() {
