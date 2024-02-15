@@ -36,6 +36,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -233,10 +235,6 @@ public class Constants {
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-        
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73),Inches.of(196.17),Inches.of(57.13));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50),Inches.of(218.42),Inches.of(57.13));
-
     }
 
     public static final class IntakeConstants {
@@ -248,7 +246,7 @@ public class Constants {
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
         public static final TalonFX intakeFeedMotor = new TalonFX(0);
-        public static final TalonFX shooterFeedMotor = new TalonFX(0);
+        public static final TalonSRX shooterFeedMotor = new TalonSRX(0);
         public static final TalonFX armFeedMotor = new TalonFX(0);
         public static final TalonFX armRaiseMotor = new TalonFX(0);
 
@@ -340,8 +338,8 @@ public class Constants {
 
     public static final class TrapConstants {
         // TODO: ids
-        public static final TalonFX heightControlMotor = new TalonFX(0);
-        public static final TalonFX rollerMotor = new TalonFX(0);
+        public static final CANSparkMax heightControlMotor = new CANSparkMax(0, MotorType.kBrushless);
+        public static final TalonSRX rollerMotor = new TalonSRX(0);
 
         public static final Servo linearActuator = new Servo(0); // flips mechanism down
         public static final int maxMicroseconds = 2000;

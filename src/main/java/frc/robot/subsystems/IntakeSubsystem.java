@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 
 import java.util.EnumSet;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,8 +24,8 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   private MotorController armRaiseMotor;
   private MotorController armFeedMotor;
-  private MotorController intakeFeedMotor;
-  private MotorController shooterFeedMotor;
+  private TalonFX intakeFeedMotor;
+  private TalonSRX shooterFeedMotor;
 
   private DigitalInput armUpLimitSwitch;
 
@@ -62,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
     
     // starts feeders
     intakeFeedMotor.set(IntakeConstants.feederDutyCycle);
-    shooterFeedMotor.set(IntakeConstants.feederDutyCycle);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
   }
 
   public void raiseArm() {
@@ -74,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
-    shooterFeedMotor.stopMotor();
+    shooterFeedMotor.set(TalonSRXControlMode.Disabled, 0);
   }
 
   public void stopArm() {
