@@ -39,8 +39,6 @@ public class Swerve extends SubsystemBase {
 
   private DoubleArraySubscriber aprilTagSubscriber;
 
-  public boolean targetingSpeaker = false;
-
   private Field2d field = new Field2d();
 
   /** Creates a new Swerve. */
