@@ -24,14 +24,12 @@ public class RobotContainer {
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   
-  private AimShooterCommand aimShooterCloseCommand = new AimShooterCommand(swerve, controller, shooterSubsystem, true);
-  private AimShooterCommand aimShooterFarCommand = new AimShooterCommand(swerve, controller, shooterSubsystem, false);
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, controller, shooterSubsystem);
  
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. periodic is needed
 
   private Trigger zeroTrigger = controller.y();
-  private Trigger aimShooterCloseTrigger = controller.leftBumper();
-  private Trigger aimShooterFarTrigger = controller.leftTrigger();
+  private Trigger aimShooterTrigger = controller.leftBumper();
   private Trigger intakeTrigger = controller.rightBumper();
 
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve);
@@ -44,8 +42,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
-    aimShooterCloseTrigger.whileTrue(aimShooterCloseCommand);
-    aimShooterFarTrigger.whileTrue(aimShooterFarCommand);
+    aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
   }
 
