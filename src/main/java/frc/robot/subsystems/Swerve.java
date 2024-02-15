@@ -23,6 +23,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
@@ -33,10 +35,13 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
   private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
+  private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
 
   public boolean targetingSpeaker = false;
+
+  private Field2d field = new Field2d();
 
   /** Creates a new Swerve. */
   public Swerve() {
@@ -66,6 +71,10 @@ public class Swerve extends SubsystemBase {
     facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
     facingAngleRequest.HeadingController.setTolerance(SwerveConstants.speakerRotationalTolerance.in(Radians));
 
+    chassisSpeedsRequest = new SwerveRequest.ApplyChassisSpeeds()
+        .withDriveRequestType(SwerveConstants.driveRequestType)
+        .withSteerRequestType(SwerveConstants.steerRequestType);
+
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
     // creates listener such that when the pose estimate NetworkTables topic
@@ -76,6 +85,8 @@ public class Swerve extends SubsystemBase {
         event -> {
           applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());
         });
+
+    SmartDashboard.putData("Field", field);
   }
     
   /**
@@ -126,6 +137,15 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
+   * Drive robot with respect to robot
+   * 
+   * @param chassisSpeeds chassis speeds to set
+   */
+  public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
+    drivetrain.setControl(chassisSpeedsRequest.withSpeeds(chassisSpeeds));
+  }
+
+  /**
    * Get robot centric speeds
    * @return robot centric chassis speeds
    */
@@ -137,7 +157,11 @@ public class Swerve extends SubsystemBase {
    * Reset swerve odometry/pose tracking to 0,0
    */
   public void resetPose() {
-    drivetrain.tareEverything();
+    drivetrain.seedFieldRelative();
+  }
+
+  public void resetPose(Pose2d pose) {
+    drivetrain.seedFieldRelative(pose);
   }
 
   /**
@@ -174,5 +198,6 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    field.setRobotPose(getPose());
   }
 }

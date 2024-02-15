@@ -27,7 +27,7 @@ public class TeleopSwerve extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    swerve.driveFieldCentric(SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? controller.getLeftY() : 0), 
+    swerve.driveFieldCentric(SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband ? -controller.getLeftY() : 0), 
                 SwerveConstants.maxDriveSpeed.times(Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband ? -controller.getLeftX() : 0), 
                 SwerveConstants.maxRotSpeed.times(Math.abs(controller.getRightX()) >= SwerveConstants.controllerDeadband ? -controller.getRightX() : 0)
     );
