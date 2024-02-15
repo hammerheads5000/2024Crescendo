@@ -4,22 +4,24 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrapConstants;
 
 public class TrapMechanismSubsystem extends SubsystemBase {
-  TalonFX rollerMotor;
+  CANSparkMax heightControlMotor;
+  TalonSRX rollerMotor;
 
   Servo linearActuator;
 
-  DigitalInput noteSensor;
-
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
+    heightControlMotor = TrapConstants.heightControlMotor;
     rollerMotor = TrapConstants.rollerMotor;
 
     linearActuator = TrapConstants.linearActuator;    
@@ -27,23 +29,19 @@ public class TrapMechanismSubsystem extends SubsystemBase {
                                         TrapConstants.centerMicroseconds, 0, 
                                         TrapConstants.minMicroseconds);
 
-    noteSensor = TrapConstants.noteSensor;
   }
 
-  public boolean isNoteDetected() {
-    return noteSensor.get();
-  }
 
   public void intake() {
-    rollerMotor.set(TrapConstants.intakeSpeed);
+    rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.intakeSpeed);
   }
 
   public void expel() {
-    rollerMotor.set(-TrapConstants.expelSpeed);
+    rollerMotor.set(TalonSRXControlMode.PercentOutput, -TrapConstants.expelSpeed);
   }
 
   public void stopRollers() {
-    rollerMotor.stopMotor();
+    rollerMotor.set(TalonSRXControlMode.Disabled, 0);
   }
 
   public double getActuator(){
@@ -56,6 +54,18 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void contractActuator(){
     linearActuator.set(0.0);
+  }
+
+  public void raise() {
+    heightControlMotor.set(TrapConstants.raiseSpeed);
+  }
+
+  public void lower() {
+    heightControlMotor.set(-TrapConstants.lowerSpeed);
+  }
+
+  public void stopHeight() {
+    heightControlMotor.stopMotor();
   }
 
   @Override

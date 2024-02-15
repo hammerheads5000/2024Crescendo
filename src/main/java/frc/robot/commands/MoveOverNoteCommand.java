@@ -7,19 +7,16 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Swerve;
 
 public class MoveOverNoteCommand extends Command {
-  DigitalInput lidarSensor;
   Swerve swerve;
 
   /** Creates a new MoveOverNoteCommand. */
   public MoveOverNoteCommand(Swerve swerve) {
     this.swerve = swerve;
-    lidarSensor = IntakeConstants.frontLidarSensor;
 
     addRequirements(swerve);
   }
@@ -43,6 +40,6 @@ public class MoveOverNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lidarSensor.get();
+    return false;
   }
 }

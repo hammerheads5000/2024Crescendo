@@ -22,12 +22,12 @@ import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
 import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerArmCommand;
+import frc.robot.commands.RaiseArmCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
-import frc.robot.subsystems.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.TrapMechanismSubsystem;
 
 public class RobotContainer {
@@ -38,7 +38,6 @@ public class RobotContainer {
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
-  private TrapHeightPIDSubsystem trapPIDSubsystem = new TrapHeightPIDSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   
   // commands
@@ -46,7 +45,8 @@ public class RobotContainer {
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapPIDSubsystem);
+  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapMechanismSubsystem);
+  private RaiseArmCommand raiseArmCommand = new RaiseArmCommand(trapMechanismSubsystem);
   
   // autos
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
@@ -56,6 +56,10 @@ public class RobotContainer {
   private Trigger ampTrigger = controller.a();
   private Trigger aimShooterTrigger = controller.leftBumper();
   private Trigger intakeTrigger = controller.rightBumper();
+  private Trigger raiseTrapTrigger = controller.povUp();
+  private Trigger lowerTrapTrigger = controller.povDown();
+  private Trigger feedTrapTrigger = controller.povRight();
+  private Trigger expelTrapTrigger = controller.povLeft();
 
 
   public RobotContainer() {
@@ -89,7 +93,7 @@ public class RobotContainer {
             },
       swerve);
       
-      NamedCommands.registerCommand("Raise To Amp", new InstantCommand(() -> trapPIDSubsystem.setSetpoint(TrapConstants.ampPosition.in(Inches))));
+      NamedCommands.registerCommand("Raise To Amp", new InstantCommand());
       NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(() -> trapMechanismSubsystem.extendActuator()));
       NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
       NamedCommands.registerCommand("Lower Trap Arm", lowerArmCommand);

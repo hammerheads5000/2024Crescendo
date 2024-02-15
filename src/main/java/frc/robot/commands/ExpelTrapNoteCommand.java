@@ -35,6 +35,6 @@ public class ExpelTrapNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !trapSubsystem.isNoteDetected();
+    return false;
   }
 }

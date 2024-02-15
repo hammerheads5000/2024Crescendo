@@ -36,6 +36,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -52,7 +54,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
@@ -241,10 +242,6 @@ public class Constants {
 
     public static final class IntakeConstants {
         // TODO: Figure these out
-        public static final DigitalInput frontLidarSensor = new DigitalInput(0);
-        public static final DigitalInput loadLiderSensor = new DigitalInput(0);
-        public static final DigitalInput armLimitSwitch = new DigitalInput(0);
-        
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
         public static final TalonFX intakeFeedMotor = new TalonFX(0);
@@ -340,8 +337,8 @@ public class Constants {
 
     public static final class TrapConstants {
         // TODO: ids
-        public static final TalonFX heightControlMotor = new TalonFX(0);
-        public static final TalonFX rollerMotor = new TalonFX(0);
+        public static final CANSparkMax heightControlMotor = new CANSparkMax(0, MotorType.kBrushless);
+        public static final TalonSRX rollerMotor = new TalonSRX(0);
 
         public static final Servo linearActuator = new Servo(0); // flips mechanism down
         public static final int maxMicroseconds = 2000;
@@ -350,9 +347,6 @@ public class Constants {
 
         public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
-        public static final DigitalInput homeLimitSwitch = new DigitalInput(0); // limit switch at lowered position
-
-        public static final DigitalInput noteSensor = new DigitalInput(0);
 
         public static final Encoder heightEncoder = new Encoder(0, 1); // encoder for vertical movement
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution

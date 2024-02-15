@@ -8,7 +8,6 @@ import java.util.EnumSet;
 
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -23,10 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private MotorController intakeFeedMotor;
   private MotorController shooterFeedMotor;
 
-  private DigitalInput armUpLimitSwitch;
-
-  private boolean armEnabled = true;
-  private BooleanEvent armLimitSwitchChangeEvent;
+  private boolean armEnabled = false;
   private EventLoop eventLoop = new EventLoop();
   
   /** Creates a new IntakeSubsystem. */
@@ -36,8 +32,6 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeFeedMotor = IntakeConstants.intakeFeedMotor;
     shooterFeedMotor = IntakeConstants.shooterFeedMotor;
 
-    armUpLimitSwitch = IntakeConstants.armLimitSwitch;
-    
     SmartDashboard.putBoolean("Drop-Down Intake Enabled", true);
 
     // allows SmartDashboard control of whether to enable arm
@@ -47,11 +41,6 @@ public class IntakeSubsystem extends SubsystemBase {
         event -> {
           setArmEnabled(event.valueData.value.getBoolean());
         });
-    
-    // stops arm motor when arm enters/exits latch
-    armLimitSwitchChangeEvent = new BooleanEvent(eventLoop, this::getArmLimitSwitch);
-    armLimitSwitchChangeEvent.rising().ifHigh(this::stopArm); // enters latch
-    armLimitSwitchChangeEvent.falling().ifHigh(this::stopArm); // exits latch
   }
 
   public void startAll() {
@@ -84,10 +73,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmEnabled(boolean armEnabled) {
     this.armEnabled = armEnabled;
-  }
-
-  private boolean getArmLimitSwitch() {
-    return armUpLimitSwitch.get();
   }
 
   @Override

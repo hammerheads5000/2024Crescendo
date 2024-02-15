@@ -6,13 +6,13 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.TrapHeightPIDSubsystem;
+import frc.robot.subsystems.TrapMechanismSubsystem;
 
 public class LowerArmCommand extends Command {
   /** Creates a new LowerArm. */
-  TrapHeightPIDSubsystem trapSubsystem;
+  TrapMechanismSubsystem trapSubsystem;
 
-  public LowerArmCommand(TrapHeightPIDSubsystem trapSubsystem) {
+  public LowerArmCommand(TrapMechanismSubsystem trapSubsystem) {
     this.trapSubsystem = trapSubsystem;
     addRequirements(trapSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,7 +21,7 @@ public class LowerArmCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    trapSubsystem.disable();
+    trapSubsystem.lower();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,14 +31,12 @@ public class LowerArmCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    trapSubsystem.stop();
-    trapSubsystem.resetEncoder();
-    trapSubsystem.enable();
+    trapSubsystem.stopHeight();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return trapSubsystem.getLimitSwitch();
+    return false;
   }
 }
