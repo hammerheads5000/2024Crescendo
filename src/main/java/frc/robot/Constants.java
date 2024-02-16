@@ -360,6 +360,11 @@ public class Constants {
         public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
     }
 
+    public static final class ClimberConstants {
+        public static final TalonFX climberMotor = new TalonFX(0);
+        public static final double climbSpeed = 0.5;
+    }
+
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID

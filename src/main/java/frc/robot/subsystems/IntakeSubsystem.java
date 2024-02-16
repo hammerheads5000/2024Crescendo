@@ -61,6 +61,10 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
+  public void startShooterFeed() {
+    shooterFeedMotor.set(IntakeConstants.feederDutyCycle);
+  }
+
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.stopMotor();

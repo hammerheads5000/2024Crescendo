@@ -11,12 +11,16 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
@@ -25,6 +29,7 @@ import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.RaiseArmCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -39,6 +44,7 @@ public class RobotContainer {
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   
   // commands
   private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, controller, shooterSubsystem);
@@ -52,15 +58,18 @@ public class RobotContainer {
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
 
   // triggers
-  private Trigger zeroTrigger = controller.y();
   private Trigger ampTrigger = controller.a();
   private Trigger aimShooterTrigger = controller.leftBumper();
-  private Trigger intakeTrigger = controller.rightBumper();
+  private Trigger intakeTrigger = controller.rightTrigger();
+  private Trigger intakeFeedTrigger = controller.rightBumper();
+  private Trigger shooterFeedTrigger = controller.leftTrigger();
   private Trigger raiseTrapTrigger = controller.povUp();
   private Trigger lowerTrapTrigger = controller.povDown();
   private Trigger feedTrapTrigger = controller.povRight();
   private Trigger expelTrapTrigger = controller.povLeft();
-
+  private Trigger toggleTrapTrigger = controller.x();
+  private Trigger climbTrigger = controller.y();
+  private Trigger climbDownTrigger = controller.b();
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -70,10 +79,18 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
     aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
+    intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
     ampTrigger.whileTrue(ampAuto);
+    shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
+    raiseTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::raise, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
+    lowerTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::lower, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
+    feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
+    climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
+    climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
   }
 
   private void configureAuto() {
