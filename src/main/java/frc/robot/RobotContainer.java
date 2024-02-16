@@ -31,7 +31,8 @@ import frc.robot.subsystems.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.TrapMechanismSubsystem;
 
 public class RobotContainer {
-  private CommandXboxController controller = new CommandXboxController(0);
+  private CommandXboxController driveController = new CommandXboxController(0);
+  private CommandXboxController secondaryController = new CommandXboxController(1);
 
   // subsystems
   private Swerve swerve = new Swerve();
@@ -42,8 +43,8 @@ public class RobotContainer {
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   
   // commands
-  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, controller, shooterSubsystem);
-  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, controller);
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem);
+  private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapPIDSubsystem);
@@ -52,11 +53,18 @@ public class RobotContainer {
   private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
 
   // triggers
-  private Trigger zeroTrigger = controller.y();
-  private Trigger ampTrigger = controller.a();
-  private Trigger aimShooterTrigger = controller.leftBumper();
-  private Trigger intakeTrigger = controller.rightBumper();
-
+  private Trigger ampTrigger = driveController.a();
+  private Trigger aimShooterTrigger = driveController.leftBumper();
+  private Trigger intakeTrigger = secondaryController.rightTrigger();
+  private Trigger intakeFeedTrigger = secondaryController.rightBumper();
+  private Trigger shooterFeedTrigger = secondaryController.leftTrigger();
+  private Trigger raiseTrapTrigger = secondaryController.povUp();
+  private Trigger lowerTrapTrigger = secondaryController.povDown();
+  private Trigger feedTrapTrigger = secondaryController.povRight();
+  private Trigger expelTrapTrigger = secondaryController.povLeft();
+  private Trigger toggleTrapTrigger = secondaryController.x();
+  private Trigger climbTrigger = secondaryController.y();
+  private Trigger climbDownTrigger = secondaryController.b();
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -70,6 +78,14 @@ public class RobotContainer {
     aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
     ampTrigger.whileTrue(ampAuto);
+    shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
+    raiseTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::raise, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
+    lowerTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::lower, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
+    feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
+    climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
+    climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
   }
 
   private void configureAuto() {
