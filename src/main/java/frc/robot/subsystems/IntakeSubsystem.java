@@ -6,6 +6,10 @@ package frc.robot.subsystems;
 
 import java.util.EnumSet;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
@@ -17,10 +21,10 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private MotorController armRaiseMotor;
-  private MotorController armFeedMotor;
-  private MotorController intakeFeedMotor;
-  private MotorController shooterFeedMotor;
+  private TalonSRX armRaiseMotor;
+  private TalonSRX armFeedMotor;
+  private TalonFX intakeFeedMotor;
+  private TalonSRX shooterFeedMotor;
 
   private boolean armEnabled = false;
   private EventLoop eventLoop = new EventLoop();
@@ -45,33 +49,33 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void startAll() {
     if (armEnabled){
-      armRaiseMotor.set(-IntakeConstants.armDropDutyCycle); // pushes arm down
-      armFeedMotor.set(IntakeConstants.feederDutyCycle);
+      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.armDropDutyCycle); // pushes arm down
+      armFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
     }
     
     // starts feeders
     intakeFeedMotor.set(IntakeConstants.feederDutyCycle);
-    shooterFeedMotor.set(IntakeConstants.feederDutyCycle);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
   }
 
   public void raiseArm() {
     if (armEnabled) {
-      armRaiseMotor.set(IntakeConstants.armRaiseDutyCycle); // raises arm
-      armFeedMotor.stopMotor();
+      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.armRaiseDutyCycle); // raises arm
+      armFeedMotor.neutralOutput();;
     }
   }
 
   public void startShooterFeed() {
-    shooterFeedMotor.set(IntakeConstants.feederDutyCycle);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
   }
 
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
-    shooterFeedMotor.stopMotor();
+    shooterFeedMotor.neutralOutput();
   }
 
   public void stopArm() {
-    armRaiseMotor.stopMotor();
+    armRaiseMotor.neutralOutput();
 
   }
 

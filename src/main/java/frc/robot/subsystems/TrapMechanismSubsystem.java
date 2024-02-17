@@ -41,7 +41,7 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   }
 
   public void stopRollers() {
-    rollerMotor.set(TalonSRXControlMode.Disabled, 0);
+    rollerMotor.neutralOutput();
   }
 
   public double getActuator(){
