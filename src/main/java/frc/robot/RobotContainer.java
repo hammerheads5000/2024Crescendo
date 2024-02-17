@@ -97,8 +97,8 @@ public class RobotContainer {
     toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
     climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
     climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
-    raiseShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::raise, shooterSubsystem::stopHeight, shooterSubsystem));
-    lowerShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::lower, shooterSubsystem::stopHeight, shooterSubsystem));
+    raiseShooterTrigger.whileTrue(new InstantCommand(shooterSubsystem::increaseAngle));
+    lowerShooterTrigger.whileTrue(new InstantCommand(shooterSubsystem::decreaseAngle));
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
   }
 

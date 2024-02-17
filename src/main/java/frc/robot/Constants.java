@@ -337,9 +337,10 @@ public class Constants {
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
+        public static final double encoderValueAt90Deg = 0.65; // encoder value in rotations
 
         // manual height control
-        public static final double manualSpeed = 0.5; // out of 1, how fast to raise/lower manually
+        public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
     }
 
     public static final class FieldConstants {
