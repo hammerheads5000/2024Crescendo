@@ -8,7 +8,9 @@ import java.util.EnumSet;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
@@ -33,8 +35,13 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     armRaiseMotor = IntakeConstants.armRaiseMotor;
     armFeedMotor = IntakeConstants.armFeedMotor;
+
     intakeFeedMotor = IntakeConstants.intakeFeedMotor;
+    intakeFeedMotor.getConfigurator()
+        .apply(new MotorOutputConfigs().withInverted(IntakeConstants.intakeFeederInverted));
+
     shooterFeedMotor = IntakeConstants.shooterFeedMotor;
+    shooterFeedMotor.setInverted(IntakeConstants.shooterFeedInverted);
 
     SmartDashboard.putBoolean("Drop-Down Intake Enabled", true);
 
@@ -72,6 +79,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.neutralOutput();
+  }
+
+  public void reverse() {
+    intakeFeedMotor.set(-IntakeConstants.feederDutyCycle);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.feederDutyCycle);
   }
 
   public void stopArm() {

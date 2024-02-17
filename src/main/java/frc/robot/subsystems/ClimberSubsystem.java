@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,7 @@ public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     climbMotor = ClimberConstants.climberMotor;
+    climbMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ClimberConstants.climberInverted));
   }
 
   public void climbUp() {

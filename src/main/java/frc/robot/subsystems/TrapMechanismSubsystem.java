@@ -22,7 +22,9 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
     heightControlMotor = TrapConstants.heightControlMotor;
+    heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
     rollerMotor = TrapConstants.rollerMotor;
+    rollerMotor.setInverted(TrapConstants.rollerInverted);
 
     linearActuator = TrapConstants.linearActuator;    
     linearActuator.setBoundsMicroseconds(TrapConstants.maxMicroseconds, 0, 
