@@ -16,7 +16,6 @@ import frc.robot.Constants.TrapConstants;
 public class TrapMechanismSubsystem extends SubsystemBase {
   CANSparkMax heightControlMotor;
   TalonSRX rollerMotor;
-
   Servo linearActuator;
 
   /** Creates a new TrapMechanismSubsystem. */

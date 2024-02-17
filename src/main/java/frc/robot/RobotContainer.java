@@ -62,19 +62,28 @@ public class RobotContainer {
   private Trigger zeroPose = driveController.x();
   private Trigger ampTrigger = driveController.a();
   private Trigger aimShooterTrigger = driveController.leftBumper();
-  private Trigger intakeTrigger = secondaryController.rightTrigger();
-  private Trigger intakeFeedTrigger = secondaryController.rightBumper();
-  private Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
+  // trap triggers 
   private Trigger raiseTrapTrigger = secondaryController.povUp();
   private Trigger lowerTrapTrigger = secondaryController.povDown();
   private Trigger feedTrapTrigger = secondaryController.povRight();
   private Trigger expelTrapTrigger = secondaryController.povLeft();
   private Trigger toggleTrapTrigger = secondaryController.x();
+  private Trigger ExtendTrapTrigger = secondaryController.povLeft();
+   private Trigger ContractTrapTrigger = secondaryController.povRight();
+  //climb triggers
   private Trigger climbTrigger = driveController.y();
   private Trigger climbDownTrigger = driveController.b();
+  //manual shooter triggers
   private Trigger raiseShooterTrigger = secondaryController.y();
   private Trigger lowerShooterTrigger = secondaryController.a();
+  private Trigger StartShooterTrigger = driveController.povUp();
+  private Trigger StopShooterTrigger = driveController.povDown();
+  //manual intake triggers
   private Trigger reverseIntakeTrigger = secondaryController.leftBumper();
+  private Trigger intakeTrigger = secondaryController.rightTrigger();
+  private Trigger intakeFeedTrigger = secondaryController.rightBumper();
+  private Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
+
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -97,9 +106,14 @@ public class RobotContainer {
     toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
     climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
     climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
+    StartShooterTrigger.onTrue(new InstantCommand(() -> shooterSubsystem.start()));
+    StartShooterTrigger.onFalse(new InstantCommand(() -> shooterSubsystem.stop()));
+    StopShooterTrigger.onTrue(new InstantCommand(() -> shooterSubsystem.stop()));
     raiseShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::raise, shooterSubsystem::stopHeight, shooterSubsystem));
     lowerShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::lower, shooterSubsystem::stopHeight, shooterSubsystem));
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
+    ExtendTrapTrigger.onTrue(new InstantCommand(() -> trapMechanismSubsystem.extendActuator()));
+    ContractTrapTrigger.onTrue(new InstantCommand(() -> trapMechanismSubsystem.contractActuator()));
   }
 
   private void configureAuto() {
