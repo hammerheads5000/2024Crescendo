@@ -22,8 +22,13 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
+<<<<<<< HEAD
   private MotorController armRaiseMotor;
   private MotorController armFeedMotor;
+=======
+  private TalonSRX armRaiseMotor;
+  private TalonSRX armFeedMotor;
+>>>>>>> 2a0f88f (split can, updated motors)
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
 
@@ -60,8 +65,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void startAll() {
     if (armEnabled){
-      armRaiseMotor.set(-IntakeConstants.armDropDutyCycle); // pushes arm down
-      armFeedMotor.set(IntakeConstants.feederDutyCycle);
+      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.armDropDutyCycle); // pushes arm down
+      armFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
     }
     
     // starts feeders
@@ -71,18 +76,28 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void raiseArm() {
     if (armEnabled) {
-      armRaiseMotor.set(IntakeConstants.armRaiseDutyCycle); // raises arm
-      armFeedMotor.stopMotor();
+      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.armRaiseDutyCycle); // raises arm
+      armFeedMotor.neutralOutput();;
     }
+  }
+
+<<<<<<< HEAD
+  public void stopFeeding() {
+    intakeFeedMotor.stopMotor();
+    shooterFeedMotor.set(TalonSRXControlMode.Disabled, 0);
+=======
+  public void startShooterFeed() {
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
   }
 
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
-    shooterFeedMotor.set(TalonSRXControlMode.Disabled, 0);
+    shooterFeedMotor.neutralOutput();
+>>>>>>> 2a0f88f (split can, updated motors)
   }
 
   public void stopArm() {
-    armRaiseMotor.stopMotor();
+    armRaiseMotor.neutralOutput();
 
   }
 

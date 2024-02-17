@@ -67,7 +67,8 @@ import static edu.wpi.first.units.Units.*;
 
 /** Add your docs here. */
 public class Constants {
-    public static final String CANbusName = "Bobby";
+    public static final String HighSpeedCANbusName = "Bobby";
+    public static final String LowSpeedCANbusName = "rio";
     public static final int pigeon2Id = 0;
 
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -198,7 +199,7 @@ public class Constants {
         }
 
         private static final SwerveDrivetrainConstants drivetrainConstants = new SwerveDrivetrainConstants()
-                .withCANbusName(CANbusName).withPigeon2Id(pigeon2Id);
+                .withCANbusName(HighSpeedCANbusName).withPigeon2Id(pigeon2Id);
 
         public static final SwerveDrivetrain drivetrain = new SwerveDrivetrain(
                 drivetrainConstants,
@@ -245,10 +246,17 @@ public class Constants {
         
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
+<<<<<<< HEAD
         public static final TalonFX intakeFeedMotor = new TalonFX(0);
         public static final TalonSRX shooterFeedMotor = new TalonSRX(0);
         public static final TalonFX armFeedMotor = new TalonFX(0);
         public static final TalonFX armRaiseMotor = new TalonFX(0);
+=======
+        public static final TalonFX intakeFeedMotor = new TalonFX(-1, HighSpeedCANbusName);
+        public static final TalonSRX shooterFeedMotor = new TalonSRX(-1);
+        public static final TalonSRX armFeedMotor = new TalonSRX(-1);
+        public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
+>>>>>>> 2a0f88f (split can, updated motors)
 
         public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
         public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
@@ -285,8 +293,8 @@ public class Constants {
                 .withKV(0.123) // output (V) per unit of velocity (rps)
                 .withKA(0); // output (V) per unit of acceleration (rps/s)
 
-        public static final TalonFX topFlywheel = new TalonFX(0);
-        public static final TalonFX bottomFlywheel = new TalonFX(0);
+        public static final TalonFX topFlywheel = new TalonFX(-1, HighSpeedCANbusName);
+        public static final TalonFX bottomFlywheel = new TalonFX(-1, HighSpeedCANbusName);
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
@@ -307,7 +315,7 @@ public class Constants {
         public static final Measure<Distance> motorMountHeight = Inches.of(1.5); // height of motor above shooter
         public static final Measure<Distance> motorDistance = Inches.of(8); // distance of motor along shooter
 
-        public static final TalonSRX heightMotor = new TalonSRX(0); // PG71 RS775
+        public static final TalonSRX heightMotor = new TalonSRX(-1); // PG71 RS775
         public static final double heightMotorGearRatio = 71/1;
         public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
         public static final double sensorUnitsPerRotation = 7;
@@ -315,7 +323,7 @@ public class Constants {
         // height motor PID
         // 1023 * dutycycle / sensor velocity ( in sensor units / 100ms)
         public static final double kF = 1023 * 1.0 / (maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation);
-        public static final double kP = 1.0;
+        public static final double kP = 0.1;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
@@ -338,8 +346,8 @@ public class Constants {
 
     public static final class TrapConstants {
         // TODO: ids
-        public static final CANSparkMax heightControlMotor = new CANSparkMax(0, MotorType.kBrushless);
-        public static final TalonSRX rollerMotor = new TalonSRX(0);
+        public static final CANSparkMax heightControlMotor = new CANSparkMax(-1, MotorType.kBrushless);
+        public static final TalonSRX rollerMotor = new TalonSRX(-1);
 
         public static final Servo linearActuator = new Servo(0); // flips mechanism down
         public static final int maxMicroseconds = 2000;
@@ -364,6 +372,14 @@ public class Constants {
         public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
     }
 
+<<<<<<< HEAD
+=======
+    public static final class ClimberConstants {
+        public static final TalonFX climberMotor = new TalonFX(-1, HighSpeedCANbusName);
+        public static final double climbSpeed = 0.5;
+    }
+
+>>>>>>> 2a0f88f (split can, updated motors)
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
