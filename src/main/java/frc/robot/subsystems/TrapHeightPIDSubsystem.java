@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,17 +18,28 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
   DigitalInput homeLimitSwitch;
   Encoder encoder;
+  boolean manualControl;
   
   /** Creates a new TrapHeightPIDSubsystem. */
   public TrapHeightPIDSubsystem() {
+    this(false);
+  }
+
+  public TrapHeightPIDSubsystem(boolean manualControl) {
     super(TrapConstants.heightPIDController);
 
     heightControlMotor = TrapConstants.heightControlMotor;
-    homeLimitSwitch = TrapConstants.homeLimitSwitch;
-    encoder = TrapConstants.heightEncoder;
-    encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));
+    this.manualControl = manualControl;
 
-    getController().setTolerance(TrapConstants.heightTolerance.in(Inches));
+    if (manualControl) {
+      this.disable();
+    } else {
+      homeLimitSwitch = TrapConstants.homeLimitSwitch;
+      encoder = TrapConstants.heightEncoder;
+      encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));
+
+      getController().setTolerance(TrapConstants.heightTolerance.in(Inches));
+    }
   }
 
   @Override
@@ -47,11 +57,18 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     return encoder.getDistance();
   }
 
+  public void raise() {
+    if (!manualControl) return;
+    heightControlMotor.set(TrapConstants.raiseSpeed);
+  }
+
   public void lower() {
+    if (!manualControl) return;
     heightControlMotor.set(-TrapConstants.lowerSpeed);
   }
 
   public void stop() {
+    if (!manualControl) return;
     heightControlMotor.stopMotor();
   }
 

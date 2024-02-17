@@ -246,17 +246,10 @@ public class Constants {
         
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
-<<<<<<< HEAD
-        public static final TalonFX intakeFeedMotor = new TalonFX(0);
-        public static final TalonSRX shooterFeedMotor = new TalonSRX(0);
-        public static final TalonFX armFeedMotor = new TalonFX(0);
-        public static final TalonFX armRaiseMotor = new TalonFX(0);
-=======
         public static final TalonFX intakeFeedMotor = new TalonFX(-1, HighSpeedCANbusName);
         public static final TalonSRX shooterFeedMotor = new TalonSRX(-1);
         public static final TalonSRX armFeedMotor = new TalonSRX(-1);
         public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
->>>>>>> 2a0f88f (split can, updated motors)
 
         public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
         public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
@@ -372,14 +365,11 @@ public class Constants {
         public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
     }
 
-<<<<<<< HEAD
-=======
     public static final class ClimberConstants {
         public static final TalonFX climberMotor = new TalonFX(-1, HighSpeedCANbusName);
         public static final double climbSpeed = 0.5;
     }
 
->>>>>>> 2a0f88f (split can, updated motors)
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID

@@ -15,20 +15,14 @@ import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-<<<<<<< HEAD
-  private MotorController armRaiseMotor;
-  private MotorController armFeedMotor;
-=======
   private TalonSRX armRaiseMotor;
   private TalonSRX armFeedMotor;
->>>>>>> 2a0f88f (split can, updated motors)
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
 
@@ -81,11 +75,6 @@ public class IntakeSubsystem extends SubsystemBase {
     }
   }
 
-<<<<<<< HEAD
-  public void stopFeeding() {
-    intakeFeedMotor.stopMotor();
-    shooterFeedMotor.set(TalonSRXControlMode.Disabled, 0);
-=======
   public void startShooterFeed() {
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.feederDutyCycle);
   }
@@ -93,7 +82,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.neutralOutput();
->>>>>>> 2a0f88f (split can, updated motors)
   }
 
   public void stopArm() {

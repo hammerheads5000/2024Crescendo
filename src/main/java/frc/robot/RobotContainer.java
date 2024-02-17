@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
@@ -24,6 +26,7 @@ import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerArmCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -41,6 +44,7 @@ public class RobotContainer {
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private TrapHeightPIDSubsystem trapPIDSubsystem = new TrapHeightPIDSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   
   // commands
   private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem);
@@ -74,13 +78,13 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    zeroTrigger.onTrue(new InstantCommand(() -> swerve.resetPose()));
     aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
+    intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
     ampTrigger.whileTrue(ampAuto);
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
-    raiseTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::raise, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
-    lowerTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::lower, trapMechanismSubsystem::stopHeight, trapMechanismSubsystem));
+    raiseTrapTrigger.whileTrue(new StartEndCommand(trapPIDSubsystem::raise, trapPIDSubsystem::stop, trapPIDSubsystem));
+    lowerTrapTrigger.whileTrue(new StartEndCommand(trapPIDSubsystem::lower, trapPIDSubsystem::stop, trapPIDSubsystem));
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
