@@ -4,21 +4,24 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
 
-public class LoadNoteCommand extends Command {
-  DigitalInput lidarSensor;
-  /** Creates a new loadNote. */
-  public LoadNoteCommand() {
-    this.lidarSensor = IntakeConstants.loadLiderSensor;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.TrapMechanismSubsystem;
+
+public class RaiseArmCommand extends Command {
+  /** Creates a new LowerArm. */
+  TrapMechanismSubsystem trapSubsystem;
+
+  public RaiseArmCommand(TrapMechanismSubsystem trapSubsystem) {
+    this.trapSubsystem = trapSubsystem;
+    addRequirements(trapSubsystem);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    trapSubsystem.raise();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -27,12 +30,13 @@ public class LoadNoteCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    trapSubsystem.stopHeight();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return lidarSensor.get();
+    return false;
   }
 }
-

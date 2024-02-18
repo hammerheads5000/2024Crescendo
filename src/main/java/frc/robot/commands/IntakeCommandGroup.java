@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -18,15 +17,12 @@ import frc.robot.subsystems.Swerve;
 public class IntakeCommandGroup extends SequentialCommandGroup {
   public static boolean isFinished;
   /** Creates a new IntakeCommandGroup. */
-  public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {
-    DigitalInput loadedLidarSensor = IntakeConstants.loadLiderSensor;
-    
+  public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {    
     addCommands(
       new AlignToNoteCommand(swerve),
       new InstantCommand(() -> intakeSubsystem.startAll()), // start intake
       new MoveOverNoteCommand(swerve),
-      new InstantCommand(() -> intakeSubsystem.raiseArm()), // stop arm
-      new WaitUntilCommand(loadedLidarSensor::get), // wait for load lidar sensor to detect note
+      //new InstantCommand(() -> intakeSubsystem.raiseArm()), // stop arm
       new InstantCommand(() -> intakeSubsystem.stopFeeding())
     );
   }

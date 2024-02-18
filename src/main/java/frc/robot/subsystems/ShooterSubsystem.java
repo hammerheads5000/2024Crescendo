@@ -4,21 +4,27 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.SlotConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -34,19 +40,26 @@ public class ShooterSubsystem extends SubsystemBase {
   TalonSRX heightMotor;
   DutyCycleEncoder encoder;
 
+  MutableMeasure<Angle> targetAngle;
+
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     this.topMotor = ShooterConstants.topFlywheel;
     this.bottomMotor = ShooterConstants.bottomFlywheel;
     
     topMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
+    topMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ShooterConstants.topFlywheelInverted));
     bottomMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
-    
+    bottomMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ShooterConstants.bottomFlywheelInverted));
+
     topRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
     bottomRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
 
     this.heightMotor = ShooterConstants.heightMotor;
+    heightMotor.setInverted(ShooterConstants.heightMotorInverted);
     this.encoder = ShooterConstants.heightMotorEncoder;
+
+    targetAngle = ShooterConstants.closeAngle.plus(ShooterConstants.farAngle).divide(2).mutableCopy();
 
     SlotConfiguration gains = new SlotConfiguration();
     gains.kF = ShooterConstants.kF;
@@ -57,6 +70,7 @@ public class ShooterSubsystem extends SubsystemBase {
     heightMotor.configMotionAcceleration(ShooterConstants.motionMagicAccel);
     heightMotor.configMotionCruiseVelocity(ShooterConstants.motionMagicVel);
     heightMotor.configMotionSCurveStrength(ShooterConstants.motionMagicSCurve);
+    heightMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   public void start() {
@@ -69,9 +83,42 @@ public class ShooterSubsystem extends SubsystemBase {
     bottomMotor.stopMotor();
   }
 
+  public void increaseAngle() {
+    targetAngle.mut_plus(ShooterConstants.manualSpeed);
+    if (targetAngle.gt(ShooterConstants.closeAngle)) {
+      targetAngle.mut_replace(ShooterConstants.closeAngle);
+    }
+    updateTargetAngle();
+  }
+
+  public void decreaseAngle() {
+    targetAngle.mut_minus(ShooterConstants.manualSpeed);
+    if (targetAngle.lt(ShooterConstants.farAngle)) {
+      targetAngle.mut_replace(ShooterConstants.farAngle);
+    }
+    updateTargetAngle();
+  }
+
   public void setTargetAngle(Measure<Angle> angle) {
-    Measure<Angle> motorAngle = angleToMotorPosition(angle);
-    heightMotor.set(TalonSRXControlMode.MotionMagic, angleToEncoderRelative(motorAngle));
+    targetAngle.mut_replace(angle);
+    updateTargetAngle();
+  }
+  
+  public void updateTargetAngle() {
+    Measure<Angle> motorAngle = angleToMotorPosition(targetAngle);
+    SmartDashboard.putNumber("Target angle deg", targetAngle.in(Degrees));
+    double encoderOutput = angleToEncoderRelative(motorAngle);
+    SmartDashboard.putNumber("Desired motor encoder", encoderOutput);
+    SmartDashboard.putNumber("Current motor encoder", heightMotor.getSelectedSensorPosition());
+    heightMotor.set(TalonSRXControlMode.Position, encoderOutput);
+    SmartDashboard.putNumber("Height motor out", heightMotor.getMotorOutputPercent());
+  }
+
+  public Measure<Angle> getEncoderAngle() {
+    double raw = encoder.getAbsolutePosition();
+    // 0.25 is because offset is measured at 90 degrees
+    Measure<Angle> actualAngle = Rotations.of(0.25 + ShooterConstants.encoderValueAt90Deg - raw); 
+    return actualAngle;
   }
 
   private double angleToEncoderRelative(Measure<Angle> angle) {
@@ -106,6 +153,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Raw Shooter Lift Encoder", encoder.get());
   }
 }

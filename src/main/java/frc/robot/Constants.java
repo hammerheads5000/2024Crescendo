@@ -20,8 +20,10 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -32,13 +34,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
@@ -54,7 +56,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
@@ -67,7 +68,8 @@ import static edu.wpi.first.units.Units.*;
 
 /** Add your docs here. */
 public class Constants {
-    public static final String CANbusName = "Bobby";
+    public static final String HighSpeedCANbusName = "Bobby";
+    public static final String LowSpeedCANbusName = "rio";
     public static final int pigeon2Id = 0;
 
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -78,8 +80,8 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
-        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
+        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(2 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
                                                                             // from left to right
@@ -198,7 +200,7 @@ public class Constants {
         }
 
         private static final SwerveDrivetrainConstants drivetrainConstants = new SwerveDrivetrainConstants()
-                .withCANbusName(CANbusName).withPigeon2Id(pigeon2Id);
+                .withCANbusName(HighSpeedCANbusName).withPigeon2Id(pigeon2Id);
 
         public static final SwerveDrivetrain drivetrain = new SwerveDrivetrain(
                 drivetrainConstants,
@@ -239,16 +241,16 @@ public class Constants {
 
     public static final class IntakeConstants {
         // TODO: Figure these out
-        public static final DigitalInput frontLidarSensor = new DigitalInput(0);
-        public static final DigitalInput loadLiderSensor = new DigitalInput(0);
-        public static final DigitalInput armLimitSwitch = new DigitalInput(0);
-        
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
-        public static final TalonFX intakeFeedMotor = new TalonFX(0);
-        public static final TalonSRX shooterFeedMotor = new TalonSRX(0);
-        public static final TalonFX armFeedMotor = new TalonFX(0);
-        public static final TalonFX armRaiseMotor = new TalonFX(0);
+        public static final TalonFX intakeFeedMotor = new TalonFX(24, LowSpeedCANbusName);
+        public static final InvertedValue intakeFeederInverted = InvertedValue.Clockwise_Positive; // clockwise is in
+
+        public static final TalonSRX shooterFeedMotor = new TalonSRX(3);
+        public static final boolean shooterFeedInverted = false; // positive is in
+
+        public static final TalonSRX armFeedMotor = new TalonSRX(-1);
+        public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
 
         public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
         public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
@@ -256,7 +258,7 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final PhotonCamera aprilTagCam = new PhotonCamera("Camera_Module_v1");
+        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Limelight");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
@@ -266,7 +268,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Camera_Module_v1");
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
@@ -285,8 +287,10 @@ public class Constants {
                 .withKV(0.123) // output (V) per unit of velocity (rps)
                 .withKA(0); // output (V) per unit of acceleration (rps/s)
 
-        public static final TalonFX topFlywheel = new TalonFX(0);
-        public static final TalonFX bottomFlywheel = new TalonFX(0);
+        public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
+        public static final InvertedValue topFlywheelInverted = InvertedValue.CounterClockwise_Positive; // ccw is shooting
+        public static final TalonFX bottomFlywheel = new TalonFX(31, HighSpeedCANbusName);
+        public static final InvertedValue bottomFlywheelInverted = InvertedValue.CounterClockwise_Positive; // ccw is shooting
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
@@ -307,7 +311,8 @@ public class Constants {
         public static final Measure<Distance> motorMountHeight = Inches.of(1.5); // height of motor above shooter
         public static final Measure<Distance> motorDistance = Inches.of(8); // distance of motor along shooter
 
-        public static final TalonSRX heightMotor = new TalonSRX(0); // PG71 RS775
+        public static final TalonSRX heightMotor = new TalonSRX(14); // PG71 RS775
+        public static final boolean heightMotorInverted = true; // positive is up
         public static final double heightMotorGearRatio = 71/1;
         public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
         public static final double sensorUnitsPerRotation = 7;
@@ -315,7 +320,7 @@ public class Constants {
         // height motor PID
         // 1023 * dutycycle / sensor velocity ( in sensor units / 100ms)
         public static final double kF = 1023 * 1.0 / (maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation);
-        public static final double kP = 1.0;
+        public static final double kP = 0.7;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
@@ -324,9 +329,13 @@ public class Constants {
         public static final double motionMagicVel = maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation * 0.8; // 80% of max speed to cruise
         public static final int motionMagicSCurve = 1; // [0,8] how much smoothing to apply
 
-        public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0);
+        public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
+        public static final double encoderValueAt90Deg = 0.65; // encoder value in rotations
+
+        // manual height control
+        public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
     }
 
     public static final class FieldConstants {
@@ -337,22 +346,21 @@ public class Constants {
     }
 
     public static final class TrapConstants {
-        // TODO: ids
-        public static final CANSparkMax heightControlMotor = new CANSparkMax(0, MotorType.kBrushless);
-        public static final TalonSRX rollerMotor = new TalonSRX(0);
+        public static final CANSparkMax heightControlMotor = new CANSparkMax(15, MotorType.kBrushless);
+        public static final boolean heightMotorInverted = true; // positive is up
+        
+        public static final TalonSRX rollerMotor = new TalonSRX(12);
+        public static final boolean rollerInverted = false; // positive is through
 
-        public static final Servo linearActuator = new Servo(0); // flips mechanism down
+        public static final Servo linearActuator = new Servo(3); // flips mechanism down
         public static final int maxMicroseconds = 2000;
         public static final int centerMicroseconds = 1500;
         public static final int minMicroseconds = 1000;
 
         public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
-        public static final DigitalInput homeLimitSwitch = new DigitalInput(0); // limit switch at lowered position
 
-        public static final DigitalInput noteSensor = new DigitalInput(0);
-
-        public static final Encoder heightEncoder = new Encoder(0, 1); // encoder for vertical movement
+        public static final Encoder heightEncoder = new Encoder(5, 6); // encoder for vertical movement
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
         public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
@@ -360,8 +368,14 @@ public class Constants {
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
-        public static final double raiseSpeed = 0.5; // out of 1, how max speed to raise
-        public static final double lowerSpeed = 0.2; // out of 1, how fast to lower to zero
+        public static final double raiseSpeed = 0.08; // out of 1, how max speed to raise
+        public static final double lowerSpeed = 0.08; // out of 1, how fast to lower to zero
+    }
+
+    public static final class ClimberConstants {
+        public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
+        public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
+        public static final double climbSpeed = 0.5;
     }
 
     public static final class AutoConstants {

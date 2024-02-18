@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrapConstants;
@@ -18,23 +18,20 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   Servo linearActuator;
 
-  DigitalInput noteSensor;
-
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
+    heightControlMotor = TrapConstants.heightControlMotor;
+    heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
     rollerMotor = TrapConstants.rollerMotor;
+    rollerMotor.setInverted(TrapConstants.rollerInverted);
 
     linearActuator = TrapConstants.linearActuator;    
     linearActuator.setBoundsMicroseconds(TrapConstants.maxMicroseconds, 0, 
                                         TrapConstants.centerMicroseconds, 0, 
                                         TrapConstants.minMicroseconds);
 
-    noteSensor = TrapConstants.noteSensor;
   }
 
-  public boolean isNoteDetected() {
-    return noteSensor.get();
-  }
 
   public void intake() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.intakeSpeed);
@@ -45,7 +42,7 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   }
 
   public void stopRollers() {
-    rollerMotor.set(TalonSRXControlMode.Disabled, 0);
+    rollerMotor.neutralOutput();
   }
 
   public double getActuator(){
@@ -58,6 +55,18 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void contractActuator(){
     linearActuator.set(0.0);
+  }
+
+  public void raise() {
+    heightControlMotor.set(TrapConstants.raiseSpeed);
+  }
+
+  public void lower() {
+    heightControlMotor.set(-TrapConstants.lowerSpeed);
+  }
+
+  public void stopHeight() {
+    heightControlMotor.stopMotor();
   }
 
   @Override
