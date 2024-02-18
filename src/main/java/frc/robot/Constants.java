@@ -41,7 +41,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
@@ -238,10 +237,6 @@ public class Constants {
 
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
-        
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73),Inches.of(196.17),Inches.of(57.13));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50),Inches.of(218.42),Inches.of(57.13));
-
     }
 
     public static final class IntakeConstants {
