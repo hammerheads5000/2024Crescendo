@@ -81,8 +81,8 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(4); // m/s
-        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
+        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(2 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
                                                                             // from left to right
@@ -263,7 +263,7 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final PhotonCamera aprilTagCam = new PhotonCamera("Camera_Module_v1");
+        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Limelight");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
@@ -273,7 +273,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Camera_Module_v1");
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");

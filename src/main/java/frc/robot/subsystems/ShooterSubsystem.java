@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
@@ -105,7 +106,12 @@ public class ShooterSubsystem extends SubsystemBase {
   
   public void updateTargetAngle() {
     Measure<Angle> motorAngle = angleToMotorPosition(targetAngle);
-    heightMotor.set(TalonSRXControlMode.MotionMagic, angleToEncoderRelative(motorAngle));
+    SmartDashboard.putNumber("Target angle deg", targetAngle.in(Degrees));
+    double encoderOutput = angleToEncoderRelative(motorAngle);
+    SmartDashboard.putNumber("Desired motor encoder", encoderOutput);
+    SmartDashboard.putNumber("Current motor encoder", heightMotor.getSelectedSensorPosition());
+    heightMotor.set(TalonSRXControlMode.Position, encoderOutput);
+    SmartDashboard.putNumber("Height motor out", heightMotor.getMotorOutputPercent());
   }
 
   public Measure<Angle> getEncoderAngle() {
