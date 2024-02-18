@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.subsystems.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
 
@@ -34,6 +35,7 @@ public class AimShooterCommand extends Command {
   CommandXboxController controller;
   Translation3d speakerPos;
   ShooterSubsystem shooterSubsystem;
+  ShooterHeightPIDSubsystem shooterHeightPIDSubsystem;
 
   /**
    * Constructor with automatic selection of distance
@@ -41,10 +43,11 @@ public class AimShooterCommand extends Command {
    * @param controller
    * @param shooterSubsystem
    */
-  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterSubsystem shooterSubsystem) {
+  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
     this.controller = controller;
     this.shooterSubsystem = shooterSubsystem;
+    this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
 
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();
@@ -54,7 +57,7 @@ public class AimShooterCommand extends Command {
       speakerPos = FieldConstants.blueSpeakerPos;
     }
 
-    addRequirements(swerve, shooterSubsystem);
+    addRequirements(swerve, shooterSubsystem, shooterHeightPIDSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -94,7 +97,7 @@ public class AimShooterCommand extends Command {
     SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker().in(Meters));
 
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
-    shooterSubsystem.setTargetAngle(shooterAngle);
+    shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
 
     SmartDashboard.putNumber("Target angle", shooterAngle.in(Degrees));
   }

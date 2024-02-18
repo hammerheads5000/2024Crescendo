@@ -31,8 +31,10 @@ import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.TrapMechanismSubsystem;
 
 public class RobotContainer {
@@ -44,16 +46,18 @@ public class RobotContainer {
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
+  private TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
   
   // commands
-  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem);
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapMechanismSubsystem);
-  private RaiseArmCommand raiseArmCommand = new RaiseArmCommand(trapMechanismSubsystem);
+  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapHeightPIDSubsystem);
+  private RaiseArmCommand raiseArmCommand = new RaiseArmCommand(trapHeightPIDSubsystem);
   
   // autos
   //private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
@@ -102,8 +106,8 @@ public class RobotContainer {
     climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
     climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
-    raiseShooterTrigger.whileTrue(new InstantCommand(shooterSubsystem::increaseAngle));
-    lowerShooterTrigger.whileTrue(new InstantCommand(shooterSubsystem::decreaseAngle));
+    raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
+    lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
   }
 

@@ -47,6 +47,10 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     return encoder.getDistance();
   }
 
+  public void raise() {
+    heightControlMotor.set(TrapConstants.raiseSpeed);
+  }
+
   public void lower() {
     heightControlMotor.set(-TrapConstants.lowerSpeed);
   }

@@ -20,8 +20,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
-    heightControlMotor = TrapConstants.heightControlMotor;
-    heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
     rollerMotor = TrapConstants.rollerMotor;
     rollerMotor.setInverted(TrapConstants.rollerInverted);
 
@@ -55,18 +53,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void contractActuator(){
     linearActuator.set(0.0);
-  }
-
-  public void raise() {
-    heightControlMotor.set(TrapConstants.raiseSpeed);
-  }
-
-  public void lower() {
-    heightControlMotor.set(-TrapConstants.lowerSpeed);
-  }
-
-  public void stopHeight() {
-    heightControlMotor.stopMotor();
   }
 
   @Override
