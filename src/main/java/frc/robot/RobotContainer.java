@@ -4,14 +4,11 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,13 +17,13 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
 import frc.robot.commands.IntakeCommandGroup;
-import frc.robot.commands.LowerArmCommand;
-import frc.robot.commands.RaiseArmCommand;
+import frc.robot.commands.LowerTrapArmCommand;
+import frc.robot.commands.RaiseTrapArmCommand;
+import frc.robot.commands.RaiseTrapArmToPositionCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -56,15 +53,17 @@ public class RobotContainer {
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private LowerArmCommand lowerArmCommand = new LowerArmCommand(trapHeightPIDSubsystem);
-  private RaiseArmCommand raiseArmCommand = new RaiseArmCommand(trapHeightPIDSubsystem);
+  private LowerTrapArmCommand lowerArmCommand = new LowerTrapArmCommand(trapHeightPIDSubsystem);
+  private RaiseTrapArmCommand raiseArmCommand = new RaiseTrapArmCommand(trapHeightPIDSubsystem);
   
   // autos
-  //private PathPlannerAuto ampAuto = new PathPlannerAuto("Amp");
+  private PathPlannerAuto ampAuto;
+  private PathPlannerAuto sourceAuto;
 
   // triggers
   private Trigger zeroPose = driveController.x();
   private Trigger ampTrigger = driveController.a();
+  private Trigger sourceTrigger = driveController.b();
   private Trigger aimShooterTrigger = driveController.leftBumper();
   // trap triggers
   private Trigger raiseTrapTrigger = secondaryController.povUp();
@@ -96,13 +95,14 @@ public class RobotContainer {
     aimShooterTrigger.whileTrue(aimShooterCommand);
     intakeTrigger.whileTrue(intakeCommandGroup);
     intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
-    //ampTrigger.whileTrue(ampAuto);
+    ampTrigger.whileTrue(ampAuto);
+    sourceTrigger.whileTrue(sourceAuto);
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
     raiseTrapTrigger.whileTrue(raiseArmCommand);
     lowerTrapTrigger.whileTrue(lowerArmCommand);
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
-    toggleTrapTrigger.onTrue(new InstantCommand(() -> {if (trapMechanismSubsystem.getActuator()==1) trapMechanismSubsystem.contractActuator(); else trapMechanismSubsystem.extendActuator();}));
+    toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     climbTrigger.onTrue(new RunCommand(climberSubsystem::climbUp, climberSubsystem));
     climbDownTrigger.onTrue(new RunCommand(climberSubsystem::climbDown, climberSubsystem));
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
@@ -128,10 +128,17 @@ public class RobotContainer {
             },
       swerve);
       
-      NamedCommands.registerCommand("Raise To Amp", new InstantCommand());
-      NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(() -> trapMechanismSubsystem.extendActuator()));
+      NamedCommands.registerCommand("Raise To Amp", new RaiseTrapArmToPositionCommand(trapHeightPIDSubsystem, TrapConstants.ampPosition));
+      NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
+      NamedCommands.registerCommand("Raise To Amp", new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
+      NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
+      NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
       NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
+      NamedCommands.registerCommand("Intake Trap Command", new InstantCommand(trapMechanismSubsystem::intake));
       NamedCommands.registerCommand("Lower Trap Arm", lowerArmCommand);
+
+    ampAuto = new PathPlannerAuto("Amp");
+    sourceAuto = new PathPlannerAuto("Source");
   }
 
   public Command getAutonomousCommand() {

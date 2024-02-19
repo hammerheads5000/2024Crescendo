@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 15.103958779347955,
+        "y": 1.5738960049347994
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 15.224790449582725,
+        "y": 1.4060742407198428
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 15.446315178346467,
+        "y": 0.9495990420551595
+      },
+      "prevControl": {
+        "x": 15.325483508111697,
+        "y": 1.238252476504886
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -60.67952412241921,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Teleop Paths",
+  "previewStartingState": {
+    "rotation": -59.62087398863167,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

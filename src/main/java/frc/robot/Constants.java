@@ -20,10 +20,8 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -359,6 +357,7 @@ public class Constants {
 
         public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> sourcePosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
 
         public static final Encoder heightEncoder = new Encoder(6, 7); // encoder for vertical movement TODO: set
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution

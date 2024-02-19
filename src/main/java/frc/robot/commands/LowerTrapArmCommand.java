@@ -7,13 +7,12 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.TrapHeightPIDSubsystem;
-import frc.robot.subsystems.TrapMechanismSubsystem;
 
-public class RaiseArmCommand extends Command {
+public class LowerTrapArmCommand extends Command {
   /** Creates a new LowerArm. */
   TrapHeightPIDSubsystem trapSubsystem;
 
-  public RaiseArmCommand(TrapHeightPIDSubsystem trapSubsystem) {
+  public LowerTrapArmCommand(TrapHeightPIDSubsystem trapSubsystem) {
     this.trapSubsystem = trapSubsystem;
     addRequirements(trapSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -22,8 +21,8 @@ public class RaiseArmCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    trapSubsystem.disable(); // disable pid during manual control
-    trapSubsystem.raise();
+    trapSubsystem.disable();
+    trapSubsystem.lower();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +32,7 @@ public class RaiseArmCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    trapSubsystem.setSetpoint(trapSubsystem.getMeasurement()); // set setpoint to current position
+    trapSubsystem.setSetpoint(trapSubsystem.getMeasurement());
     trapSubsystem.enable();
   }
 

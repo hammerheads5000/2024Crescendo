@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Inches;
 
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -61,6 +60,22 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
   public void resetEncoder() {
     encoder.reset();
+  }
+
+  public void moveToAmp() {
+    setSetpoint(TrapConstants.ampPosition.in(Inches));
+  }
+
+  public void moveToHome() {
+    setSetpoint(0);
+  }
+
+  public void moveToTrap() {
+    setSetpoint(TrapConstants.trapPosition.in(Inches));
+  }
+
+  public void moveToSource() {
+    setSetpoint(TrapConstants.sourcePosition.in(Inches));
   }
 
   public boolean getLimitSwitch() {

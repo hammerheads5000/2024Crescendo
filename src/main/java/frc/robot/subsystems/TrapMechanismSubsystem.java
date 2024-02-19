@@ -6,9 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrapConstants;
@@ -53,6 +50,14 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void contractActuator(){
     linearActuator.set(0.0);
+  }
+
+  public void toggleActuator() {
+    if (linearActuator.get() == 1.0) {
+      contractActuator();
+      return;
+    }
+    extendActuator();
   }
 
   @Override
