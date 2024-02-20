@@ -17,6 +17,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -122,7 +123,7 @@ public class Constants {
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
         public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
 
-        public static final double controllerDeadband = 0.1;
+        public static final double controllerDeadband = 0.15;
 
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
@@ -239,7 +240,6 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        // TODO: Figure these out
         public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
         
         public static final TalonFX intakeFeedMotor = new TalonFX(24, LowSpeedCANbusName);
@@ -307,17 +307,18 @@ public class Constants {
         // Horizontal distance from shooter hinge to bar pivot
         public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(9);
         // Height of bar pivot compared to shooter hinge
-        public static final Measure<Distance> pivotHeight = Inches.of(0.3);
-        public static final Measure<Distance> topBarLength = Inches.of(3);
-        public static final Measure<Distance> bottomBarLength = Inches.of(7.5);
-        public static final Measure<Distance> motorMountHeight = Inches.of(1.5); // height of motor above shooter
-        public static final Measure<Distance> motorDistance = Inches.of(8); // distance of motor along shooter
+        public static final Measure<Distance> pivotHeight = Inches.of(0.);
+        public static final Measure<Distance> topBarLength = Inches.of(2);
+        public static final Measure<Distance> bottomBarLength = Inches.of(6.2);
+        public static final Measure<Distance> motorMountHeight = Inches.of(2.125); // height of motor above shooter
+        public static final Measure<Distance> motorDistance = Inches.of(4); // distance of motor along shooter
 
         public static final TalonSRX heightMotor = new TalonSRX(14); // PG71 RS775
         public static final boolean heightMotorInverted = true; // positive is up
         public static final double heightMotorGearRatio = 71/1;
         public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
         public static final double sensorUnitsPerRotation = 7;
+        public static final Measure<Current> maxContinuousCurrent = Amps.of(20);
         
         // height motor PID
         public static final PIDController heightPID = new PIDController(0.7, 0, 0);
@@ -359,19 +360,19 @@ public class Constants {
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
 
-        public static final Encoder heightEncoder = new Encoder(6, 7); // encoder for vertical movement TODO: set
+        public static final Encoder heightEncoder = new Encoder(5, 6); // encoder for vertical movement
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
         public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
         public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
-        public static final DigitalInput homeLimitSwitch = new DigitalInput(4); // TODO: set
+        public static final DigitalInput homeLimitSwitch = new DigitalInput(7); // TODO: set
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
         public static final double raiseSpeed = 0.08; // out of 1, how max speed to raise
         public static final double lowerSpeed = 0.08; // out of 1, how fast to lower to zero
 
-        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(5);
+        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
     }
 
     public static final class ClimberConstants {
