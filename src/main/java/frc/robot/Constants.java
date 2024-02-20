@@ -351,7 +351,7 @@ public class Constants {
         public static final TalonSRX rollerMotor = new TalonSRX(12);
         public static final boolean rollerInverted = false; // positive is through
 
-        public static final Servo linearActuator = new Servo(3); // flips mechanism down
+        public static final Servo linearActuator = new Servo(2); // flips mechanism down
         public static final int maxMicroseconds = 2000;
         public static final int centerMicroseconds = 1500;
         public static final int minMicroseconds = 1000;
