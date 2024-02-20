@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimbCommand extends Command {
@@ -27,7 +28,13 @@ public class ClimbCommand extends Command {
   @Override
   public void execute() 
   {
-    climb_Sub.Climb(controller.getLeftY());
+    if(Math.abs(controller.getLeftY()) > Constants.SwerveConstants.controllerDeadband)
+    {
+      climb_Sub.Climb(controller.getLeftY());
+    }
+    else {
+      climb_Sub.Climb(0);
+    }
   }
 
   // Called once the command ends or is interrupted.

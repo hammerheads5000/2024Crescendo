@@ -12,10 +12,8 @@ import frc.robot.subsystems.TrapHeightPIDSubsystem;
 public class LowerTrapArmCommand extends Command {
   /** Creates a new LowerArm. */
   TrapHeightPIDSubsystem trapSubsystem;
-  CommandXboxController controller;
-  public LowerTrapArmCommand(TrapHeightPIDSubsystem trapSubsystem, CommandXboxController controller) {
+  public LowerTrapArmCommand(TrapHeightPIDSubsystem trapSubsystem) {
     this.trapSubsystem = trapSubsystem;
-    this.controller = controller;
     addRequirements(trapSubsystem);
       // Use addRequirements() here to declare subsystem dependencies.
   }

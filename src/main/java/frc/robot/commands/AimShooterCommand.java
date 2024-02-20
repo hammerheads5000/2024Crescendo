@@ -48,6 +48,7 @@ public class AimShooterCommand extends Command {
     this.controller = controller;
     this.shooterSubsystem = shooterSubsystem;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
+    shooterHeightPIDSubsystem.enable();
 
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();

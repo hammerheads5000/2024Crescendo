@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
@@ -15,7 +16,9 @@ public class ClimberSubsystem extends SubsystemBase {
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     climbMotor = ClimberConstants.climberMotor;
-    climbMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ClimberConstants.climberInverted));
+    climbMotor.getConfigurator().apply(new MotorOutputConfigs()
+    .withInverted(ClimberConstants.climberInverted)
+    .withNeutralMode(NeutralModeValue.Brake));
   }
 
   public void Climb(double speed) {

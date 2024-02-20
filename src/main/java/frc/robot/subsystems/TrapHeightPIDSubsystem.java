@@ -24,6 +24,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     super(TrapConstants.heightPIDController);
 
     heightControlMotor = TrapConstants.heightControlMotor;
+    heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
     homeLimitSwitch = TrapConstants.homeLimitSwitch;
     encoder = TrapConstants.heightEncoder;
     encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));

@@ -42,16 +42,21 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     maxSpeed = ShooterConstants.maxHeightMotorSpeed.in(RotationsPerSecond) / ShooterConstants.heightMotorGearRatio;
 
     targetAngle = ShooterConstants.closeAngle.mutableCopy();
+
+    getController().setTolerance(ShooterConstants.pidDeadband.in(Rotations));
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
-    heightMotor.set(TalonSRXControlMode.PercentOutput, output / maxSpeed);
+    SmartDashboard.putNumber("PID Output", output);
+    SmartDashboard.putNumber("Motor output", output / maxSpeed);
+    heightMotor.set(TalonSRXControlMode.PercentOutput, output / maxSpeed + ShooterConstants.arbitraryFeedForward);
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
+    SmartDashboard.putNumber("Measured Shooter Motor Angle", 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get());
     return 0.25 + ShooterConstants.encoderValueAt90Deg - encoder.get();
   }
 
@@ -66,6 +71,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   public void setTargetAngle(Measure<Angle> angle) {
     targetAngle.mut_replace(angle);
     SmartDashboard.putNumber("Shooter Target Angle", targetAngle.in(Degrees));
+    SmartDashboard.putNumber("Shooter Motor Target", angleToMotorPosition(targetAngle).in(Degrees));
     setSetpoint(angleToMotorPosition(angle).in(Rotations));
   }
 
@@ -81,13 +87,20 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
 
     // Intermediate calculations
     double b = Math.sqrt(pivX*pivX + pivH*pivH); // distance from shooter hinge to bar pivot
+    System.out.println("b: "+b);
     double t0 = t - Math.atan(pivH / pivX); // shooter from bar pivot
+    System.out.println("t0: "+t0);
     double l = Math.sqrt(s*s + h*h); // distance from shooter hinge to motor
+    System.out.println("l: "+l);
     // distance from motor to bar pivot
     double c = Math.sqrt(b*b + l*l - 2*b*l* Math.cos(t0 + Math.atan(h/s)));
+    System.out.println("c: "+c);
+    System.out.println("t1 cos: "+((l1*l1 + c*c - l2*l2) / (2*l1*c)));
     double t1 = Math.acos((l1*l1 + c*c - l2*l2) / (2*l1*c)); // top bar angle to bar pivot
     // angle between motor mount and bar pivot
+    System.out.println("t1: "+t1);
     double t2 = Math.acos(h/l) - Math.acos((c*c + l*l - b*b) / (2*c*l));
+    System.out.println(t1+t2);
     return Radians.of(t1 + t2);
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -55,7 +57,7 @@ public class RobotContainer {
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private RaiseTrapArmCommand raiseArmCommand = new RaiseTrapArmCommand(trapHeightPIDSubsystem);
-  private LowerTrapArmCommand lowerArmCommand = new LowerTrapArmCommand(trapHeightPIDSubsystem, driveController);
+  private LowerTrapArmCommand lowerArmCommand = new LowerTrapArmCommand(trapHeightPIDSubsystem);
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController);
   
   // autos
@@ -104,7 +106,7 @@ public class RobotContainer {
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
-    raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
+    raiseShooterTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(Degrees.of(45))));
     lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
   }
@@ -126,9 +128,9 @@ public class RobotContainer {
             },
       swerve);
       
-      NamedCommands.registerCommand("Raise To Amp", new RaiseTrapArmToPositionCommand(trapHeightPIDSubsystem, TrapConstants.ampPosition));
+      //NamedCommands.registerCommand("Raise To Amp", new RaiseTrapArmToPositionCommand(trapHeightPIDSubsystem, TrapConstants.ampPosition));
+      NamedCommands.registerCommand("Raise To Amp", new InstantCommand());
       NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
-      NamedCommands.registerCommand("Raise To Amp", new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
       NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
       NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
       NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
