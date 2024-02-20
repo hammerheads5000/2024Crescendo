@@ -4,39 +4,35 @@
 
 package frc.robot.commands;
 
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.TrapHeightPIDSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 
-public class LowerTrapArmCommand extends Command {
-  /** Creates a new LowerArm. */
-  TrapHeightPIDSubsystem trapSubsystem;
+public class ClimbCommand extends Command {
+  /** Creates a new ClimbCommand. */
+  ClimberSubsystem climb_Sub;
   CommandXboxController controller;
-  public LowerTrapArmCommand(TrapHeightPIDSubsystem trapSubsystem, CommandXboxController controller) {
-    this.trapSubsystem = trapSubsystem;
+  public ClimbCommand(ClimberSubsystem climb_Sub, CommandXboxController controller) {
+    // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
-    addRequirements(trapSubsystem);
-      // Use addRequirements() here to declare subsystem dependencies.
+    this.climb_Sub = climb_Sub;
+    addRequirements(climb_Sub);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    trapSubsystem.disable();
-    trapSubsystem.lower();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() 
+  {
+    climb_Sub.Climb(controller.getLeftY());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    trapSubsystem.setSetpoint(trapSubsystem.getMeasurement());
-    trapSubsystem.enable();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

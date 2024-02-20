@@ -18,12 +18,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climbMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ClimberConstants.climberInverted));
   }
 
-  public void climbUp() {
-    climbMotor.set(ClimberConstants.climbSpeed);
-  }
-
-  public void climbDown() {
-    climbMotor.set(-ClimberConstants.climbSpeed);
+  public void Climb(double speed) {
+    climbMotor.set(ClimberConstants.climbSpeed * speed);
   }
 
   @Override
