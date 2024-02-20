@@ -86,8 +86,8 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
-    configureBindings();
     configureAuto();
+    configureBindings();
   }
 
   private void configureBindings() {
