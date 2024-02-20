@@ -305,13 +305,13 @@ public class Constants {
         // Linkage characterization
 
         // Horizontal distance from shooter hinge to bar pivot
-        public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(9);
+        public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(4);
         // Height of bar pivot compared to shooter hinge
         public static final Measure<Distance> pivotHeight = Inches.of(0.);
         public static final Measure<Distance> topBarLength = Inches.of(2);
-        public static final Measure<Distance> bottomBarLength = Inches.of(6.4);
+        public static final Measure<Distance> bottomBarLength = Inches.of(6.2);
         public static final Measure<Distance> motorMountHeight = Inches.of(2.125); // height of motor above shooter
-        public static final Measure<Distance> motorDistance = Inches.of(4); // distance of motor along shooter
+        public static final Measure<Distance> motorDistance = Inches.of(7.38); // distance of motor along shooter
 
         public static final TalonSRX heightMotor = new TalonSRX(14); // PG71 RS775
         public static final boolean heightMotorInverted = false; // positive is up
