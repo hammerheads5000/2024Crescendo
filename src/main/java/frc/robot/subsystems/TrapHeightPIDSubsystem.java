@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -16,7 +18,8 @@ import frc.robot.Constants.TrapConstants;
 public class TrapHeightPIDSubsystem extends PIDSubsystem {
   CANSparkMax heightControlMotor;
 
-  DigitalInput homeLimitSwitch;
+  ColorSensorV3 colorSensor;
+  ColorMatch colorMatch;
   Encoder encoder;
   
   /** Creates a new TrapHeightPIDSubsystem. */
@@ -25,7 +28,11 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
     heightControlMotor = TrapConstants.heightControlMotor;
     heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
-    homeLimitSwitch = TrapConstants.homeLimitSwitch;
+
+    colorSensor = TrapConstants.colorSensor;
+    colorMatch = new ColorMatch();
+    colorMatch.addColorMatch(TrapConstants.colorToMatch);
+
     encoder = TrapConstants.heightEncoder;
     encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));
 
@@ -40,7 +47,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    if (homeLimitSwitch.get()) {
+    if (colorDetected()) {
       encoder.reset();
       return 0;
     }
@@ -79,7 +86,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     setSetpoint(TrapConstants.sourcePosition.in(Inches));
   }
 
-  public boolean getLimitSwitch() {
-    return homeLimitSwitch.get();
+  public boolean colorDetected() {
+    return colorMatch.matchColor(colorSensor.getColor()) != null;
   }
 }

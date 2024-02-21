@@ -47,10 +47,10 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
 
   @Override
   public void useOutput(double output, double setpoint) {
-    SmartDashboard.putNumber("PID Output", output);
     output += ShooterConstants.arbitraryFeedforward;
+    // cap output
     if (Math.abs(output) > ShooterConstants.maxOutput) {
-      output = ShooterConstants.maxOutput;
+      output = ShooterConstants.maxOutput*Math.signum(output);
     }
     SmartDashboard.putNumber("Motor output", output);
     heightMotor.set(output);
@@ -59,8 +59,10 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    SmartDashboard.putNumber("Measured Shooter Motor Angle", 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get());
-    return 0.25 + ShooterConstants.encoderValueAt90Deg - encoder.get();
+    double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
+    SmartDashboard.putNumber("Measured Shooter Motor Angle", measured);
+    SmartDashboard.putNumber("Measured Shooter Angle", motorPositionToAngle(Rotations.of(measured)).in(Degrees));
+    return 0.25 + measured;
   }
 
   public void increaseAngle() {
@@ -99,5 +101,25 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     double t2 = Math.acos(h/l) - Math.acos((c*c + l*l - b*b) / (2*c*l));
 
     return Radians.of(t1 + t2);
+  }
+
+  public Measure<Angle> motorPositionToAngle(Measure<Angle> motorAngle) {
+    double pivX = ShooterConstants.horizontalDistanceToPivot.in(Inches);
+    double pivH = ShooterConstants.pivotHeight.in(Inches);
+    double l1 = ShooterConstants.topBarLength.in(Inches);
+    double l2 = ShooterConstants.bottomBarLength.in(Inches);
+    double h = ShooterConstants.motorMountHeight.in(Inches);
+    double s = ShooterConstants.motorDistance.in(Inches);
+    double m = motorAngle.in(Radians);
+
+    // intermediate calculations
+    double b = Math.sqrt(pivX*pivX + pivH*pivH); // distance from shooter hinge to bar pivot
+    double c = Math.sqrt(l1*l1 + h*h - 2*l1*h*Math.cos(m)); // distance from bottom of motor mount to air pivot
+    double t1 = Math.PI/2 - Math.asin(l1/c * Math.cos(m)); // angle from shooter to air pivot
+    double d = Math.sqrt(s*s + c*c - 2*s*c*Math.cos(t1)); // distance from shooter hinge to air pivot
+    double t0 = Math.acos((d*d + b*b - l2*l2) / (2*d*b)); // angle from air pivot to hinge to bar pivot
+    double t3 = Math.acos((d*d + s*s - c*c) / (2*d*s)); // angle from shooter to air pivot
+    
+    return Radians.of(t0-t3);
   }
 }

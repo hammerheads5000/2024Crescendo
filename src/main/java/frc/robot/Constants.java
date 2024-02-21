@@ -46,6 +46,8 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -62,7 +64,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import edu.wpi.first.wpilibj.Servo;
-
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
 import edu.wpi.first.units.Distance;
@@ -71,6 +73,8 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.I2C;
+
 import static edu.wpi.first.units.Units.*;
 
 /** Add your docs here. */
@@ -320,7 +324,7 @@ public class Constants {
         public static final Measure<Distance> motorMountHeight = Inches.of(2.125); // height of motor above shooter
         public static final Measure<Distance> motorDistance = Inches.of(7.38); // distance of motor along shooter
 
-        public static final TalonFX heightMotor = new TalonFX(14);
+        public static final TalonFX heightMotor = new TalonFX(26);
         public static final double maxOutput = 0.5; // duty cycle output max
         public static final double arbitraryFeedforward = 0.05; // duty cycle arbitrary feed forward to account for gravity
         
@@ -378,7 +382,8 @@ public class Constants {
         public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
         public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
-        public static final DigitalInput homeLimitSwitch = new DigitalInput(7); // TODO: set
+        public static final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+        public static final Color colorToMatch = new Color("#206080");
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 1; // out of 1, how fast to expel note

@@ -21,7 +21,7 @@ public class ClimberSubsystem extends SubsystemBase {
     .withNeutralMode(NeutralModeValue.Brake));
   }
 
-  public void Climb(double speed) {
+  public void climb(double speed) {
     climbMotor.set(ClimberConstants.climbSpeed * speed);
   }
 

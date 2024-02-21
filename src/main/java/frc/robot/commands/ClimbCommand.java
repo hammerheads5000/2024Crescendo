@@ -11,13 +11,13 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimbCommand extends Command {
   /** Creates a new ClimbCommand. */
-  ClimberSubsystem climb_Sub;
+  ClimberSubsystem climbSubsystem;
   CommandXboxController controller;
-  public ClimbCommand(ClimberSubsystem climb_Sub, CommandXboxController controller) {
+  public ClimbCommand(ClimberSubsystem climbSubsystem, CommandXboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
-    this.climb_Sub = climb_Sub;
-    addRequirements(climb_Sub);
+    this.climbSubsystem = climbSubsystem;
+    addRequirements(climbSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -30,10 +30,10 @@ public class ClimbCommand extends Command {
   {
     if(Math.abs(controller.getLeftY()) > Constants.SwerveConstants.controllerDeadband)
     {
-      climb_Sub.Climb(controller.getLeftY());
+      climbSubsystem.climb(controller.getLeftY());
     }
     else {
-      climb_Sub.Climb(0);
+      climbSubsystem.climb(0);
     }
   }
 
