@@ -312,13 +312,13 @@ public class Constants {
         // Linkage characterization
 
         // Horizontal distance from shooter hinge to bar pivot
-        public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(9);
+        public static final Measure<Distance> horizontalDistanceToPivot = Inches.of(4);
         // Height of bar pivot compared to shooter hinge
         public static final Measure<Distance> pivotHeight = Inches.of(0.);
         public static final Measure<Distance> topBarLength = Inches.of(2);
-        public static final Measure<Distance> bottomBarLength = Inches.of(6.4);
+        public static final Measure<Distance> bottomBarLength = Inches.of(6.2);
         public static final Measure<Distance> motorMountHeight = Inches.of(2.125); // height of motor above shooter
-        public static final Measure<Distance> motorDistance = Inches.of(4); // distance of motor along shooter
+        public static final Measure<Distance> motorDistance = Inches.of(7.38); // distance of motor along shooter
 
         public static final TalonFX heightMotor = new TalonFX(14);
         public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
@@ -395,9 +395,9 @@ public class Constants {
         public static final DigitalInput homeLimitSwitch = new DigitalInput(7); // TODO: set
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
-        public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
-        public static final double raiseSpeed = 0.15; // out of 1, how max speed to raise
-        public static final double lowerSpeed = 0.15; // out of 1, how fast to lower to zero
+        public static final double expelSpeed = 1; // out of 1, how fast to expel note
+        public static final double raiseSpeed = 0.25; // out of 1, how max speed to raise
+        public static final double lowerSpeed = 0.25; // out of 1, how fast to lower to zero
 
         public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
     }

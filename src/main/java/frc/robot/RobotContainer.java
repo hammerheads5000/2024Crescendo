@@ -25,7 +25,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
 import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerTrapArmCommand;
-import frc.robot.commands.RaiseTrapArmCommand;
+import frc.robot.commands.ManualTrapCommand;
 import frc.robot.commands.RaiseTrapArmToPositionCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
@@ -56,9 +56,9 @@ public class RobotContainer {
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private RaiseTrapArmCommand raiseArmCommand = new RaiseTrapArmCommand(trapHeightPIDSubsystem);
   private LowerTrapArmCommand lowerArmCommand = new LowerTrapArmCommand(trapHeightPIDSubsystem);
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController);
+  private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   
   // autos
   private PathPlannerAuto ampAuto;
@@ -87,6 +87,7 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     climberSubsystem.setDefaultCommand(climbCommand);
+    trapHeightPIDSubsystem.setDefaultCommand(manualTrapCommand);
     swerve.resetPose();
     configureAuto();
     configureBindings();
@@ -100,7 +101,6 @@ public class RobotContainer {
     ampTrigger.whileTrue(ampAuto);
     sourceTrigger.whileTrue(sourceAuto);
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
-    raiseTrapTrigger.whileTrue(raiseArmCommand);
     lowerTrapTrigger.whileTrue(lowerArmCommand);
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
