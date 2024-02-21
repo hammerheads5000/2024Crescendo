@@ -53,7 +53,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
       output = ShooterConstants.maxOutput*Math.signum(output);
     }
     SmartDashboard.putNumber("Motor output", output);
-    heightMotor.set(output);
+    //heightMotor.set(output);
   }
 
   @Override
