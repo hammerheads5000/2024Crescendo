@@ -21,6 +21,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
+import frc.robot.commands.HomeTrapArmCommand;
 import frc.robot.commands.IntakeCommandGroup;
 import frc.robot.commands.LowerTrapArmCommand;
 import frc.robot.commands.ManualTrapCommand;
@@ -56,6 +57,7 @@ public class RobotContainer {
   private LowerTrapArmCommand lowerArmCommand = new LowerTrapArmCommand(trapHeightPIDSubsystem);
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
+  private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   
   // autos
   private PathPlannerAuto ampAuto;
@@ -72,6 +74,7 @@ public class RobotContainer {
   private Trigger feedTrapTrigger = secondaryController.povRight();
   private Trigger expelTrapTrigger = secondaryController.povLeft();
   private Trigger toggleTrapTrigger = secondaryController.x();
+  private Trigger homeTrapTrigger = secondaryController.start();
   // manual shooter triggers
   private Trigger raiseShooterTrigger = secondaryController.y();
   private Trigger lowerShooterTrigger = secondaryController.a();
@@ -102,6 +105,7 @@ public class RobotContainer {
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
+    homeTrapTrigger.whileTrue(homeTrapArmCommand);
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
     lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
