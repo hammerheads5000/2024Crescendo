@@ -321,8 +321,8 @@ public class Constants {
         public static final Measure<Distance> motorDistance = Inches.of(7.38); // distance of motor along shooter
 
         public static final TalonFX heightMotor = new TalonFX(14);
-        public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
         public static final double maxOutput = 0.5; // duty cycle output max
+        public static final double arbitraryFeedforward = 0.05; // duty cycle arbitrary feed forward to account for gravity
         
         // height motor configuration
         private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
@@ -332,24 +332,10 @@ public class Constants {
                 .withSupplyCurrentLimit(20)
                 .withSupplyCurrentThreshold(40)
                 .withSupplyTimeThreshold(0.1);
-        private static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
-                .withSensorToMechanismRatio(100.0/1); // 100:1 gear ratio
-        private static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
-                .withMotionMagicAcceleration(2) // rps^2
-                .withMotionMagicCruiseVelocity(0.5) // rps
-                .withMotionMagicExpo_kA(2.0) // V / rps^2
-                .withMotionMagicExpo_kV(0.12); // V / rps
-        private static final Slot0Configs heightGains = new Slot0Configs()
-                .withGravityType(GravityTypeValue.Elevator_Static)
-                .withKP(3.0).withKI(0.0).withKD(0.0)
-                .withKG(3.0).withKV(0.12).withKA(2.0);
         
         public static final TalonFXConfiguration heightMotorConfigs = new TalonFXConfiguration()
                 .withMotorOutput(heightMotorOutputConfigs)
-                .withCurrentLimits(heightCurrentLimits)
-                .withFeedback(feedbackConfigs)
-                .withMotionMagic(motionMagicConfigs)
-                .withSlot0(heightGains);
+                .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
         public static final PIDController heightPID = new PIDController(3.0, 0, 0);

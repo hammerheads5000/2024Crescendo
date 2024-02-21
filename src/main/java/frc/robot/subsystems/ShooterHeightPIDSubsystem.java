@@ -48,6 +48,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     SmartDashboard.putNumber("PID Output", output);
+    output += ShooterConstants.arbitraryFeedforward;
     if (Math.abs(output) > ShooterConstants.maxOutput) {
       output = ShooterConstants.maxOutput;
     }
