@@ -12,6 +12,7 @@ import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.TrapConstants;
 
@@ -87,6 +88,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public boolean colorDetected() {
+    SmartDashboard.putString("Color", colorSensor.getColor().toHexString());
     return colorMatch.matchColor(colorSensor.getColor()) != null;
   }
 }

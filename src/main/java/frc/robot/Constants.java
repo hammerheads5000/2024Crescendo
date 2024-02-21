@@ -375,7 +375,7 @@ public class Constants {
         public static final int centerMicroseconds = 1500;
         public static final int minMicroseconds = 1000;
 
-        public static final Measure<Distance> ampPosition = Inches.of(5); // height to stop at for amp, measured from lowest position
+        public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
 
