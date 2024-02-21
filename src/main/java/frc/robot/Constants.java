@@ -327,6 +327,8 @@ public class Constants {
         public static final TalonFX heightMotor = new TalonFX(26);
         public static final double maxOutput = 0.5; // duty cycle output max
         public static final double arbitraryFeedforward = 0.02; // duty cycle arbitrary feed forward to account for gravity
+        public static final Measure<Angle> lowMotorAngle = Rotations.of(0.419);
+        public static final Measure<Angle> highMotorAngle = Rotations.of(0.198);
         
         // height motor configuration
         private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
@@ -342,7 +344,7 @@ public class Constants {
                 .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
-        public static final PIDController heightPID = new PIDController(3.0, 0, 0);
+        public static final PIDController heightPID = new PIDController(0.5, 0, 0);
         public static final Measure<Angle> pidDeadband = Degrees.of(2);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
