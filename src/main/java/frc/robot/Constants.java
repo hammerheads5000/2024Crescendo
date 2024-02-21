@@ -370,9 +370,9 @@ public class Constants {
         public static final DigitalInput homeLimitSwitch = new DigitalInput(7); // TODO: set
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
-        public static final double expelSpeed = 0.4; // out of 1, how fast to expel note
-        public static final double raiseSpeed = 0.15; // out of 1, how max speed to raise
-        public static final double lowerSpeed = 0.15; // out of 1, how fast to lower to zero
+        public static final double expelSpeed = 1; // out of 1, how fast to expel note
+        public static final double raiseSpeed = 0.25; // out of 1, how max speed to raise
+        public static final double lowerSpeed = 0.25; // out of 1, how fast to lower to zero
 
         public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
     }
