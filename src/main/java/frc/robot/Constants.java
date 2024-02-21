@@ -19,10 +19,16 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -33,6 +39,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -313,22 +320,40 @@ public class Constants {
         public static final Measure<Distance> motorMountHeight = Inches.of(2.125); // height of motor above shooter
         public static final Measure<Distance> motorDistance = Inches.of(4); // distance of motor along shooter
 
-        public static final TalonSRX heightMotor = new TalonSRX(14); // PG71 RS775
-        public static final boolean heightMotorInverted = false; // positive is up
-        public static final double heightMotorGearRatio = 71/1;
+        public static final TalonFX heightMotor = new TalonFX(14);
         public static final Measure<Velocity<Angle>> maxHeightMotorSpeed = RPM.of(5700); // before gearbox
-        public static final double sensorUnitsPerRotation = 7;
-        public static final Measure<Current> maxContinuousCurrent = Amps.of(20);
+        public static final double maxOutput = 0.5; // duty cycle output max
+        
+        // height motor configuration
+        private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
+                .withInverted(InvertedValue.Clockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Brake);
+        private static final CurrentLimitsConfigs heightCurrentLimits = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(20)
+                .withSupplyCurrentThreshold(40)
+                .withSupplyTimeThreshold(0.1);
+        private static final FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
+                .withSensorToMechanismRatio(100.0/1); // 100:1 gear ratio
+        private static final MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs()
+                .withMotionMagicAcceleration(2) // rps^2
+                .withMotionMagicCruiseVelocity(0.5) // rps
+                .withMotionMagicExpo_kA(2.0) // V / rps^2
+                .withMotionMagicExpo_kV(0.12); // V / rps
+        private static final Slot0Configs heightGains = new Slot0Configs()
+                .withGravityType(GravityTypeValue.Elevator_Static)
+                .withKP(3.0).withKI(0.0).withKD(0.0)
+                .withKG(3.0).withKV(0.12).withKA(2.0);
+        
+        public static final TalonFXConfiguration heightMotorConfigs = new TalonFXConfiguration()
+                .withMotorOutput(heightMotorOutputConfigs)
+                .withCurrentLimits(heightCurrentLimits)
+                .withFeedback(feedbackConfigs)
+                .withMotionMagic(motionMagicConfigs)
+                .withSlot0(heightGains);
         
         // height motor PID
         public static final PIDController heightPID = new PIDController(3.0, 0, 0);
         public static final Measure<Angle> pidDeadband = Degrees.of(2);
-        public static final double arbitraryFeedForward = 0.6; // out of 1 duty cycle, used to compensate for gravity
-
-        // motion magic
-        public static final double motionMagicAccel = maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation * 0.25; // accel to max in 0.25 secs;
-        public static final double motionMagicVel = maxHeightMotorSpeed.in(RotationsPerSecond) * 10 * sensorUnitsPerRotation * 0.8; // 80% of max speed to cruise
-        public static final int motionMagicSCurve = 1; // [0,8] how much smoothing to apply
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;

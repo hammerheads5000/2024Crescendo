@@ -13,6 +13,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
@@ -23,9 +25,8 @@ import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterHeightPIDSubsystem extends PIDSubsystem {
-  TalonSRX heightMotor;
+  TalonFX heightMotor;
   DutyCycleEncoder encoder;
-  double maxSpeed;
 
   MutableMeasure<Angle> targetAngle;
 
@@ -34,12 +35,10 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     super(ShooterConstants.heightPID);
 
     heightMotor = ShooterConstants.heightMotor;
-    heightMotor.setInverted(ShooterConstants.heightMotorInverted);
-    heightMotor.setNeutralMode(NeutralMode.Brake);
+    TalonFXConfigurator config = heightMotor.getConfigurator();
+    config.apply(ShooterConstants.heightMotorConfigs);
 
     encoder = ShooterConstants.heightMotorEncoder;
-
-    maxSpeed = ShooterConstants.maxHeightMotorSpeed.in(RotationsPerSecond) / ShooterConstants.heightMotorGearRatio;
 
     targetAngle = ShooterConstants.closeAngle.mutableCopy();
 
@@ -49,8 +48,11 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   @Override
   public void useOutput(double output, double setpoint) {
     SmartDashboard.putNumber("PID Output", output);
-    SmartDashboard.putNumber("Motor output", output / maxSpeed);
-    heightMotor.set(TalonSRXControlMode.PercentOutput, output / maxSpeed + ShooterConstants.arbitraryFeedForward);
+    if (Math.abs(output) > ShooterConstants.maxOutput) {
+      output = ShooterConstants.maxOutput;
+    }
+    SmartDashboard.putNumber("Motor output", output);
+    heightMotor.set(output);
   }
 
   @Override
