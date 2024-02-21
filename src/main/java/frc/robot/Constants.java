@@ -275,8 +275,8 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Meters.zero()),
-                        new Rotation3d(0.0, 0.0, 0.0));
+                        new Translation3d(SwerveConstants.swerveLength.negate(), Meters.zero(), Meters.zero()),
+                        new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
@@ -326,7 +326,7 @@ public class Constants {
 
         public static final TalonFX heightMotor = new TalonFX(26);
         public static final double maxOutput = 0.5; // duty cycle output max
-        public static final double arbitraryFeedforward = 0.05; // duty cycle arbitrary feed forward to account for gravity
+        public static final double arbitraryFeedforward = 0.02; // duty cycle arbitrary feed forward to account for gravity
         
         // height motor configuration
         private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
