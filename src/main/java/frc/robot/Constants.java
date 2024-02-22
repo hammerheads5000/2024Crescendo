@@ -69,6 +69,7 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Time;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -383,18 +384,20 @@ public class Constants {
 
         public static final Encoder heightEncoder = new Encoder(7, 6); // encoder for vertical movement
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
-        public static final Measure<Distance> distancePerPulse = Inches.of(9.0/pulsesPerRev); // vertical distance for every encoder pulse
+        public static final Measure<Distance> distancePerPulse = Inches.of(9.0/pulsesPerRev); // distance per encoder pulse (9in per revolution)
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
         public static final PIDController heightPIDController = new PIDController(0.3, 0.0, 0.0);
+
         public static final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        public static final Color colorToMatch = new Color("#20617C");
+        public static final Color colorToMatch = new Color("#20617C"); // match blue tape
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
-        public static final double expelSpeed = 1; // out of 1, how fast to expel note
-        public static final double raiseSpeed = 0.25; // out of 1, how max speed to raise
-        public static final double lowerSpeed = 0.25; // out of 1, how fast to lower to zero
+        public static final double expelSpeed = 1; // out of 1, how fast to expel note (pretty much never used)
+        public static final double raiseSpeed = 0.25; // out of 1, max speed to raise
+        public static final double lowerSpeed = 0.25; // out of 1, speed to home to zero
 
         public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
+        public static final Measure<Time> intakeDelay = Seconds.of(0.3); // time to wait after note detected by lidar
     }
 
     public static final class ClimberConstants {

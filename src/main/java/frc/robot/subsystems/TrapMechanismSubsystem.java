@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,6 +15,7 @@ import frc.robot.Constants.TrapConstants;
 
 public class TrapMechanismSubsystem extends SubsystemBase {
   TalonSRX rollerMotor;
+  DigitalInput lidarSensor;
 
   Servo linearActuator;
 
@@ -25,7 +28,8 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     linearActuator.setBoundsMicroseconds(TrapConstants.maxMicroseconds, 0, 
                                         TrapConstants.centerMicroseconds, 0, 
                                         TrapConstants.minMicroseconds);
-
+                            
+    lidarSensor = TrapConstants.noteDetectionLidarSensor;
   }
 
 
@@ -63,6 +67,10 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void moveActuatorForAmp() {
     linearActuator.set(Constants.TrapConstants.ampActuatorPosition);
+  }
+
+  public boolean isNoteDetected() {
+    return !lidarSensor.get();
   }
 
   @Override

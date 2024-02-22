@@ -24,6 +24,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.ExpelTrapNoteCommand;
 import frc.robot.commands.HomeTrapArmCommand;
 import frc.robot.commands.IntakeCommandGroup;
+import frc.robot.commands.IntakeTrapNoteCommandGroup;
 import frc.robot.commands.ManualTrapCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.subsystems.AprilTagSubsystem;
@@ -57,7 +58,8 @@ public class RobotContainer {
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
-  
+  private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
+      .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   // autos
   private PathPlannerAuto ampAuto;
   private PathPlannerAuto sourceAuto;
@@ -139,7 +141,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
     NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
     NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
-    NamedCommands.registerCommand("Intake Trap Command", new InstantCommand(trapMechanismSubsystem::intake));
+    NamedCommands.registerCommand("Intake Trap Command", intakeTrapNoteCommand);
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
