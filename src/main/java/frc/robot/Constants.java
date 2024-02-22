@@ -385,7 +385,7 @@ public class Constants {
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
         public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
         public static final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        public static final Color colorToMatch = new Color("#206080");
+        public static final Color colorToMatch = new Color("#20617C");
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 1; // out of 1, how fast to expel note

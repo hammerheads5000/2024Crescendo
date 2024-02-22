@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Inches;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -88,7 +89,9 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public boolean colorDetected() {
+    ColorMatchResult result = colorMatch.matchColor(colorSensor.getColor());
     SmartDashboard.putString("Color", colorSensor.getColor().toHexString());
-    return colorMatch.matchColor(colorSensor.getColor()) != null;
+    SmartDashboard.putString("Detected color", result == null ? "None" : result.color.toHexString());
+    return result != null;
   }
 }
