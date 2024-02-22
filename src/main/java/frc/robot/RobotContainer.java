@@ -47,10 +47,8 @@ public class RobotContainer {
   private TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
-  private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
   
   // commands
-  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);

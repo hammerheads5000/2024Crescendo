@@ -262,7 +262,8 @@ public class Constants {
         public static final TalonSRX armFeedMotor = new TalonSRX(-1);
         public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
 
-        public static final double feederDutyCycle = 0.75; // Out of 1, how fast rollers should be driven
+        public static final double fastFeedRate = 0.75; // Out of 1, how fast rollers should be driven
+        public static final double slowFeedRate = .4;
         public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
         public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
 

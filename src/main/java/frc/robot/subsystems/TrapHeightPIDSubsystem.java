@@ -42,6 +42,15 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   @Override
+  public void periodic()
+  {
+    SmartDashboard.putNumber("Encoder Distance", encoder.getDistance());
+    SmartDashboard.putBoolean("Color", colorDetected());
+    if(colorDetected())
+    {
+      encoder.reset();
+    }
+  }
   public void useOutput(double output, double setpoint) {
     heightControlMotor.set(TrapConstants.raiseSpeed*output);
   }
