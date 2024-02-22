@@ -28,7 +28,7 @@ public class ClimbCommand extends Command {
   @Override
   public void execute() 
   {
-    if(Math.abs(controller.getLeftY()) > Constants.SwerveConstants.controllerDeadband)
+    if(Math.abs(controller.getLeftY()) > Constants.controllerDeadband)
     {
       climbSubsystem.climb(controller.getLeftY());
     }

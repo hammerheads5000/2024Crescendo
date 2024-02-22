@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -76,14 +77,14 @@ public class AimShooterCommand extends Command {
     Translation2d strafeVelocityVec = new Translation2d().plus(speakerToRobot).rotateBy(new Rotation2d(Degrees.of(90))); // use tangent as velocity
     strafeVelocityVec = strafeVelocityVec.div(strafeVelocityVec.getNorm()); // normalize
     strafeVelocityVec = strafeVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
-        Math.abs(controller.getLeftX()) >= SwerveConstants.controllerDeadband
+        Math.abs(controller.getLeftX()) >= Constants.controllerDeadband
             ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
     
     // approaching to correct distance
     Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
     approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
     approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
-      Math.abs(controller.getLeftY()) >= SwerveConstants.controllerDeadband
+      Math.abs(controller.getLeftY()) >= Constants.controllerDeadband
             ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
 
     // driving

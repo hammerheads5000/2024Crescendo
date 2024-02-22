@@ -18,6 +18,7 @@ public class HomeTrapArmCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (isFinished()) return;
     trapHeightPIDSubsystem.disable();
     trapHeightPIDSubsystem.lower();
   }

@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -37,22 +38,21 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
     encoder = TrapConstants.heightEncoder;
     encoder.setDistancePerPulse(TrapConstants.distancePerPulse.in(Inches));
+    resetEncoder();
 
     getController().setTolerance(TrapConstants.heightTolerance.in(Inches));
   }
 
   @Override
   public void useOutput(double output, double setpoint) {
-    heightControlMotor.set(TrapConstants.raiseSpeed*output);
+    double dutyCycle = output*TrapConstants.raiseSpeed;
+    dutyCycle = Math.max(Math.min(dutyCycle, 1.0), -1.0); // cap between [-1,1]
+    heightControlMotor.set(dutyCycle);
   }
 
   @Override
   public double getMeasurement() {
     // Return the process variable measurement here
-    if (colorDetected()) {
-      encoder.reset();
-      return 0;
-    }
     return encoder.getDistance();
   }
 
@@ -90,8 +90,12 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
   public boolean colorDetected() {
     ColorMatchResult result = colorMatch.matchColor(colorSensor.getColor());
-    SmartDashboard.putString("Color", colorSensor.getColor().toHexString());
-    SmartDashboard.putString("Detected color", result == null ? "None" : result.color.toHexString());
     return result != null;
+  }
+
+  @Override
+  public void periodic() {
+    super.periodic();
+    SmartDashboard.putNumber("Encoder", encoder.getDistance());
   }
 }

@@ -85,6 +85,8 @@ public class Constants {
 
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
+    public static final double controllerDeadband = 0.15;
+
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
         public static final double microsecondsToSeconds = 1.0 / secondsToMicroseconds;
@@ -133,9 +135,6 @@ public class Constants {
 
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
         public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
-
-        public static final double controllerDeadband = 0.15;
-
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -378,12 +377,13 @@ public class Constants {
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> maxHeight = Inches.of(20);
 
-        public static final Encoder heightEncoder = new Encoder(5, 6); // encoder for vertical movement
+        public static final Encoder heightEncoder = new Encoder(7, 6); // encoder for vertical movement
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
-        public static final Measure<Distance> distancePerPulse = Inches.of(2/pulsesPerRev); // vertical distance for every encoder pulse
+        public static final Measure<Distance> distancePerPulse = Inches.of(9.0/pulsesPerRev); // vertical distance for every encoder pulse
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
-        public static final PIDController heightPIDController = new PIDController(1.0, 0.0, 0.0);
+        public static final PIDController heightPIDController = new PIDController(0.3, 0.0, 0.0);
         public static final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         public static final Color colorToMatch = new Color("#20617C");
 

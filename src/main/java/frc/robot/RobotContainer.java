@@ -63,17 +63,19 @@ public class RobotContainer {
 
   // swerve/movement triggers
   private Trigger zeroPose = driveController.x();
-  private Trigger ampTrigger = driveController.a();
+  private Trigger ampTrigger = secondaryController.a(); // temp changed
   private Trigger sourceTrigger = driveController.b();
   // trap triggers
   private Trigger feedTrapTrigger = secondaryController.povRight();
   private Trigger expelTrapTrigger = secondaryController.povLeft();
   private Trigger toggleTrapTrigger = secondaryController.x();
   private Trigger homeTrapTrigger = secondaryController.start();
+  private Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
+                                .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
   // shooter triggers
   private Trigger aimShooterTrigger = driveController.leftBumper();
   private Trigger raiseShooterTrigger = secondaryController.y();
-  private Trigger lowerShooterTrigger = secondaryController.a();
+  // private Trigger lowerShooterTrigger = secondaryController.a();
   private Trigger spinShooterTrigger = driveController.rightBumper();
   // intake triggers
   private Trigger intakeTrigger = secondaryController.rightTrigger();
@@ -84,7 +86,6 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     climberSubsystem.setDefaultCommand(climbCommand);
-    trapHeightPIDSubsystem.setDefaultCommand(manualTrapCommand);
     swerve.resetPose();
     configureAuto();
     configureBindings();
@@ -93,17 +94,19 @@ public class RobotContainer {
   private void configureBindings() {
     // swerve/movement bindings
     zeroPose.onTrue(new InstantCommand(swerve::resetPose));
-    ampTrigger.whileTrue(ampAuto);
+    //ampTrigger.whileTrue(ampAuto);
+    ampTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     sourceTrigger.whileTrue(sourceAuto);
     // trap bindings
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
+    moveAmpTrigger.whileTrue(manualTrapCommand);
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
-    lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
+    //lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);

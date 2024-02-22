@@ -4,9 +4,13 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inches;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.Constants.TrapConstants;
 import frc.robot.subsystems.TrapHeightPIDSubsystem;
 
 public class ManualTrapCommand extends Command {
@@ -19,29 +23,27 @@ public class ManualTrapCommand extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    trapSub.disable();
+  }
 
   @Override
   public void execute() 
   {
-    if(Math.abs(controller.getRightY()) > Constants.SwerveConstants.controllerDeadband)
-    {
-      trapSub.disable();
-      trapSub.raise(-controller.getRightY());
-    }
-    else
-    {
-      trapSub.stop();
-      if(!trapSub.isEnabled())
-      {
-        trapSub.setSetpoint(trapSub.getMeasurement());
-        trapSub.enable();
-      }
-    }
+    // check for endstops
+    if ((Inches.of(trapSub.getMeasurement()).gte(TrapConstants.maxHeight) && -controller.getRightY() > 0)
+        || (trapSub.getMeasurement() <= 0 && -controller.getRightY() < 0))
+      return;
+
+    trapSub.raise(-controller.getRightY());
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    trapSub.stop();
+    trapSub.setSetpoint(trapSub.getMeasurement());
+    trapSub.enable();
+  }
 
   @Override
   public boolean isFinished() {
