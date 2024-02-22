@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
 
 public class TrapMechanismSubsystem extends SubsystemBase {
@@ -58,6 +59,10 @@ public class TrapMechanismSubsystem extends SubsystemBase {
       return;
     }
     extendActuator();
+  }
+
+  public void moveActuatorForAmp() {
+    linearActuator.set(Constants.TrapConstants.ampActuatorPosition);
   }
 
   @Override

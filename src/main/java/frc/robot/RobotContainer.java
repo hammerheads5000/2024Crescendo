@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -137,6 +138,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
     NamedCommands.registerCommand("Intake Trap Command", new InstantCommand(trapMechanismSubsystem::intake));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
+    NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
     ampAuto = new PathPlannerAuto("Amp");
     sourceAuto = new PathPlannerAuto("Source");
