@@ -27,7 +27,7 @@ public class ManualTrapCommand extends Command {
     if(Math.abs(controller.getRightY()) > Constants.SwerveConstants.controllerDeadband)
     {
       trapSub.disable();
-      trapSub.raise(controller.getRightY());
+      trapSub.raise(-controller.getRightY());
     }
     else
     {
