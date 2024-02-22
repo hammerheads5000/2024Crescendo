@@ -27,6 +27,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -291,7 +292,8 @@ public class Constants {
     public static final class ShooterConstants {
         public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(577.5);
         public static final Measure<Angle> farAngle = Degrees.of(27);
-        public static final Measure<Angle> closeAngle = Degrees.of(60);
+        public static final Measure<Angle> closeAngle = Degrees.of(57);
+        public static final Measure<Angle> defaultAngle = Degrees.of(35);
 
         public static final Slot0Configs flywheelGains = new Slot0Configs()
                 .withKP(0.0) // output (V) per unit error in position (rps)
@@ -328,8 +330,9 @@ public class Constants {
         public static final TalonFX heightMotor = new TalonFX(26);
         public static final double maxOutput = 0.5; // duty cycle output max
         public static final double arbitraryFeedforward = 0.02; // duty cycle arbitrary feed forward to account for gravity
+        public static final double heightMotorGearRatio = 100.0/1; // 100:1
         public static final Measure<Angle> lowMotorAngle = Rotations.of(0.419);
-        public static final Measure<Angle> highMotorAngle = Rotations.of(0.198);
+        public static final Measure<Angle> highMotorAngle = Rotations.of(0.236);
         
         // height motor configuration
         private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
@@ -345,13 +348,13 @@ public class Constants {
                 .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
-        public static final PIDController heightPID = new PIDController(0.5, 0, 0);
-        public static final Measure<Angle> pidDeadband = Degrees.of(2);
+        public static final PIDController heightPID = new PIDController(4.0, 0, 0);
+        public static final Measure<Angle> pidDeadband = Degrees.of(0.5);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-        public static final double encoderValueAt90Deg = 0.65; // encoder value in rotations
+        public static final double encoderValueAt90Deg = 0.667; // encoder value in rotations
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
@@ -394,7 +397,7 @@ public class Constants {
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 1; // out of 1, how fast to expel note (pretty much never used)
         public static final double raiseSpeed = 0.25; // out of 1, max speed to raise
-        public static final double lowerSpeed = 0.25; // out of 1, speed to home to zero
+        public static final double lowerSpeed = 0.1; // out of 1, speed to home to zero
 
         public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
         public static final Measure<Time> intakeDelay = Seconds.of(0.3); // time to wait after note detected by lidar
