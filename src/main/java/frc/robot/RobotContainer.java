@@ -47,8 +47,10 @@ public class RobotContainer {
   private TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+ // private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
   
   // commands
+ // private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
@@ -84,20 +86,30 @@ public class RobotContainer {
     swerve.setDefaultCommand(teleopSwerve);
     climberSubsystem.setDefaultCommand(climbCommand);
     trapHeightPIDSubsystem.setDefaultCommand(manualTrapCommand);
+    
     swerve.resetPose();
     configureAuto();
     configureBindings();
   }
 
   private void configureBindings() {
+<<<<<<< Updated upstream
     // swerve/movement bindings
     zeroPose.onTrue(new InstantCommand(swerve::resetPose));
+=======
+    zeroPose.onTrue(new InstantCommand(() -> swerve.resetPose()));
+   // aimShooterTrigger.whileTrue(aimShooterCommand);
+    intakeTrigger.whileTrue(intakeCommandGroup);
+    intakeTrigger.onFalse(new InstantCommand(() -> intakeSubsystem.stopFeeding()));
+    intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
+>>>>>>> Stashed changes
     ampTrigger.whileTrue(ampAuto);
     sourceTrigger.whileTrue(sourceAuto);
     // trap bindings
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
+<<<<<<< Updated upstream
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -106,6 +118,9 @@ public class RobotContainer {
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
+=======
+    spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
+>>>>>>> Stashed changes
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
     intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
