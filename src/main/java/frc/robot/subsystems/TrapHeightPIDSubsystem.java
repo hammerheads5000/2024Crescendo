@@ -43,7 +43,6 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     getController().setTolerance(TrapConstants.heightTolerance.in(Inches));
   }
 
-  @Override
   public void useOutput(double output, double setpoint) {
     double dutyCycle = output*TrapConstants.raiseSpeed;
     dutyCycle = Math.max(Math.min(dutyCycle, 1.0), -1.0); // cap between [-1,1]
@@ -96,6 +95,6 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   @Override
   public void periodic() {
     super.periodic();
-    SmartDashboard.putNumber("Encoder", encoder.getDistance());
+    SmartDashboard.putNumber("Trap Height (in)", encoder.getDistance());
   }
 }

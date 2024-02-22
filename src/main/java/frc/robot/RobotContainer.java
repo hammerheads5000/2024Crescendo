@@ -6,6 +6,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -63,7 +64,7 @@ public class RobotContainer {
 
   // swerve/movement triggers
   private Trigger zeroPose = driveController.x();
-  private Trigger ampTrigger = secondaryController.a(); // temp changed
+  private Trigger ampTrigger = driveController.a();
   private Trigger sourceTrigger = driveController.b();
   // trap triggers
   private Trigger feedTrapTrigger = secondaryController.povRight();
@@ -75,7 +76,7 @@ public class RobotContainer {
   // shooter triggers
   private Trigger aimShooterTrigger = driveController.leftBumper();
   private Trigger raiseShooterTrigger = secondaryController.y();
-  // private Trigger lowerShooterTrigger = secondaryController.a();
+  private Trigger lowerShooterTrigger = secondaryController.a();
   private Trigger spinShooterTrigger = driveController.rightBumper();
   // intake triggers
   private Trigger intakeTrigger = secondaryController.rightTrigger();
@@ -94,7 +95,7 @@ public class RobotContainer {
   private void configureBindings() {
     // swerve/movement bindings
     zeroPose.onTrue(new InstantCommand(swerve::resetPose));
-    //ampTrigger.whileTrue(ampAuto);
+    ampTrigger.whileTrue(ampAuto);
     ampTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     sourceTrigger.whileTrue(sourceAuto);
     // trap bindings
@@ -106,7 +107,7 @@ public class RobotContainer {
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
-    //lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
+    lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
@@ -140,6 +141,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
     NamedCommands.registerCommand("Intake Trap Command", new InstantCommand(trapMechanismSubsystem::intake));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
+    NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
     ampAuto = new PathPlannerAuto("Amp");
     sourceAuto = new PathPlannerAuto("Source");
