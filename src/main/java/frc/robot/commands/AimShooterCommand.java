@@ -82,7 +82,7 @@ public class AimShooterCommand extends Command {
     
     // approaching to correct distance
     Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
-    approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
+    //approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
     approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
       Math.abs(controller.getLeftY()) >= Constants.controllerDeadband
             ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed

@@ -8,11 +8,6 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -55,7 +50,6 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     if (Math.abs(output) > ShooterConstants.maxOutput) {
       output = ShooterConstants.maxOutput*Math.signum(output);
     }
-    SmartDashboard.putNumber("Motor output", output);
     heightMotor.set(output);
   }
 
@@ -63,7 +57,6 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
-    SmartDashboard.putNumber("Measured Shooter Motor Angle (rot)", measured);
     SmartDashboard.putNumber("Measured Shooter Angle (deg)", motorPositionToAngle(Rotations.of(measured)).in(Degrees));
     return measured;
   }
@@ -84,8 +77,6 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     else if (targetAngle.lt(ShooterConstants.farAngle)) {
       targetAngle.mut_replace(ShooterConstants.farAngle);
     }
-    SmartDashboard.putNumber("Shooter Target Angle (deg)", targetAngle.in(Degrees));
-    SmartDashboard.putNumber("Shooter Motor Target (rot)", angleToMotorPosition(targetAngle).in(Rotations));
     setSetpoint(angleToMotorPosition(angle).in(Rotations));
   }
 
@@ -97,11 +88,9 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     
     double lowLimitMotorAngleDiff = getMeasurement() - ShooterConstants.lowMotorAngle.in(Rotations);
     configs.ReverseSoftLimitThreshold = currentMotorPos + lowLimitMotorAngleDiff * ShooterConstants.heightMotorGearRatio;
-    SmartDashboard.putNumber("Reverse height motor limit", configs.ReverseSoftLimitThreshold);
 
     double highLimitMotorAngleDiff = getMeasurement() - ShooterConstants.highMotorAngle.in(Rotations);
     configs.ForwardSoftLimitThreshold = currentMotorPos + highLimitMotorAngleDiff * ShooterConstants.heightMotorGearRatio;
-    SmartDashboard.putNumber("Forward height motor limit", configs.ForwardSoftLimitThreshold);
 
     return configs;
   }
