@@ -99,7 +99,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(2.0,0,0); // controls PID rotating to angle
         public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
         public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
         public static final Measure<Angle> noteRotationalTolerance = Degrees.of(5);
@@ -256,7 +256,7 @@ public class Constants {
         public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
 
         public static final double fastFeedRate = 0.75; // Out of 1, how fast rollers should be driven
-        public static final double slowFeedRate = .4;
+        public static final double slowFeedRate = .25;
         public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
         public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
 

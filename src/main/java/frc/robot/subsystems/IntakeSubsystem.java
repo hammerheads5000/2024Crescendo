@@ -112,8 +112,8 @@ public class IntakeSubsystem extends SubsystemBase {
     return !shooterLidar.get();
   }
 
-  public void report()
+  public void report(String speech)
   {
-    System.out.println("Fucking Yay");
+    System.out.println(speech);
   }
 }

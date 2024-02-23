@@ -110,6 +110,7 @@ public class RobotContainer {
     spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
+    intakeTrigger.onFalse(new InstantCommand(intakeSubsystem::stopFeeding));
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
     intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
