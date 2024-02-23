@@ -13,6 +13,8 @@ import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -23,6 +25,8 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -88,6 +92,7 @@ public class Swerve extends SubsystemBase {
         });
 
     SmartDashboard.putData("Field", field);
+    drivetrain.setVisionMeasurementStdDevs(VisionConstants.stdDvsMatrix);
   }
     
   /**
@@ -115,10 +120,13 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
     // apply request with params
-    drivetrain.setControl(
-        facingAngleRequest.withVelocityX(xVel.in(MetersPerSecond))
-            .withVelocityY(yVel.in(MetersPerSecond))
-            .withTargetDirection(angle));
+    drivetrain.setControl(fieldCentricRequest
+        .withVelocityX(xVel.in(MetersPerSecond))
+        .withVelocityY(yVel.in(MetersPerSecond))
+        .withRotationalRate(SwerveConstants.headingPID.calculate( // use pid to calculate
+            getPose().getRotation().getRadians(),
+            angle.getRadians(),
+            Timer.getFPGATimestamp())));
   }
 
   /**
@@ -200,5 +208,6 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
+    SmartDashboard.putNumber("Robot Heading Angle (deg)", drivetrain.getPigeon2().getYaw().getValueAsDouble());
   }
 }

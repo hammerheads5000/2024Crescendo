@@ -8,7 +8,9 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -17,30 +19,48 @@ import frc.robot.subsystems.Swerve;
 public class AlignToNoteCommand extends Command {
   Swerve swerve;
   DoubleSubscriber angleSubscriber;
+  BooleanSubscriber hasTargetSubscriber;
+  Rotation2d desiredRotation;
 
   /** Creates a new AlignToNoteCommand. */
   public AlignToNoteCommand(Swerve swerve) {
     this.swerve = swerve;
 
     angleSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
+    hasTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
+    desiredRotation = swerve.getPose().getRotation();
 
     addRequirements(swerve);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (!hasTargetSubscriber.get()) {
+      desiredRotation = swerve.getPose().getRotation();
+      return;
+    }
+    Rotation2d robotAngle = swerve.getPose().getRotation();
+    Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
+    desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (!hasTargetSubscriber.get()) return;
+    
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
+    desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
 
     swerve.driveFacingAngle(
         MetersPerSecond.zero(),
         MetersPerSecond.zero(),
-        robotAngle.rotateBy(robotToNoteRotation)); // turn to face note
+        desiredRotation); // turn to face note
+    SmartDashboard.putNumber("Robot rot", swerve.getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Desired rot", desiredRotation.getDegrees());
+    SmartDashboard.putNumber("PID out", SwerveConstants.headingPID.getLastAppliedOutput());
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +70,6 @@ public class AlignToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(angleSubscriber.get()) <= SwerveConstants.noteRotationalTolerance.in(Degrees);
+    return hasTargetSubscriber.get() && Math.abs(angleSubscriber.getAsDouble()) <= SwerveConstants.noteRotationalTolerance.in(Degrees);
   }
 }

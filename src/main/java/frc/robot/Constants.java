@@ -45,12 +45,18 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -104,10 +110,10 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(3.0,0,0); // controls PID rotating to angle
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(4.0,0.,0.); // controls PID rotating to angle
         public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
         public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
-        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(5);
+        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(2.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -284,6 +290,9 @@ public class Constants {
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
+        
+        // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
+        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(1.5, 1.5, 1.5); 
     }
 
     public static final class ShooterConstants {
