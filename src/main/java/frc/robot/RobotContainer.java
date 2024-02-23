@@ -82,10 +82,12 @@ public class RobotContainer {
   private Trigger reverseIntakeTrigger = secondaryController.leftBumper();
   private Trigger intakeFeedTrigger = secondaryController.rightBumper();
   private Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
+  // climb triggers
+  private Trigger climbTrigger = secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
+                                .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband)); // left joystick moved
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
-    climberSubsystem.setDefaultCommand(climbCommand);
     swerve.resetPose();
     configureAuto();
     configureBindings();
@@ -113,6 +115,8 @@ public class RobotContainer {
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
     intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
+    // climb bindings
+    climbTrigger.whileTrue(climbCommand);
   }
 
   private void configureAuto() {

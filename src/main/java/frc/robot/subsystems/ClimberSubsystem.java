@@ -8,25 +8,39 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   TalonFX climbMotor;
+  DigitalInput lidarSensor;
+
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     climbMotor = ClimberConstants.climberMotor;
     climbMotor.getConfigurator().apply(new MotorOutputConfigs()
-    .withInverted(ClimberConstants.climberInverted)
-    .withNeutralMode(NeutralModeValue.Brake));
+      .withInverted(ClimberConstants.climberInverted)
+      .withNeutralMode(NeutralModeValue.Brake));
+    
+    lidarSensor = ClimberConstants.limitLidarSensor;
   }
 
+  // positive to climb
   public void climb(double speed) {
+    if (reachedClimbLimit() && speed > 0) return;
     climbMotor.set(ClimberConstants.climbSpeed * speed);
+  }
+
+  public boolean reachedClimbLimit() {
+    return !lidarSensor.get();
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (reachedClimbLimit()) {
+      climbMotor.stopMotor();
+    }
   }
 }

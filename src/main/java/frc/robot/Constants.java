@@ -84,7 +84,7 @@ public class Constants {
 
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-    public static final double controllerDeadband = 0.15;
+    public static final double controllerDeadband = 0.225;
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
@@ -404,6 +404,8 @@ public class Constants {
         public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
         public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
         public static final double climbSpeed = 0.8;
+
+        public static final DigitalInput limitLidarSensor = new DigitalInput(5);
     }
 
     public static final class AutoConstants {
