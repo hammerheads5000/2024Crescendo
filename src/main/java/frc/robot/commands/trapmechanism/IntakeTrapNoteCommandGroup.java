@@ -22,7 +22,7 @@ public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(trapSubsystem::intake),
+      new InstantCommand(trapSubsystem::forward),
       new WaitUntilCommand(trapSubsystem::isNoteDetected),
       new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
       new InstantCommand(trapSubsystem::stopRollers)

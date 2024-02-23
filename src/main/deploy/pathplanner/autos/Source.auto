@@ -6,18 +6,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Raise To Source"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Flip Trap Down"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -31,6 +19,18 @@
                 "type": "named",
                 "data": {
                   "name": "Raise To Source"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Flip Trap Down"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake Trap Note"
                 }
               }
             ]

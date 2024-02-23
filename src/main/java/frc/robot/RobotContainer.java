@@ -98,8 +98,8 @@ public class RobotContainer {
     ampTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     sourceTrigger.whileTrue(sourceAuto);
     // trap bindings
-    feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::intake, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
-    expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::expel, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::forward, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::reverse, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveAmpTrigger.whileTrue(manualTrapCommand);
@@ -138,7 +138,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
     NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
     NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
-    NamedCommands.registerCommand("Intake Trap Command", intakeTrapNoteCommand);
+    NamedCommands.registerCommand("Intake Trap Note", intakeTrapNoteCommand);
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 

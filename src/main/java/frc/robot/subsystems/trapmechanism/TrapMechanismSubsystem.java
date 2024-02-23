@@ -33,11 +33,11 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   }
 
 
-  public void intake() {
+  public void forward() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.intakeSpeed);
   }
 
-  public void expel() {
+  public void reverse() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, -TrapConstants.expelSpeed);
   }
 
