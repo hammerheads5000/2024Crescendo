@@ -21,6 +21,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -76,6 +77,10 @@ public class Constants {
     public static final String HighSpeedCANbusName = "Bobby";
     public static final String LowSpeedCANbusName = "rio";
     public static final int pigeon2Id = 0;
+    public static final MountPoseConfigs pigeonMountConfigs = new MountPoseConfigs()
+        .withMountPosePitch(0)
+        .withMountPoseRoll(0)
+        .withMountPoseYaw(180);
 
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 

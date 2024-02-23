@@ -26,6 +26,7 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -45,6 +46,8 @@ public class Swerve extends SubsystemBase {
   public Swerve() {
     drivetrain = SwerveConstants.drivetrain;
     drivetrain.configNeutralMode(SwerveConstants.driveNeutralMode);
+
+    drivetrain.getPigeon2().getConfigurator().apply(Constants.pigeonMountConfigs);
 
     // setup drive requests
     fieldCentricRequest = new SwerveRequest.FieldCentric()
