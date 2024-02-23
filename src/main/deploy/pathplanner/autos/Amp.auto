@@ -18,7 +18,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveActuatorForAmp"
+                  "name": "Move Actuator To Amp"
                 }
               },
               {
@@ -34,12 +34,6 @@
           "type": "named",
           "data": {
             "name": "Expel Trap Note"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lower Trap Arm"
           }
         }
       ]
