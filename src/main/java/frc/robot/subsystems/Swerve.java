@@ -13,6 +13,8 @@ import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -88,6 +90,7 @@ public class Swerve extends SubsystemBase {
         });
 
     SmartDashboard.putData("Field", field);
+    drivetrain.setVisionMeasurementStdDevs(VisionConstants.stdDvsMatrix);
   }
     
   /**
