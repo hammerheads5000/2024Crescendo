@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,7 +19,6 @@ public class ShooterSubsystem extends SubsystemBase {
   TalonFX bottomMotor;
 
   VelocityTorqueCurrentFOC topRequest;
-  VelocityTorqueCurrentFOC bottomRequest;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -26,21 +27,18 @@ public class ShooterSubsystem extends SubsystemBase {
     
     topMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
     topMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ShooterConstants.topFlywheelInverted));
-    bottomMotor.getConfigurator().apply(ShooterConstants.flywheelGains);
     bottomMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ShooterConstants.bottomFlywheelInverted));
 
     topRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
-    bottomRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
+    bottomMotor.setControl(new StrictFollower(topMotor.getDeviceID()));
   }
 
   public void start() {
     topMotor.setControl(topRequest);
-    bottomMotor.setControl(bottomRequest);
   }
 
   public void stop() {
     topMotor.stopMotor();
-    bottomMotor.stopMotor();
   }
 
   @Override

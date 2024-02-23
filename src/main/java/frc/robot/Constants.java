@@ -296,7 +296,7 @@ public class Constants {
                 .withKA(0); // output (V) per unit of acceleration (rps/s)
 
         public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
-        public static final InvertedValue topFlywheelInverted = InvertedValue.CounterClockwise_Positive; // ccw is shooting
+        public static final InvertedValue topFlywheelInverted = InvertedValue.Clockwise_Positive; // cw is shooting
         public static final TalonFX bottomFlywheel = new TalonFX(31, HighSpeedCANbusName);
         public static final InvertedValue bottomFlywheelInverted = InvertedValue.CounterClockwise_Positive; // ccw is shooting
 
