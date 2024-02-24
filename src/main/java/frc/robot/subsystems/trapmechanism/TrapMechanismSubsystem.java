@@ -65,6 +65,7 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     extendActuator();
   }
 
+  /** Set actuator position for shooting into amp */
   public void moveActuatorForAmp() {
     linearActuator.set(Constants.TrapConstants.ampActuatorPosition);
   }

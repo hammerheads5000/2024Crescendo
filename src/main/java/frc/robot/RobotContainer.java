@@ -50,9 +50,9 @@ public class RobotContainer {
   // commands
   private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
-  private IntakeCommandGroup intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem);
+  private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopFeeding);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController);
+  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
@@ -83,8 +83,9 @@ public class RobotContainer {
   private Trigger intakeFeedTrigger = secondaryController.rightBumper();
   private Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
   // climb triggers
-  private Trigger climbTrigger = secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
-                                .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband)); // left joystick moved
+  private Trigger climbTrigger = secondaryController.b().and(
+      secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
+          .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);

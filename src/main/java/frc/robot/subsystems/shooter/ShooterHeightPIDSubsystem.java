@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.Angle;
@@ -23,6 +24,7 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   TalonFX heightMotor;
   DutyCycleEncoder encoder;
+  CoastOut coastOut;
 
   MutableMeasure<Angle> targetAngle;
 
@@ -36,6 +38,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     config.apply(ShooterConstants.heightMotorConfigs);
     config.apply(softLimitConfigs());
 
+    coastOut = new CoastOut();
 
     targetAngle = ShooterConstants.defaultAngle.mutableCopy();
     setTargetAngle(ShooterConstants.defaultAngle);
@@ -61,14 +64,20 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     return measured;
   }
 
+  /** Increase target angle by fixed amount set in Constants.java */
   public void increaseAngle() {
     setTargetAngle(targetAngle.plus(ShooterConstants.manualSpeed));
   }
 
+  /** Decrease target angle by fixed amount set in Constants.java */
   public void decreaseAngle() {
     setTargetAngle(targetAngle.minus(ShooterConstants.manualSpeed));
   }
 
+  /**
+   * Set the target angle for the pid to target
+   * @param angle Angle to set, measured from 0 at horizontal
+   */
   public void setTargetAngle(Measure<Angle> angle) {
     targetAngle.mut_replace(angle);
     if (targetAngle.gt(ShooterConstants.closeAngle)) {
@@ -78,6 +87,11 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
       targetAngle.mut_replace(ShooterConstants.farAngle);
     }
     setSetpoint(angleToMotorPosition(angle).in(Rotations));
+  }
+
+  /** Set the motor to coast */
+  public void coast() {
+    heightMotor.setControl(coastOut);
   }
 
   private SoftwareLimitSwitchConfigs softLimitConfigs() {

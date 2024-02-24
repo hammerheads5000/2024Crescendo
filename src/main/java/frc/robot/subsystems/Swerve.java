@@ -12,9 +12,9 @@ import java.util.EnumSet;
 import org.photonvision.EstimatedRobotPose;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,7 +25,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,7 +38,6 @@ public class Swerve extends SubsystemBase {
   private SwerveDrivetrain drivetrain;
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
-  private SwerveRequest.FieldCentricFacingAngle facingAngleRequest;
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
@@ -53,6 +51,13 @@ public class Swerve extends SubsystemBase {
 
     drivetrain.getPigeon2().getConfigurator().apply(Constants.pigeonMountConfigs);
 
+    // apply current limits
+    for (int i = 0; i < 4; i++) {
+      SwerveModule module = drivetrain.getModule(i);
+      module.getDriveMotor().getConfigurator().apply(SwerveConstants.driveCurrentLimits);
+      module.getSteerMotor().getConfigurator().apply(SwerveConstants.angleCurrentLimits);
+    }
+
     // setup drive requests
     fieldCentricRequest = new SwerveRequest.FieldCentric()
         .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
@@ -65,21 +70,15 @@ public class Swerve extends SubsystemBase {
         .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
-
-    facingAngleRequest = new SwerveRequest.FieldCentricFacingAngle()
-        .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
-        .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
-        .withDriveRequestType(SwerveConstants.driveRequestType)
-        .withSteerRequestType(SwerveConstants.steerRequestType);
-
-    facingAngleRequest.HeadingController = SwerveConstants.headingPID;
-    facingAngleRequest.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-    facingAngleRequest.HeadingController.setTolerance(SwerveConstants.speakerRotationalTolerance.in(Radians));
-
+        
     chassisSpeedsRequest = new SwerveRequest.ApplyChassisSpeeds()
         .withDriveRequestType(SwerveConstants.driveRequestType)
         .withSteerRequestType(SwerveConstants.steerRequestType);
-
+        
+    // setup heading pid
+    SwerveConstants.headingPID.enableContinuousInput(-Math.PI, Math.PI);
+    SwerveConstants.headingPID.setTolerance(SwerveConstants.rotationalPIDTolerance.in(Radians));
+        
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
 
     // creates listener such that when the pose estimate NetworkTables topic
@@ -104,7 +103,6 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFieldCentric(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
       Measure<Velocity<Angle>> rot) {
-    // apply request with params
     drivetrain.setControl(
         fieldCentricRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
@@ -119,14 +117,16 @@ public class Swerve extends SubsystemBase {
    * @param angle angle to face (field centric)
    */
   public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
-    // apply request with params
+    // calculate rotational velocity with pid (radians per second)
+    double omega = SwerveConstants.headingPID.calculate(
+        getPose().getRotation().getRadians(),
+        angle.getRadians(),
+        Timer.getFPGATimestamp());
+
     drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))
         .withVelocityY(yVel.in(MetersPerSecond))
-        .withRotationalRate(SwerveConstants.headingPID.calculate( // use pid to calculate
-            getPose().getRotation().getRadians(),
-            angle.getRadians(),
-            Timer.getFPGATimestamp())));
+        .withRotationalRate(omega));
   }
 
   /**
@@ -138,7 +138,6 @@ public class Swerve extends SubsystemBase {
    */
   public void driveRobotCentric(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel,
       Measure<Velocity<Angle>> rot) {
-    // apply request with params
     drivetrain.setControl(
         robotCentricRequest.withVelocityX(xVel.in(MetersPerSecond))
             .withVelocityY(yVel.in(MetersPerSecond))
@@ -176,7 +175,7 @@ public class Swerve extends SubsystemBase {
   /**
    * Gets calculated pose (from odometry with any added vision measurements)
    * 
-   * @return
+   * @return pose
    */
   public Pose2d getPose() {
     return drivetrain.getState().Pose;

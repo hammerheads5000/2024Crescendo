@@ -9,7 +9,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
@@ -27,7 +26,10 @@ public class ClimberSubsystem extends SubsystemBase {
     lidarSensor = ClimberConstants.limitLidarSensor;
   }
 
-  // positive to climb
+  /**
+   * Move the climber
+   * @param speed speed to climb at. positive is climbing
+   */
   public void climb(double speed) {
     if (reachedClimbLimit() && speed > 0) return;
     climbMotor.set(ClimberConstants.climbSpeed * speed);

@@ -60,6 +60,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     heightControlMotor.set(-TrapConstants.lowerSpeed);
   }
 
+  /** Stop the height control motor */
   public void stop() {
     heightControlMotor.stopMotor();
   }

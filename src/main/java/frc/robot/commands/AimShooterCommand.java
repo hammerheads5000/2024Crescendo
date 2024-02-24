@@ -20,7 +20,6 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -66,6 +65,7 @@ public class AimShooterCommand extends Command {
   @Override
   public void initialize() {
     shooterSubsystem.start();
+    shooterHeightPIDSubsystem.enable();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -82,8 +82,7 @@ public class AimShooterCommand extends Command {
     
     // approaching to correct distance
     Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
-    System.out.println(approachVelocityVec.getX() + " " + approachVelocityVec.getY());
-    //approachVelocityVec.rotateBy(new Rotation2d(Degrees.of(180))); // unit vector towards from speaker
+
     Rotation2d angleToFace = approachVelocityVec.getAngle();
     
     approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
@@ -98,12 +97,8 @@ public class AimShooterCommand extends Command {
         MetersPerSecond.of(totalVelocityVec.getY()),
         angleToFace);
 
-    SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker().in(Meters));
-
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
-
-    SmartDashboard.putNumber("Target angle", shooterAngle.in(Degrees));
   }
 
   private Measure<Angle> angleFromDistance(Measure<Distance> distance) {
@@ -129,6 +124,7 @@ public class AimShooterCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.stop();
+    shooterHeightPIDSubsystem.disable();
   }
 
   // Returns true when the command should end.

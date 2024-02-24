@@ -7,7 +7,6 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,10 +32,12 @@ public class ShooterSubsystem extends SubsystemBase {
     bottomMotor.setControl(new StrictFollower(topMotor.getDeviceID()));
   }
 
+  /** Spin wheels up */
   public void start() {
     topMotor.setControl(topRequest);
   }
 
+  /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();
   }

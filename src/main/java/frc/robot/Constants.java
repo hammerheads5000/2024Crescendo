@@ -18,11 +18,9 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -45,9 +43,7 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -82,6 +78,7 @@ import static edu.wpi.first.units.Units.*;
 public class Constants {
     public static final String HighSpeedCANbusName = "Bobby";
     public static final String LowSpeedCANbusName = "rio";
+
     public static final int pigeon2Id = 0;
     public static final MountPoseConfigs pigeonMountConfigs = new MountPoseConfigs()
         .withMountPosePitch(0)
@@ -111,8 +108,7 @@ public class Constants {
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
         public static final PhoenixPIDController headingPID = new PhoenixPIDController(4.0,0.,0.); // controls PID rotating to angle
-        public static final Measure<Angle> speakerRotationalTolerance = Degrees.of(1);
-        public static final PIDController noteAlignPID = new PIDController(2.5, 0, 0);
+        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(1);
         public static final Measure<Angle> noteRotationalTolerance = Degrees.of(2.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
@@ -240,18 +236,8 @@ public class Constants {
                 .withSupplyCurrentThreshold(40)
                 .withSupplyTimeThreshold(0.1);
 
-        public static final OpenLoopRampsConfigs openLoopRampsConfig = new OpenLoopRampsConfigs()
-                .withDutyCycleOpenLoopRampPeriod(0.25)
-                .withVoltageOpenLoopRampPeriod(0.25)
-                .withTorqueOpenLoopRampPeriod(0.25);
-
-        public static final ClosedLoopRampsConfigs closedLoopRampsConfig = new ClosedLoopRampsConfigs()
-                .withDutyCycleClosedLoopRampPeriod(0.0)
-                .withVoltageClosedLoopRampPeriod(0.0)
-                .withTorqueClosedLoopRampPeriod(0.0);
-
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Brake;
-        public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
+        public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Coast;
     }
 
     public static final class IntakeConstants {
@@ -318,9 +304,6 @@ public class Constants {
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
-
-        // PID used to move to correct distance from speaker
-        public static final PIDController moveToDistancePID = new PIDController(1.5, 0, 0);
 
         // Linkage characterization
 

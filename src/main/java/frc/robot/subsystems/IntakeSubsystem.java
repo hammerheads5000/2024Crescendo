@@ -26,15 +26,18 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonSRX shooterFeedMotor;
 
   private boolean armEnabled = false;
-  private EventLoop eventLoop = new EventLoop();
+
   private DigitalInput intakeLidar;
   private DigitalInput shooterLidar;
+
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     armRaiseMotor = IntakeConstants.armRaiseMotor;
     armFeedMotor = IntakeConstants.armFeedMotor;
+
     intakeLidar = Constants.IntakeConstants.intakeLidarSensor;
     shooterLidar = Constants.IntakeConstants.loadedNoteLidarSensor;
+    
     intakeFeedMotor = IntakeConstants.intakeFeedMotor;
     intakeFeedMotor.getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(IntakeConstants.intakeFeederInverted));
@@ -52,6 +55,7 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  /** Start arm if enabled and feed the intake */
   public void startAll() {
     if (armEnabled){
       armRaiseMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.armDropDutyCycle); // pushes arm down
@@ -62,14 +66,19 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeFeedMotor.set(IntakeConstants.fastFeedRate);
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
   }
-   public void setIntakeSpeed(double speed)
-   {
+
+  /**
+   * Set the speed to run the intake at
+   * @param speed speed (out of 1; duty cycle)
+   */
+  public void setIntakeSpeed(double speed) {
     intakeFeedMotor.set(speed);
-   }
+  }
+  
   public void raiseArm() {
     if (armEnabled) {
       armRaiseMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.armRaiseDutyCycle); // raises arm
-      armFeedMotor.neutralOutput();;
+      armFeedMotor.neutralOutput();
     }
   }
 
@@ -89,7 +98,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopArm() {
     armRaiseMotor.neutralOutput();
-
   }
 
   public void setArmEnabled(boolean armEnabled) {
@@ -98,8 +106,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    eventLoop.poll(); // updates eventLoop
-    SmartDashboard.putBoolean("IntakeLIDAR", intakeLidarState());
   }
 
   public boolean intakeLidarState()
@@ -110,10 +116,5 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean shooterLidarState()
   {
     return !shooterLidar.get();
-  }
-
-  public void report()
-  {
-    System.out.println("Fucking Yay");
   }
 }

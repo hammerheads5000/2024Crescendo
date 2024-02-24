@@ -20,13 +20,12 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
   public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {    
     addCommands(
       new AlignToNoteCommand(swerve),
-      new InstantCommand(() -> intakeSubsystem.startAll()), // start intake
+      new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new WaitUntilCommand(intakeSubsystem::intakeLidarState),
-      new InstantCommand(() -> intakeSubsystem.report()),
       new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(Constants.IntakeConstants.slowFeedRate)),
       new WaitUntilCommand(intakeSubsystem::shooterLidarState),
-      new InstantCommand(() -> intakeSubsystem.stopFeeding())
+      new InstantCommand(intakeSubsystem::stopFeeding)
     );
   }
 }
