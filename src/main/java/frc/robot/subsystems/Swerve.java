@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
@@ -27,7 +26,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -122,8 +120,7 @@ public class Swerve extends SubsystemBase {
     // calculate rotational velocity with pid (radians per second)
     double omega = SwerveConstants.headingPID.calculate(
         getPose().getRotation().getRadians(),
-        angle.getRadians(),
-        Timer.getFPGATimestamp());
+        angle.getRadians());
 
     SmartDashboard.putNumber("Desired Angle (deg)", angle.getDegrees());
     SmartDashboard.putNumber("Current Rotation (deg)", getPose().getRotation().getDegrees());
