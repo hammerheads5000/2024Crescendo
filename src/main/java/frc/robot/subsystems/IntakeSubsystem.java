@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -57,18 +58,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /** Start arm if enabled and feed the intake */
-  public void startAll() {
-    if (armEnabled){
-      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.armDropDutyCycle); // pushes arm down
-      armFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
-    }
-    
+  public void startAll() { 
     // starts feeders
     intakeFeedMotor.set(IntakeConstants.fastFeedRate);
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
     IntakeON = true;
-    feederON = true;
     IntakeFAST = true;
+  }
+  public void startFeeder()
+  {
+    intakeFeedMotor.set(IntakeConstants.fastFeedRate);
   }
 
   /**
@@ -93,6 +91,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopFeeding() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.neutralOutput();
+    IntakeON = false;
   }
 
   public void reverse() {
@@ -110,16 +109,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("IntakeLIDAR", intakeLidarState());
     if(IntakeON)
     {
       if(IntakeFAST && intakeLidarState())
       {
-        setIntakeSpeed(IntakeConstants.fastFeedRate);
+        SmartDashboard.putBoolean("YAY", true);
+        setIntakeSpeed(IntakeConstants.slowFeedRate);
+        IntakeFAST = false;
+        intakeFeedMotor.set(IntakeConstants.fastFeedRate);
       }
-      else
-      (IntakeON && shooterLidarState())
+      if (IntakeON && shooterLidarState())
       {
-
+        stopFeeding();
+        IntakeON = false;
       }
     }
   }
