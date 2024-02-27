@@ -303,7 +303,7 @@ public class Constants {
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
-        public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(100);
+        public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.intake.IntakeCommandGroup;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
@@ -48,7 +49,7 @@ public class RobotContainer {
   private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
   
   // commands
-  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterSubsystem, shooterHeightPIDSubsystem);
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopFeeding);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
@@ -57,6 +58,7 @@ public class RobotContainer {
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
+  private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
   // autos
   private PathPlannerAuto ampAuto;
   private PathPlannerAuto sourceAuto;
@@ -110,7 +112,7 @@ public class RobotContainer {
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
     lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
-    spinShooterTrigger.whileTrue(new StartEndCommand(shooterSubsystem::start, shooterSubsystem::stop, shooterSubsystem));
+    spinShooterTrigger.whileTrue(spinShooterCommand);
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));

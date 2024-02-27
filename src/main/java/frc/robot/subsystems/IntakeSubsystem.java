@@ -116,11 +116,11 @@ public class IntakeSubsystem extends SubsystemBase {
       {
         setIntakeSpeed(IntakeConstants.fastFeedRate);
       }
-      else
-      (IntakeON && shooterLidarState())
-      {
+      // else
+      // (IntakeON && shooterLidarState())
+      // {
 
-      }
+      // }
     }
   }
 

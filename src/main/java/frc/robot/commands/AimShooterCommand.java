@@ -35,7 +35,6 @@ public class AimShooterCommand extends Command {
   Swerve swerve;
   CommandXboxController controller;
   Translation3d speakerPos;
-  ShooterSubsystem shooterSubsystem;
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem;
 
   /**
@@ -44,10 +43,9 @@ public class AimShooterCommand extends Command {
    * @param controller
    * @param shooterSubsystem
    */
-  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
+  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
     this.controller = controller;
-    this.shooterSubsystem = shooterSubsystem;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
     shooterHeightPIDSubsystem.enable();
 
@@ -59,13 +57,12 @@ public class AimShooterCommand extends Command {
       speakerPos = FieldConstants.blueSpeakerPos;
     }
 
-    addRequirements(swerve, shooterSubsystem, shooterHeightPIDSubsystem);
+    addRequirements(swerve, shooterHeightPIDSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.start();
     shooterHeightPIDSubsystem.enable();
   }
 
@@ -101,7 +98,6 @@ public class AimShooterCommand extends Command {
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
 
-    SmartDashboard.putBoolean("Flywheels Ready To Shoot", shooterSubsystem.getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.readySpeedTolerance)));
     SmartDashboard.putBoolean("Aligned To Speaker", Math.abs(angleToFace.minus(swerve.getPose().getRotation()).getRadians()) <= ShooterConstants.readyAlignTolerance.in(Radians));
   }
 
@@ -127,7 +123,6 @@ public class AimShooterCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooterSubsystem.stop();
     shooterHeightPIDSubsystem.disable();
   }
 

@@ -3,6 +3,7 @@
   "robotLength": 0.762,
   "holonomicMode": true,
   "pathFolders": [
+    "Note-To-Note Paths",
     "Teleop Paths"
   ],
   "autoFolders": [
