@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -122,6 +124,10 @@ public class Swerve extends SubsystemBase {
         getPose().getRotation().getRadians(),
         angle.getRadians(),
         Timer.getFPGATimestamp());
+
+    SmartDashboard.putNumber("Desired Angle (deg)", angle.getDegrees());
+    SmartDashboard.putNumber("Current Rotation (deg)", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("Angular Velocity (deg/sec)", RadiansPerSecond.of(omega).in(DegreesPerSecond));
 
     drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))

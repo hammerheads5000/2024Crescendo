@@ -107,7 +107,8 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PhoenixPIDController headingPID = new PhoenixPIDController(4.0,0.,0.); // controls PID rotating to angle
+        public static final PhoenixPIDController headingPID = new PhoenixPIDController(5.0,0.5,01); // controls PID rotating to angle
+        public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(1);
         public static final Measure<Angle> noteRotationalTolerance = Degrees.of(2.5);
 
