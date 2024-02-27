@@ -23,7 +23,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonSRX armFeedMotor;
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
-
+  private boolean IntakeON = false;
+  private boolean feederON = false;
+  private boolean IntakeFAST = true;
   private boolean armEnabled = false;
 
   private DigitalInput intakeLidar;
@@ -64,6 +66,9 @@ public class IntakeSubsystem extends SubsystemBase {
     // starts feeders
     intakeFeedMotor.set(IntakeConstants.fastFeedRate);
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
+    IntakeON = true;
+    feederON = true;
+    IntakeFAST = true;
   }
 
   /**
@@ -105,6 +110,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if(IntakeON)
+    {
+      if(IntakeFAST && intakeLidarState())
+      {
+        setIntakeSpeed(IntakeConstants.fastFeedRate);
+      }
+      else
+      (IntakeON && shooterLidarState())
+      {
+
+      }
+    }
   }
 
   public boolean intakeLidarState()
