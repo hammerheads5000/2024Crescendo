@@ -303,6 +303,7 @@ public class Constants {
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
+        public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(100);
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
@@ -348,6 +349,9 @@ public class Constants {
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
+
+        // alignment
+        public static final Measure<Angle> readyAlignTolerance = Degrees.of(1);
     }
 
     public static final class FieldConstants {

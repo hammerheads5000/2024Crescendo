@@ -20,6 +20,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -99,6 +100,9 @@ public class AimShooterCommand extends Command {
 
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
+
+    SmartDashboard.putBoolean("Flywheels Ready To Shoot", shooterSubsystem.getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.readySpeedTolerance)));
+    SmartDashboard.putBoolean("Aligned To Speaker", Math.abs(angleToFace.minus(swerve.getPose().getRotation()).getRadians()) <= ShooterConstants.readyAlignTolerance.in(Radians));
   }
 
   private Measure<Angle> angleFromDistance(Measure<Distance> distance) {

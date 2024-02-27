@@ -4,12 +4,17 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -40,6 +45,10 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();
+  }
+
+  public Measure<Velocity<Angle>> getFlywheelSpeed() {
+    return RotationsPerSecond.of(topMotor.getVelocity().getValueAsDouble());
   }
 
   @Override
