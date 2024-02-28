@@ -13,4 +13,24 @@ public class GoalPoint{
         this.WillShoot = WillShoot;
         this.WillIntake = WillIntake;
     }
-}
+    
+    public double getX()
+    {
+        return Xpos;
+    }
+
+      public double getY()
+    {
+        return Ypos;
+    }
+
+      public boolean GetWillShoot()
+    {
+        return WillShoot;
+    }
+
+      public boolean getWillIntake()
+    {
+        return WillIntake;
+    }
+}   
