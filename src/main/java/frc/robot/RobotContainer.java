@@ -19,9 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ClimbCommand;
-import frc.robot.commands.PickUpNoteAndShootCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.autos.PickUpNoteAndShootCommand;
+import frc.robot.commands.autos.ShootNoteCommand;
 import frc.robot.commands.intake.IntakeCommandGroup;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
@@ -152,6 +153,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
+    NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
+    NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");
@@ -160,6 +163,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
+    return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 }
