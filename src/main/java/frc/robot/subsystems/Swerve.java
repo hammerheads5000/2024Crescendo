@@ -15,6 +15,10 @@ import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,8 +32,10 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.GoalPoint;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
@@ -206,6 +212,24 @@ public class Swerve extends SubsystemBase {
     Pose2d pose = new Pose2d(poseArray[0], poseArray[1], new Rotation2d(poseArray[2]));
     double timestampSeconds = timestamp * UnitConstants.microsecondsToSeconds; // convert microseconds timestamp to seconds
     drivetrain.addVisionMeasurement(pose, timestampSeconds);
+  }
+
+  public Command CreatePathFollowCommand(GoalPoint goalpoint)
+  {
+    Path
+    return new FollowPathHolonomic(
+    path, 
+    this::getPose, 
+    this::getChassisSpeeds, 
+    this::driveRobotCentric, 
+    new HolonomicPathFollowerConfig( 
+    new PIDConstants(5.0, 0.0, 0.0), 
+    new PIDConstants(5.0, 0.0, 0.0), 
+    4.5, 
+    0.4, 
+    new ReplanningConfig()),
+    false, 
+    this);
   }
 
   @Override

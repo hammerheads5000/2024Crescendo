@@ -154,6 +154,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Note1);
+    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Note2);
     return Commands.print("No autonomous command configured");
   }
 }

@@ -14,6 +14,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import java.util.ArrayList;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -57,7 +60,7 @@ import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
+import frc.robot.GoalPoint;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.Angle;
@@ -406,13 +409,16 @@ public class Constants {
     }
 
     public static final class AutoConstants {
+        public static final GoalPoint Note1 = new GoalPoint(0, 0, true, true);
+        public static final GoalPoint Note2 = new GoalPoint(0, 1, true, true);
+        public static final ArrayList<GoalPoint>  AutoGoalPoints = new ArrayList<GoalPoint>();
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
                 new PIDConstants(0.5, 0.0, 0.0), // rotational PID
                 SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
                 new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(),
-                new ReplanningConfig() // default replanning config
+                new ReplanningConfig() // default replanning config          
         );
     }
 }
