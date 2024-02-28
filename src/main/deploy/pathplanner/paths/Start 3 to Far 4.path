@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.490635193885556,
-        "y": 2.4726796441544687
+        "x": 7.551979389673065,
+        "y": 2.45999491998984
       },
       "prevControl": {
-        "x": 6.804102963273255,
-        "y": 0.7214406491180098
+        "x": 5.927464712072281,
+        "y": 1.0167277477412096
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Far 4"
     }
   ],
   "rotationTargets": [],
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Note-To-Note Paths",
+  "folder": "Start Paths",
   "previewStartingState": {
     "rotation": 114.66942891846323,
     "velocity": 0

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.143121095597259,
-        "y": 6.737324771602059
+        "x": 4.484197539823651,
+        "y": 6.5951231902463805
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.271118630118196,
-        "y": 6.545328469820654
+        "x": 5.3635835843100255,
+        "y": 6.783083566167132
       },
       "isLocked": false,
-      "linkedName": "Start 1"
+      "linkedName": "Shoot 1"
     },
     {
       "anchor": {
-        "x": 2.2020097902704667,
-        "y": 4.142465662677604
+        "x": 7.531361682142217,
+        "y": 5.806433611449789
       },
       "prevControl": {
-        "x": 1.6839074938833278,
-        "y": 4.142465662677604
+        "x": 6.8672665916760405,
+        "y": 6.413875684894227
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Far 2"
     }
   ],
   "rotationTargets": [],
@@ -43,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Start Paths",
+  "folder": "Shoot-Far Paths",
   "previewStartingState": {
-    "rotation": -129.1554341226131,
+    "rotation": -166.3353996194431,
     "velocity": 0
   },
   "useDefaultConstraints": true

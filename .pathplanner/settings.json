@@ -3,7 +3,11 @@
   "robotLength": 0.762,
   "holonomicMode": true,
   "pathFolders": [
-    "Note-To-Note Paths",
+    "Close-Close Paths",
+    "Close-Far Paths",
+    "Shoot-Close Paths",
+    "Shoot-Far Paths",
+    "Start Paths",
     "Teleop Paths"
   ],
   "autoFolders": [

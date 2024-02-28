@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.271118630118196,
-        "y": 6.545328469820654
+        "x": 4.383504481294676,
+        "y": 5.393519358467289
       },
       "isLocked": false,
       "linkedName": "Start 1"
     },
     {
       "anchor": {
-        "x": 2.2020097902704667,
-        "y": 4.142465662677604
+        "x": 7.4512863311440904,
+        "y": 4.151638303276607
       },
       "prevControl": {
-        "x": 1.6839074938833278,
-        "y": 4.142465662677604
+        "x": 7.424434848869698,
+        "y": 7.843717116005661
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,7 +40,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 180.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Start Paths",
