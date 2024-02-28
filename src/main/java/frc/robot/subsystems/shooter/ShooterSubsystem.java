@@ -51,6 +51,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return RotationsPerSecond.of(topMotor.getVelocity().getValueAsDouble());
   }
 
+  public boolean flywheelsAtSpeed() {
+    return getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.readySpeedTolerance));
+  }
+
   @Override
   public void periodic() {
   }

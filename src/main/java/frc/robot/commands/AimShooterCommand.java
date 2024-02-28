@@ -29,13 +29,13 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AimShooterCommand extends Command {
   Swerve swerve;
   CommandXboxController controller;
   Translation3d speakerPos;
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem;
+  boolean aligned = false;
 
   /**
    * Constructor with automatic selection of distance
@@ -60,6 +60,27 @@ public class AimShooterCommand extends Command {
     addRequirements(swerve, shooterHeightPIDSubsystem);
   }
 
+  /**
+   * Constructor with automatic selection of distance
+   * @param swerve
+   * @param shooterSubsystem
+   */
+  public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
+    this.swerve = swerve;
+    this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
+    shooterHeightPIDSubsystem.enable();
+
+    // set speaker position
+    Optional<Alliance> team = DriverStation.getAlliance();
+    if (team.isPresent() && team.get() == Alliance.Red){
+      speakerPos = FieldConstants.redSpeakerPos;
+    }else{ //auto blue if there is no team because why not
+      speakerPos = FieldConstants.blueSpeakerPos;
+    }
+
+    addRequirements(swerve, shooterHeightPIDSubsystem);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -70,22 +91,13 @@ public class AimShooterCommand extends Command {
   @Override
   public void execute() {
     Translation2d speakerToRobot = swerve.getPose().getTranslation().minus(speakerPos.toTranslation2d());
-
+    Rotation2d angleToFace = speakerToRobot.getAngle();
+    
     // strafing
-    Translation2d strafeVelocityVec = new Translation2d().plus(speakerToRobot).rotateBy(new Rotation2d(Degrees.of(90))); // use tangent as velocity
-    strafeVelocityVec = strafeVelocityVec.div(strafeVelocityVec.getNorm()); // normalize
-    strafeVelocityVec = strafeVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
-        Math.abs(controller.getLeftX()) >= Constants.controllerDeadband
-            ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
+    Translation2d strafeVelocityVec = controller != null ? getStrafeVelocityVec(speakerToRobot) : new Translation2d();
     
     // approaching to correct distance
-    Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
-
-    Rotation2d angleToFace = approachVelocityVec.getAngle();
-    
-    approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
-      Math.abs(controller.getLeftY()) >= Constants.controllerDeadband
-            ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
+    Translation2d approachVelocityVec = controller != null ? getApproachVelocityVec(speakerToRobot) : new Translation2d();
 
     // driving
     Translation2d totalVelocityVec = strafeVelocityVec.plus(approachVelocityVec);
@@ -98,7 +110,30 @@ public class AimShooterCommand extends Command {
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
 
-    SmartDashboard.putBoolean("Aligned To Speaker", Math.abs(angleToFace.minus(swerve.getPose().getRotation()).getRadians()) <= ShooterConstants.readyAlignTolerance.in(Radians));
+    aligned = Math.abs(angleToFace.minus(swerve.getPose().getRotation()).getRadians()) <= ShooterConstants.readyAlignTolerance.in(Radians);
+    SmartDashboard.putBoolean("Aligned To Speaker", aligned);
+  }
+
+  private Translation2d getApproachVelocityVec(Translation2d speakerToRobot) {
+    Translation2d approachVelocityVec = new Translation2d().plus(speakerToRobot).div(speakerToRobot.getNorm()); // unit vector away from speaker
+  
+    approachVelocityVec = approachVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
+      Math.abs(controller.getLeftY()) >= Constants.controllerDeadband
+            ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
+    return approachVelocityVec;
+  }
+
+  private Translation2d getStrafeVelocityVec(Translation2d speakerToRobot) {
+    Translation2d strafeVelocityVec = new Translation2d().plus(speakerToRobot).rotateBy(new Rotation2d(Degrees.of(90))); // use tangent as velocity
+    strafeVelocityVec = strafeVelocityVec.div(strafeVelocityVec.getNorm()); // normalize
+    strafeVelocityVec = strafeVelocityVec.times(SwerveConstants.maxDriveSpeed.times(
+        Math.abs(controller.getLeftX()) >= Constants.controllerDeadband
+            ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
+    return strafeVelocityVec;
+  }
+
+  public boolean isAligned() {
+    return aligned;
   }
 
   private Measure<Angle> angleFromDistance(Measure<Distance> distance) {

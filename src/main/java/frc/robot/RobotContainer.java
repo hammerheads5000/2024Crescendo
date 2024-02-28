@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.PickUpNoteAndShootCommand;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.intake.IntakeCommandGroup;
@@ -60,8 +62,9 @@ public class RobotContainer {
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
   // autos
-  private PathPlannerAuto ampAuto;
-  private PathPlannerAuto sourceAuto;
+  private Command ampAuto;
+  private Command sourceAuto;
+  private SendableChooser<Command> autoChooser;
 
   // swerve/movement triggers
   private Trigger zeroPose = driveController.x();
@@ -148,12 +151,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Trap Note", intakeTrapNoteCommand);
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
+    NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
 
-    ampAuto = new PathPlannerAuto("Amp");
-    sourceAuto = new PathPlannerAuto("Source");
+    ampAuto = AutoBuilder.buildAuto("Amp");
+    sourceAuto = AutoBuilder.buildAuto("Source");
+
+    autoChooser = AutoBuilder.buildAutoChooser();
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
