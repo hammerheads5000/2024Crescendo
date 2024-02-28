@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.intake.AlignToNoteCommand;
 import frc.robot.commands.intake.MoveOverNoteCommand;
@@ -28,6 +29,7 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
     addCommands(
+      new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
       new AlignToNoteCommand(swerve),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),

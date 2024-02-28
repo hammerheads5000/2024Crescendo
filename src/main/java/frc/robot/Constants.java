@@ -304,6 +304,7 @@ public class Constants {
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
         public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
+        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(3000);
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
@@ -340,18 +341,18 @@ public class Constants {
         
         // height motor PID
         public static final PIDController heightPID = new PIDController(2.0, 0, 0);
-        public static final Measure<Angle> pidDeadband = Degrees.of(0.5);
+        public static final Measure<Angle> pidDeadband = Degrees.of(1.);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-        public static final double encoderValueAt90Deg = 0.536; // encoder value in rotations
+        public static final double encoderValueAt90Deg = 0.500; // encoder value in rotations
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
 
         // alignment
-        public static final Measure<Angle> readyAlignTolerance = Degrees.of(1);
+        public static final Measure<Angle> readyAlignTolerance = Degrees.of(5);
     }
 
     public static final class FieldConstants {

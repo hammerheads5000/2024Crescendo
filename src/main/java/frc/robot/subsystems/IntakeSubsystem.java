@@ -86,6 +86,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void startShooterFeed() {
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
+    System.out.println("shoot");
   }
 
   public void stopFeeding() {

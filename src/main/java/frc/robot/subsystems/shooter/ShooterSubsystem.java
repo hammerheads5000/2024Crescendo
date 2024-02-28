@@ -55,6 +55,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.readySpeedTolerance));
   }
 
+  public boolean flywheelsAtCloseSpeed() {
+    return getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.closeSpeedTolerance));
+  }
+
   @Override
   public void periodic() {
   }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2653005603672443,
-      "y": 4.462459498979947
+      "x": 1.6434750941791043,
+      "y": 5.719162565185513
     },
-    "rotation": -43.255490158411085
+    "rotation": 4.953257477842052
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start 2 to Close 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Pick Up Note and Shoot"
+            "pathName": "Test Path"
           }
         }
       ]

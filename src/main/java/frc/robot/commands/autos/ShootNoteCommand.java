@@ -7,6 +7,7 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -31,11 +32,12 @@ public class ShootNoteCommand extends ParallelRaceGroup {
     addCommands(
       aimShooterCommand,
       Commands.sequence(
-          new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()
+          new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtCloseSpeed()
               && shooterHeightPIDSubsystem.getController().atSetpoint()
               && aimShooterCommand.isAligned()), // wait until ready to shoot
           new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem)
-              .until(() -> !intakeSubsystem.shooterLidarState()) // feed to shoot until note not detected
+              .until(() -> !intakeSubsystem.shooterLidarState()), // feed to shoot until note not detected
+          new PrintCommand("Shot Done")
       )
     );
   }
