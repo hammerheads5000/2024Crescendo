@@ -6,25 +6,22 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.commands.AimShooterCommand;
 import frc.robot.commands.ClimbCommand;
-import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
 import frc.robot.commands.autos.ShootNoteCommand;
 import frc.robot.commands.intake.IntakeCommandGroup;
+import frc.robot.commands.shooter.AimShooterCommand;
+import frc.robot.commands.shooter.SpinShooterCommand;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
@@ -45,24 +42,32 @@ public class RobotContainer {
   // subsystems
   private Swerve swerve = new Swerve();
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
+
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
+
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
   
+  private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  
   // commands
-  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
-  private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopFeeding);
+
+  private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
+  
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
-  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
-  private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
+  private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
+  
+  private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
+ 
+  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
   // autos
   private Command ampAuto;
   private Command sourceAuto;
@@ -120,9 +125,9 @@ public class RobotContainer {
     spinShooterTrigger.whileTrue(spinShooterCommand);
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
-    reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopFeeding, intakeSubsystem));
-    intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopFeeding, intakeSubsystem));
-    shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem));
+    reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));
+    intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopAll, intakeSubsystem));
+    shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
   }
@@ -153,6 +158,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Trap Note", intakeTrapNoteCommand);
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
+
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
     NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));

@@ -30,7 +30,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -123,10 +122,6 @@ public class Swerve extends SubsystemBase {
         getPose().getRotation().getRadians(),
         angle.getRadians());
 
-    SmartDashboard.putNumber("Desired Angle (deg)", angle.getDegrees());
-    SmartDashboard.putNumber("Current Rotation (deg)", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("Angular Velocity (deg/sec)", RadiansPerSecond.of(omega).in(DegreesPerSecond));
-
     drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))
         .withVelocityY(yVel.in(MetersPerSecond))
@@ -211,6 +206,5 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
-    SmartDashboard.putNumber("Robot Heading Angle (deg)", drivetrain.getPigeon2().getYaw().getValueAsDouble());
   }
 }

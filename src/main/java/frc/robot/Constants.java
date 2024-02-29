@@ -341,7 +341,7 @@ public class Constants {
         
         // height motor PID
         public static final PIDController heightPID = new PIDController(2.0, 0, 0);
-        public static final Measure<Angle> pidDeadband = Degrees.of(1.);
+        public static final Measure<Angle> heightTolerance = Degrees.of(1.);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;

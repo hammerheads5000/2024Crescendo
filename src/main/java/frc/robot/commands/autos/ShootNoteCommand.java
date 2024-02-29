@@ -5,16 +5,10 @@
 package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.commands.AimShooterCommand;
-import frc.robot.commands.intake.AlignToNoteCommand;
-import frc.robot.commands.intake.MoveOverNoteCommand;
+import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
@@ -35,9 +29,8 @@ public class ShootNoteCommand extends ParallelRaceGroup {
           new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtCloseSpeed()
               && shooterHeightPIDSubsystem.getController().atSetpoint()
               && aimShooterCommand.isAligned()), // wait until ready to shoot
-          new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopFeeding, intakeSubsystem)
-              .until(() -> !intakeSubsystem.shooterLidarState()), // feed to shoot until note not detected
-          new PrintCommand("Shot Done")
+          new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem)
+              .until(() -> !intakeSubsystem.shooterLidarState()) // feed to shoot until note not detected
       )
     );
   }

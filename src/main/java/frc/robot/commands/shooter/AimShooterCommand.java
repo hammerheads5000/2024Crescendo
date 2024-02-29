@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.shooter;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
@@ -38,10 +38,10 @@ public class AimShooterCommand extends Command {
   boolean aligned = false;
 
   /**
-   * Constructor with automatic selection of distance
+   * Construct AimShooterCommand with controller control
    * @param swerve
    * @param controller
-   * @param shooterSubsystem
+   * @param shooterHeightPIDSubsystem
    */
   public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
@@ -61,9 +61,9 @@ public class AimShooterCommand extends Command {
   }
 
   /**
-   * Constructor with automatic selection of distance
+   * Construct AimShooterCommand without controller control
    * @param swerve
-   * @param shooterSubsystem
+   * @param shooterHeightPIDSubsystem
    */
   public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
