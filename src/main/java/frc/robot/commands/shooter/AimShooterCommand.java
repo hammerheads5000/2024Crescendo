@@ -110,7 +110,11 @@ public class AimShooterCommand extends Command {
     Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
 
-    aligned = Math.abs(angleToFace.minus(swerve.getPose().getRotation()).getRadians()) <= ShooterConstants.readyAlignTolerance.in(Radians);
+    // alignment
+    Translation2d robotHeadingVec = new Translation2d(Meters.of(-1), Meters.zero()).rotateBy(swerve.getPose().getRotation()); // points in direction of shot
+    Translation2d robotToDestination = robotHeadingVec.times(speakerToRobot.getNorm());
+    Translation2d destinationPos = swerve.getPose().getTranslation().plus(robotToDestination); // where the note would reach distance of speaker
+    aligned = Meters.of(speakerPos.toTranslation2d().getDistance(destinationPos)).lte(ShooterConstants.readyAlignTolerance);
     SmartDashboard.putBoolean("Aligned To Speaker", aligned);
   }
 
