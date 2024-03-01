@@ -25,7 +25,7 @@ public class AmpCommandGroup extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
     new InstantCommand(trapPIDSubsystem::moveToAmp),
-    new InstantCommand(trapSubsystem::extendActuator),
+    new InstantCommand(trapSubsystem::contractActuator),
     new WaitUntilCommand(trigger),
     new InstantCommand(trapSubsystem::forward),
     new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
