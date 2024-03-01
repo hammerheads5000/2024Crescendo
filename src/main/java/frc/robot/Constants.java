@@ -45,6 +45,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,6 +53,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -106,9 +109,9 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(5.0,0.5,0.1); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(6.5,1.0,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
-        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(1);
+        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -134,7 +137,7 @@ public class Constants {
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
+        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.01);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -259,7 +262,7 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(2.5);
+        public static final Measure<Distance> noteAlignTolerance = Inches.of(2.5);
     }
 
     public static final class VisionConstants {
@@ -269,6 +272,9 @@ public class Constants {
         public static final Transform3d robotToAprilTagCam = new Transform3d(
                         new Translation3d(SwerveConstants.swerveLength.negate(), Meters.zero(), Meters.zero()),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
+        public static final Transform3d robotToNoteDetectionCam = new Transform3d(
+                new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Inches.of(9.5+3.3)),
+                new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
@@ -277,6 +283,7 @@ public class Constants {
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
+        public static final DoubleTopic notePitchTopic = colorVisionTable.getDoubleTopic("targetPitch");
         
         // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
         public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(1.5, 1.5, 1.5); 
@@ -304,7 +311,7 @@ public class Constants {
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
         public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
-        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(3000);
+        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(2000);
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
@@ -340,7 +347,7 @@ public class Constants {
                 .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
-        public static final PIDController heightPID = new PIDController(2.0, 0, 0);
+        public static final PIDController heightPID = new PIDController(3.0, 0.2, 0);
         public static final Measure<Angle> heightTolerance = Degrees.of(1.);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
@@ -352,7 +359,7 @@ public class Constants {
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
 
         // alignment
-        public static final Measure<Angle> readyAlignTolerance = Degrees.of(5);
+        public static final Measure<Distance> readyAlignTolerance = Inches.of(12);
     }
 
     public static final class FieldConstants {
