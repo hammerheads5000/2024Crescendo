@@ -16,6 +16,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Start2);
+    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Note2);
   }
 
   @Override

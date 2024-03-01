@@ -7,8 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,7 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.AimShooterCommand;
+import frc.robot.commands.AutoCommandGroup;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ConfiguredAuto;
 import frc.robot.commands.SpinShooterCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.intake.IntakeCommandGroup;
@@ -59,6 +62,10 @@ public class RobotContainer {
   private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
+  private ConfiguredAuto configAuto = new ConfiguredAuto(swerve, 0 , 1, intakeCommandGroup, aimShooterCommand);
+  private Command PathFollower1 = swerve.CreatePathFollowCommand(Constants.AutoConstants.Start2, Constants.AutoConstants.Note1);
+  private Command PathFollower2 = swerve.CreatePathFollowCommand(Constants.AutoConstants.Note1, Constants.AutoConstants.Note2);
+  private AutoCommandGroup autoCommandGroup = new AutoCommandGroup(PathFollower1, PathFollower2, swerve, intakeSubsystem);
   // autos
   private PathPlannerAuto ampAuto;
   private PathPlannerAuto sourceAuto;
@@ -67,6 +74,7 @@ public class RobotContainer {
   private Trigger zeroPose = driveController.x();
   private Trigger ampTrigger = driveController.a();
   private Trigger sourceTrigger = driveController.b();
+   private final Field2d field;
   // trap triggers
   private Trigger feedTrapTrigger = secondaryController.povRight();
   private Trigger expelTrapTrigger = secondaryController.povLeft();
@@ -89,7 +97,28 @@ public class RobotContainer {
       secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
+    
   public RobotContainer() {
+    field = new Field2d();
+ /*   PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
+      System.out.println("Current Pose:  X: " + pose.getX() + "  Y:" + pose.getY());
+      // Do whatever you want with the pose here
+      field.setRobotPose(pose);
+  });
+  PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+    System.out.println("Target Pose:  X: " + pose.getX() + "  Y:" + pose.getY());
+    // Do whatever you want with the pose here
+    field.getObject("target pose").setPose(pose);
+  }); */
+    PathPlannerLogging.setLogActivePathCallback((poses) -> {
+    // Do whatever you want with the poses here
+    field.getObject("path").setPoses(poses);
+       for(int i = 0; i < poses.size(); i++)
+    {
+      System.out.println("(Pose " + i + " Xpos  " + poses.get(i).getX() + " Ypos  "  + poses.get(i).getX() + ")");
+    }
+    });
+
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
     configureAuto();
@@ -121,7 +150,7 @@ public class RobotContainer {
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
   }
-
+  
   private void configureAuto() {
     AutoBuilder.configureHolonomic(
       swerve::getPose,
@@ -154,8 +183,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Note1);
-    Constants.AutoConstants.AutoGoalPoints.add(Constants.AutoConstants.Note2);
-    return Commands.print("No autonomous command configured");
+    return autoCommandGroup;
   }
 }

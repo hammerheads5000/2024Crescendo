@@ -60,7 +60,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
-    SmartDashboard.putNumber("Measured Shooter Angle (deg)", motorPositionToAngle(Rotations.of(measured)).in(Degrees));
+    SmartDashboard.putNumber("Measured Shooter Angle (deg)",encoder.get());
     return measured;
   }
 

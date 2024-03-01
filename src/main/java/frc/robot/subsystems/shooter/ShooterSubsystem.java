@@ -42,6 +42,11 @@ public class ShooterSubsystem extends SubsystemBase {
     topMotor.setControl(topRequest);
   }
 
+  public void runAt(double speed)
+  {
+    topMotor.set(speed);
+  }
+
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();

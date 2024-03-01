@@ -161,6 +161,11 @@ public class Swerve extends SubsystemBase {
             .withRotationalRate(rot.in(RadiansPerSecond)));
   }
 
+  public void justStop()
+  {
+    driveRobotCentric(new ChassisSpeeds(0,0,0));
+  }
+  
   /**
    * Drive robot with respect to robot
    * 
@@ -168,6 +173,10 @@ public class Swerve extends SubsystemBase {
    */
   public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
     drivetrain.setControl(chassisSpeedsRequest.withSpeeds(chassisSpeeds));
+  }
+
+    public void reverseDriveRobotCentric(ChassisSpeeds chassisSpeeds) {
+    drivetrain.setControl(chassisSpeedsRequest.withSpeeds(chassisSpeeds.times(-1)));
   }
 
   /**
@@ -229,31 +238,16 @@ public class Swerve extends SubsystemBase {
 
     PathPlannerPath path = new PathPlannerPath(
         bezierPoints,
-        new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
-        new GoalEndState(0.0, Rotation2d.fromDegrees(-90)) 
+        new PathConstraints(5.0, 5.0, 2 * Math.PI, 4 * Math.PI), // The constraints for this path. If using a differential drivetrain, the angular constraints have no effect.
+        new GoalEndState(0.0, Rotation2d.fromDegrees(finishPoint.getAngle())) 
     );
     return new FollowPathHolonomic(
     path, 
     this::getPose, 
     this::getChassisSpeeds, 
     this::driveRobotCentric, 
-    new HolonomicPathFollowerConfig( 
-    new PIDConstants(5.0, 0.0, 0.0), 
-    new PIDConstants(5.0, 0.0, 0.0), 
-    4.5, 
-    0.4, 
-    new ReplanningConfig()),
-    () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-          },
+   Constants.AutoConstants.holonomicPathFollowerConfig,
+    () -> false,
     this
     );
   }
@@ -262,5 +256,7 @@ public class Swerve extends SubsystemBase {
   public void periodic() {
     field.setRobotPose(getPose());
     SmartDashboard.putNumber("Robot Heading Angle (deg)", drivetrain.getPigeon2().getYaw().getValueAsDouble());
+    SmartDashboard.putNumber("X", getPose().getX());
+    SmartDashboard.putNumber("Y", getPose().getY());
   }
 }

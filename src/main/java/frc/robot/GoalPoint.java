@@ -6,14 +6,21 @@ public class GoalPoint{
     private double Ypos;
     private boolean WillShoot;
     private boolean WillIntake;
+    private double EndAngle;
 
-    public GoalPoint(double Xpos, double Ypos, boolean WillShoot, boolean WillIntake){
+    public GoalPoint(double Xpos, double Ypos, boolean WillShoot, boolean WillIntake, double angle){
         this.Xpos = Xpos;
         this.Ypos = Ypos;
         this.WillShoot = WillShoot;
         this.WillIntake = WillIntake;
+        this.EndAngle = angle;
     }
     
+    public double getAngle()
+    {
+      return EndAngle;
+    }
+
     public double getX()
     {
         return Xpos;

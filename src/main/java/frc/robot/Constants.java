@@ -348,7 +348,7 @@ public class Constants {
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-        public static final double encoderValueAt90Deg = 0.667; // encoder value in rotations
+        public static final double encoderValueAt90Deg = 0.536; // encoder value in rotations
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
@@ -409,12 +409,15 @@ public class Constants {
     }
 
     public static final class AutoConstants {
-        public static final GoalPoint Note1 = new GoalPoint(0, 0, true, true);
-        public static final GoalPoint Note2 = new GoalPoint(0, 1, true, true);
+        public static final double ProximityToNote = 1;
+        public static final GoalPoint Start2 = new GoalPoint(2, 5.8, false, false, 0);
+        public static final GoalPoint Note1 = new GoalPoint(3.1, 6, false, false, 0);
+        public static final GoalPoint Note2 = new GoalPoint(3.1, 7, false, false, -90);
+        public static final GoalPoint Note3 = new GoalPoint(2.5, 7, false, false, 0);
         public static final ArrayList<GoalPoint>  AutoGoalPoints = new ArrayList<GoalPoint>();
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
-                new PIDConstants(0.5, 0.0, 0.0), // rotational PID
+                new PIDConstants(1, 0.0, 0.0), // rotational PID
                 SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
                 new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(),
