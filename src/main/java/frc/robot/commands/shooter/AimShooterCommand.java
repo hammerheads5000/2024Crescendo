@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -69,7 +70,7 @@ public class AimShooterCommand extends Command {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
     shooterHeightPIDSubsystem.enable();
-
+    
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();
     if (team.isPresent() && team.get() == Alliance.Red){
@@ -77,14 +78,15 @@ public class AimShooterCommand extends Command {
     }else{ //auto blue if there is no team because why not
       speakerPos = FieldConstants.blueSpeakerPos;
     }
-
+    
     addRequirements(swerve, shooterHeightPIDSubsystem);
   }
-
+  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     shooterHeightPIDSubsystem.enable();
+    SwerveConstants.headingPID.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -101,7 +103,7 @@ public class AimShooterCommand extends Command {
 
     // driving
     Translation2d totalVelocityVec = strafeVelocityVec.plus(approachVelocityVec);
-
+    
     swerve.driveFacingAngle(
         MetersPerSecond.of(totalVelocityVec.getX()), 
         MetersPerSecond.of(totalVelocityVec.getY()),
@@ -116,6 +118,7 @@ public class AimShooterCommand extends Command {
     Translation2d destinationPos = swerve.getPose().getTranslation().plus(robotToDestination); // where the note would reach distance of speaker
     aligned = Meters.of(speakerPos.toTranslation2d().getDistance(destinationPos)).lte(ShooterConstants.readyAlignTolerance);
     SmartDashboard.putBoolean("Aligned To Speaker", aligned);
+    SmartDashboard.putNumber("Distance to setpoint (m)", speakerPos.toTranslation2d().getDistance(destinationPos));
   }
 
   private Translation2d getApproachVelocityVec(Translation2d speakerToRobot) {
