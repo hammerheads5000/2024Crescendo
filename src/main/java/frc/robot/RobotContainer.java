@@ -34,16 +34,16 @@ import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
+import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
 
 public class RobotContainer {
   private CommandXboxController driveController = new CommandXboxController(0);
   private CommandXboxController secondaryController = new CommandXboxController(1);
-
+  
   // subsystems
   private Swerve swerve = new Swerve();
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
-
-  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  private IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
 
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   private TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
@@ -61,7 +61,7 @@ public class RobotContainer {
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
-  private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem)
+  private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   
   private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
@@ -84,6 +84,7 @@ public class RobotContainer {
   private Trigger homeTrapTrigger = secondaryController.start();
   private Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
                                 .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
+  private Trigger AutoSourceTrigger = secondaryController.povUp();
   // shooter triggers
   private Trigger aimShooterTrigger = driveController.leftBumper();
   private Trigger raiseShooterTrigger = secondaryController.y();
@@ -118,6 +119,8 @@ public class RobotContainer {
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveAmpTrigger.whileTrue(manualTrapCommand);
+    AutoSourceTrigger.WhileTrue(intakeTrapNoteCommand);
+
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
