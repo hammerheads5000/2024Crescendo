@@ -119,7 +119,7 @@ public class RobotContainer {
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveAmpTrigger.whileTrue(manualTrapCommand);
-    AutoSourceTrigger.WhileTrue(intakeTrapNoteCommand);
+    AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);

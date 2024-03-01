@@ -262,7 +262,8 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final Measure<Distance> noteAlignTolerance = Inches.of(2.5);
+        public static final Measure<Distance> noteAlignTolerance = Inches.of(4);
+        public static final Measure<Time> alignedDelay = Seconds.of(0.3);
     }
 
     public static final class VisionConstants {
@@ -312,6 +313,7 @@ public class Constants {
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
         public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
         public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(2000);
+        public static final Measure<Velocity<Velocity<Angle>>> flywheelAccel = RPM.per(Second).of(3000); 
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
