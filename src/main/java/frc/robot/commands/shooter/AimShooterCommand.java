@@ -48,7 +48,6 @@ public class AimShooterCommand extends Command {
     this.swerve = swerve;
     this.controller = controller;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
-    shooterHeightPIDSubsystem.enable();
 
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();
@@ -69,7 +68,6 @@ public class AimShooterCommand extends Command {
   public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
-    shooterHeightPIDSubsystem.enable();
     
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();

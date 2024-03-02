@@ -32,6 +32,9 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   public ShooterHeightPIDSubsystem() {
     super(ShooterConstants.heightPID);
 
+    targetAngle = ShooterConstants.defaultAngle.mutableCopy();
+    setTargetAngle(ShooterConstants.defaultAngle);
+
     encoder = ShooterConstants.heightMotorEncoder;
     heightMotor = ShooterConstants.heightMotor;
     TalonFXConfigurator config = heightMotor.getConfigurator();
@@ -39,13 +42,10 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     config.apply(softLimitConfigs());
 
     coastOut = new CoastOut();
-
-    targetAngle = ShooterConstants.defaultAngle.mutableCopy();
-    setTargetAngle(ShooterConstants.defaultAngle);
-
+    
     getController().setTolerance(ShooterConstants.heightTolerance.in(Rotations));
   }
-
+  
   @Override
   public void useOutput(double output, double setpoint) {
     output = -output + ShooterConstants.arbitraryFeedforward;
@@ -61,6 +61,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     // Return the process variable measurement here
     double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
     SmartDashboard.putNumber("Shooter Angle (deg)", motorPositionToAngle(Rotations.of(measured)).in(Degrees));
+    SmartDashboard.putNumber("Desired Shooter Angle (deg)", targetAngle.in(Degrees));
     return measured;
   }
 
