@@ -1,0 +1,97 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.0267597005782252,
+      "y": 2.85667224771728
+    },
+    "rotation": -65.82104098129369
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 3 to Far 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far 5 to Shoot 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot 2 to Far 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far 4 to Shoot 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot 2 to Far 3 Under Stage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far 3 to Shoot 2 Under Stage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Note"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
