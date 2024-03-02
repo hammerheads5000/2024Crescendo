@@ -44,6 +44,6 @@ public class ClimberSubsystem extends SubsystemBase {
     if (reachedClimbLimit()) {
       climbMotor.stopMotor();
     }
-    
+
   }
 }
