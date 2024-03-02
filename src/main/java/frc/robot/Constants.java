@@ -156,7 +156,7 @@ public class Constants {
             private static final int steerId = 7;
             private static final int driveId = 22;
             private static final int encoderId = 2;
-            private static final double encoderOffset = -0.456;
+            private static final double encoderOffset = -0.446;
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
@@ -171,7 +171,7 @@ public class Constants {
             private static final int steerId = 1;
             private static final int driveId = 6;
             private static final int encoderId = 0;
-            private static final double encoderOffset = 0.1455;
+            private static final double encoderOffset = 0.148;
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
@@ -186,7 +186,7 @@ public class Constants {
             private static final int steerId = 21;
             private static final int driveId = 0;
             private static final int encoderId = 1;
-            private static final double encoderOffset = -0.485;
+            private static final double encoderOffset = -0.494;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
@@ -201,7 +201,7 @@ public class Constants {
             private static final int steerId = 5;
             private static final int driveId = 23;
             private static final int encoderId = 3;
-            private static final double encoderOffset = -0.41;
+            private static final double encoderOffset = -0.399;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
