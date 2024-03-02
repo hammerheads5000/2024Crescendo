@@ -16,12 +16,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.SafeClimbCommandGroup;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
 import frc.robot.commands.autos.ShootNoteCommand;
 import frc.robot.commands.intake.IntakeCommandGroup;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.commands.shooter.SpinShooterCommand;
+import frc.robot.commands.trapmechanism.AmpCommandGroup;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
@@ -50,14 +52,13 @@ public class RobotContainer {
 
   private ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   private ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
-  
+
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   
   // commands
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
-
   private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
-  
+  private Command safeClimbCommand = new SafeClimbCommandGroup(trapHeightPIDSubsystem, climberSubsystem, trapMechanismSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
@@ -85,6 +86,8 @@ public class RobotContainer {
   private Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
                                 .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
   private Trigger AutoSourceTrigger = secondaryController.povUp();
+  private Trigger SafeClimbTrigger = secondaryController.povDown();
+  private Trigger Amptrigger = secondaryController.back();
   // shooter triggers
   private Trigger aimShooterTrigger = driveController.leftBumper();
   private Trigger raiseShooterTrigger = secondaryController.y();
@@ -100,6 +103,7 @@ public class RobotContainer {
       secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
+          private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -120,6 +124,9 @@ public class RobotContainer {
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveAmpTrigger.whileTrue(manualTrapCommand);
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
+    SafeClimbTrigger.whileTrue(safeClimbCommand);
+    Amptrigger.whileTrue(ampCommandGroup);
+    
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);

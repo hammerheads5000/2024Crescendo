@@ -75,7 +75,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void moveToHome() {
-    setSetpoint(0);
+    setSetpoint(TrapConstants.homePosition.in(Inches));
   }
 
   public void moveToTrap() {
