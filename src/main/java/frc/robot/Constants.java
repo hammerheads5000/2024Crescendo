@@ -109,7 +109,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(6.5,1.0,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(6.5,0.5,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
@@ -274,7 +274,7 @@ public class Constants {
                         new Translation3d(SwerveConstants.swerveLength.negate(), Meters.zero(), Meters.zero()),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
-                new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Inches.of(9.5+3.3)),
+                new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;

@@ -86,10 +86,10 @@ public class AlignToNoteCommand extends Command {
     return hasTargetSubscriber.get() && aligned && timer.hasElapsed(IntakeConstants.alignedDelay.in(Seconds));
   }
 
-  private Measure<Distance> distanceFromPitch() {
-    double pitch = Degrees.of(pitchSubscriber.get()).in(Radians);
+  public Measure<Distance> distanceFromPitch() {
+    double pitch = Degrees.of(-pitchSubscriber.get()).in(Radians);
     double cameraHeight = VisionConstants.robotToNoteDetectionCam.getZ(); // meters
-    double cameraPitch = VisionConstants.robotToNoteDetectionCam.getRotation().getY(); // radians
+    double cameraPitch = -VisionConstants.robotToNoteDetectionCam.getRotation().getY(); // radians
 
     double distance = cameraHeight * Math.tan(Math.PI/2 - cameraPitch - pitch);
     return Meters.of(distance);
