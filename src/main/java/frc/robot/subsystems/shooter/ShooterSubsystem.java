@@ -5,6 +5,7 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.StrictFollower;
@@ -33,6 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
     bottomMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(ShooterConstants.bottomFlywheelInverted));
 
     topRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
+    topRequest.Acceleration = ShooterConstants.flywheelAccel.in(RotationsPerSecond.per(Second));
     bottomMotor.setControl(new StrictFollower(topMotor.getDeviceID()));
   }
 
