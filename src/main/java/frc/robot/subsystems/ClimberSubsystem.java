@@ -31,7 +31,7 @@ public class ClimberSubsystem extends SubsystemBase {
    * @param speed speed to climb at. positive is climbing
    */
   public void climb(double speed) {
-    if (reachedClimbLimit() && speed > 0) return;
+    //if (reachedClimbLimit() && speed > 0) return;
     climbMotor.set(ClimberConstants.climbSpeed * speed);
   }
 

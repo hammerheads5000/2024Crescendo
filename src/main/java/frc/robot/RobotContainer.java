@@ -45,7 +45,7 @@ public class RobotContainer {
   
   // subsystems
   private Swerve swerve = new Swerve();
-  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
+  //private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
 
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
@@ -75,6 +75,7 @@ public class RobotContainer {
   private Command ampAuto;
   private Command sourceAuto;
   private SendableChooser<Command> autoChooser;
+  private Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
 
   // swerve/movement triggers
   private Trigger zeroPose = driveController.x();
@@ -183,7 +184,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 }

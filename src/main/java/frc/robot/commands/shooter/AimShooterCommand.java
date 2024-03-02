@@ -69,14 +69,6 @@ public class AimShooterCommand extends Command {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
     
-    // set speaker position
-    Optional<Alliance> team = DriverStation.getAlliance();
-    if (team.isPresent() && team.get() == Alliance.Red){
-      speakerPos = FieldConstants.redSpeakerPos;
-    }else{ //auto blue if there is no team because why not
-      speakerPos = FieldConstants.blueSpeakerPos;
-    }
-    
     addRequirements(swerve, shooterHeightPIDSubsystem);
   }
   
@@ -85,6 +77,14 @@ public class AimShooterCommand extends Command {
   public void initialize() {
     shooterHeightPIDSubsystem.enable();
     SwerveConstants.headingPID.reset();
+    
+    // set speaker position
+    Optional<Alliance> team = DriverStation.getAlliance();
+    if (team.isPresent() && team.get() == Alliance.Red){
+      speakerPos = FieldConstants.redSpeakerPos;
+    }else{ //auto blue if there is no team because why not
+      speakerPos = FieldConstants.blueSpeakerPos;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

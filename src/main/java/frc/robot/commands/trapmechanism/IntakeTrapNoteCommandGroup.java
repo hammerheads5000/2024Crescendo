@@ -28,6 +28,7 @@ public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
       new InstantCommand(trapSubsystem::extendActuator),
       new InstantCommand(trapSubsystem::forward),
       new WaitUntilCommand(trapSubsystem::isNoteDetected),
+      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
       new InstantCommand(trapSubsystem::stopRollers)
     );
   }

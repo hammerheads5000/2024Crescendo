@@ -42,6 +42,7 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -109,7 +110,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(6.5,0.5,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(6.5,0.1,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
@@ -271,10 +272,10 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength.negate(), Meters.zero(), Meters.zero()),
+                        new Translation3d(SwerveConstants.swerveLength.times(-0.5), Meters.zero(), Meters.zero()),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
-                new Translation3d(SwerveConstants.swerveLength, Meters.zero(), Inches.of(15)),
+                new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
@@ -287,7 +288,7 @@ public class Constants {
         public static final DoubleTopic notePitchTopic = colorVisionTable.getDoubleTopic("targetPitch");
         
         // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
-        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(1.5, 1.5, 1.5); 
+        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(5.0, 5.0, 5.0); 
     }
 
     public static final class ShooterConstants {
@@ -365,7 +366,7 @@ public class Constants {
     }
 
     public static final class FieldConstants {
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(196.17),
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(218.42),
                 Inches.of(80.5));
         public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
                 Inches.of(80.5));
@@ -387,7 +388,7 @@ public class Constants {
         public static final Measure<Distance> homePosition = Inches.of(0);
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
         public static final Measure<Distance> trapPosition = Inches.of(18); // height to stop at for trap, measured from lowest pos
-        public static final Measure<Distance> sourcePosition = Inches.of(10); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> sourcePosition = Inches.of(5); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> maxHeight = Inches.of(20);
 
         public static final Encoder heightEncoder = new Encoder(7, 6); // encoder for vertical movement
@@ -404,8 +405,8 @@ public class Constants {
         public static final double raiseSpeed = 0.25; // out of 1, max speed to raise
         public static final double lowerSpeed = 0.1; // out of 1, speed to home to zero
 
-        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
-        public static final Measure<Time> intakeDelay = Seconds.of(0.3); // time to wait after note detected by lidar
+        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(1);
+        public static final Measure<Time> intakeDelay = Seconds.of(0.15); // time to wait after note detected by lidar
     }
 
     public static final class ClimberConstants {
