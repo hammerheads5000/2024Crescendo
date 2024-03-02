@@ -301,8 +301,8 @@ public class Constants {
                 .withKI(0.0) // output (V) per unit integrated error (rotations)
                 .withKD(0.0) // output (V) per unit of error derivative (rps/s)
                 .withKS(0) // output (V) to overcome static friction
-                .withKV(0.123) // output (V) per unit of velocity (rps)
-                .withKA(0); // output (V) per unit of acceleration (rps/s)
+                .withKV(0.14) // output (V) per unit of velocity (rps)
+                .withKA(1.0); // output (V) per unit of acceleration (rps/s)
 
         public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
         public static final InvertedValue topFlywheelInverted = InvertedValue.Clockwise_Positive; // cw is shooting
