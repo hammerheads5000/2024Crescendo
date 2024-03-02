@@ -384,7 +384,7 @@ public class Constants {
 
         public static final Measure<Distance> homePosition = Inches.of(0);
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
-        public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> trapPosition = Inches.of(18); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(10); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> maxHeight = Inches.of(20);
 

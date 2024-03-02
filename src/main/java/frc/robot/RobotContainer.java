@@ -24,6 +24,7 @@ import frc.robot.commands.intake.IntakeCommandGroup;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.commands.shooter.SpinShooterCommand;
 import frc.robot.commands.trapmechanism.AmpCommandGroup;
+import frc.robot.commands.trapmechanism.AutoTrapCommand;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
@@ -69,6 +70,7 @@ public class RobotContainer {
   private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
  
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
+  private AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   // autos
   private Command ampAuto;
   private Command sourceAuto;
@@ -86,7 +88,7 @@ public class RobotContainer {
   private Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
                                 .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
   private Trigger AutoSourceTrigger = secondaryController.povUp();
-  private Trigger SafeClimbTrigger = secondaryController.povDown();
+  private Trigger AutoTrapTrigger = secondaryController.povDown();
   private Trigger Amptrigger = secondaryController.back();
   // shooter triggers
   private Trigger aimShooterTrigger = driveController.leftBumper();
@@ -124,7 +126,7 @@ public class RobotContainer {
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveAmpTrigger.whileTrue(manualTrapCommand);
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
-    SafeClimbTrigger.whileTrue(safeClimbCommand);
+    AutoTrapTrigger.whileTrue(autoTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
     
 
