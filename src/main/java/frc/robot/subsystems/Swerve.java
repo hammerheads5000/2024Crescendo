@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -169,6 +168,7 @@ public class Swerve extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     drivetrain.seedFieldRelative(pose);
+    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
@@ -188,6 +188,7 @@ public class Swerve extends SubsystemBase {
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
