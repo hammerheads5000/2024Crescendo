@@ -423,7 +423,7 @@ public class Constants {
                 new PIDConstants(0.5, 0.0, 0.0), // rotational PID
                 SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
-                new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(),
+                new Translation2d(SwerveConstants.swerveLength.divide(2), SwerveConstants.swerveWidth.divide(2)).getNorm(),
                 new ReplanningConfig() // default replanning config
         );
     }
