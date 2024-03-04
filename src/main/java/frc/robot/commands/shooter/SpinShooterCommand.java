@@ -28,9 +28,9 @@ public class SpinShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("At Full Speed", shooterSubsystem.flywheelsAtSpeed());
-    SmartDashboard.putBoolean("At Low Speed", shooterSubsystem.flywheelsAtCloseSpeed());
-    SmartDashboard.putNumber("RPM", shooterSubsystem.getFlywheelSpeed().in(Units.RPM));
+    SmartDashboard.putBoolean("Flywheels At Full Speed", shooterSubsystem.flywheelsAtSpeed());
+    SmartDashboard.putBoolean("Flywheels At Low Speed", shooterSubsystem.flywheelsAtCloseSpeed());
+    SmartDashboard.putNumber("Flywheel RPM", shooterSubsystem.getFlywheelSpeed().in(Units.RPM));
   }
 
   // Called once the command ends or is interrupted.

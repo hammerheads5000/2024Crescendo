@@ -18,9 +18,12 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableListener;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -40,6 +43,8 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
+  StructArrayPublisher<SwerveModuleState> statePublisher = Constants.inst
+    .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
 
   private Field2d field = new Field2d();
 
@@ -207,5 +212,6 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
+    statePublisher.set(drivetrain.getState().ModuleStates);
   }
 }

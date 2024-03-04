@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     shooterFeedMotor = IntakeConstants.shooterFeedMotor;
     shooterFeedMotor.setInverted(IntakeConstants.shooterFeedInverted);
 
-    SmartDashboard.putBoolean("Drop-Down Intake Enabled", true);
+    SmartDashboard.putBoolean("Drop-Down Intake Enabled", false);
 
     // allows SmartDashboard control of whether to enable arm
     NetworkTableListener.createListener(

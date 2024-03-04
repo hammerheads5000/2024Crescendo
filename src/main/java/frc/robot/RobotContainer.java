@@ -45,7 +45,7 @@ public class RobotContainer {
   
   // subsystems
   private Swerve swerve = new Swerve();
-  //private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
+  private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   private IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
 
   private TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();

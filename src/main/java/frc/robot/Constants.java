@@ -98,7 +98,7 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(3); // m/s
         public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(2 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
