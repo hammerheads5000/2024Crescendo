@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
@@ -34,11 +35,11 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
 
   public void forward() {
-    rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.intakeSpeed);
+    rollerMotor.set(TalonSRXControlMode.PercentOutput, -TrapConstants.intakeSpeed);
   }
 
   public void reverse() {
-    rollerMotor.set(TalonSRXControlMode.PercentOutput, -TrapConstants.expelSpeed);
+    rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.expelSpeed);
   }
 
   public void stopRollers() {
@@ -77,5 +78,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("NotedDetectedTrap", isNoteDetected());
   }
 }

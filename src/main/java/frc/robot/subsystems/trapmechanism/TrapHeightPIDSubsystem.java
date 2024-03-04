@@ -48,7 +48,8 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
-    // Return the process variable measurement here
+    SmartDashboard.putNumber("Trap Height (in)", encoder.getDistance());
+    
     return encoder.getDistance();
   }
 
@@ -74,7 +75,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void moveToHome() {
-    setSetpoint(0);
+    setSetpoint(TrapConstants.homePosition.in(Inches));
   }
 
   public void moveToTrap() {
@@ -88,11 +89,5 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   public boolean colorDetected() {
     ColorMatchResult result = colorMatch.matchColor(colorSensor.getColor());
     return result != null;
-  }
-
-  @Override
-  public void periodic() {
-    super.periodic();
-    SmartDashboard.putNumber("Trap Height (in)", encoder.getDistance());
   }
 }

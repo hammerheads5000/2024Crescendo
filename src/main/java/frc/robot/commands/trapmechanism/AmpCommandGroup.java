@@ -6,30 +6,30 @@ package frc.robot.commands.trapmechanism;
 
 import static edu.wpi.first.units.Units.Seconds;
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.TrapConstants;
-import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
-
+import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
+import frc.robot.Constants.TrapConstants;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
-  /** Creates a new IntakeTrapNoteCommandGroup. */
-  public IntakeTrapNoteCommandGroup(TrapMechanismSubsystem trapSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem) {
+public class AmpCommandGroup extends SequentialCommandGroup {
+  /** Creates a new AmpCommandGroup. */
+  public AmpCommandGroup(TrapMechanismSubsystem trapSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem,Trigger trigger) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(trapPIDSubsystem::enable),
-      new InstantCommand(trapPIDSubsystem::moveToSource),
-      new InstantCommand(trapSubsystem::extendActuator),
-      new InstantCommand(trapSubsystem::forward),
-      new WaitUntilCommand(trapSubsystem::isNoteDetected),
-      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
-      new InstantCommand(trapSubsystem::stopRollers)
+    new InstantCommand(trapPIDSubsystem::moveToAmp),
+    new InstantCommand(trapSubsystem::contractActuator),
+    new WaitUntilCommand(trigger),
+    new InstantCommand(trapSubsystem::forward),
+    new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
+    new InstantCommand(trapSubsystem::stopRollers)
     );
   }
 }

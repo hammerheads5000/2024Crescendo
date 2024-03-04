@@ -14,9 +14,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-
-import java.util.ArrayList;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -45,9 +42,11 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -55,12 +54,14 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.GoalPoint;
+
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.Angle;
@@ -97,7 +98,7 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(3); // m/s
         public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(2 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
@@ -109,9 +110,9 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(5.0,0.5,0.1); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(6.5,0.1,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
-        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(1);
+        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(50.0) // output (V) per unit error in position (rotations)
@@ -137,7 +138,7 @@ public class Constants {
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
         public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.02);
+        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.01);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -156,7 +157,7 @@ public class Constants {
             private static final int steerId = 7;
             private static final int driveId = 22;
             private static final int encoderId = 2;
-            private static final double encoderOffset = -0.456;
+            private static final double encoderOffset = -0.446;
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
@@ -171,7 +172,7 @@ public class Constants {
             private static final int steerId = 1;
             private static final int driveId = 6;
             private static final int encoderId = 0;
-            private static final double encoderOffset = 0.1455;
+            private static final double encoderOffset = 0.148;
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
@@ -186,7 +187,7 @@ public class Constants {
             private static final int steerId = 21;
             private static final int driveId = 0;
             private static final int encoderId = 1;
-            private static final double encoderOffset = -0.485;
+            private static final double encoderOffset = -0.494;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
@@ -201,7 +202,7 @@ public class Constants {
             private static final int steerId = 5;
             private static final int driveId = 23;
             private static final int encoderId = 3;
-            private static final double encoderOffset = -0.41;
+            private static final double encoderOffset = -0.399;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
@@ -262,7 +263,8 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final Measure<Angle> noteRotationalTolerance = Degrees.of(2.5);
+        public static final Measure<Distance> noteAlignTolerance = Inches.of(4);
+        public static final Measure<Time> alignedDelay = Seconds.of(0.3);
     }
 
     public static final class VisionConstants {
@@ -270,8 +272,11 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength.negate(), Meters.zero(), Meters.zero()),
+                        new Translation3d(SwerveConstants.swerveLength.times(-0.5), Meters.zero(), Meters.zero()),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
+        public static final Transform3d robotToNoteDetectionCam = new Transform3d(
+                new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
+                new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
@@ -280,9 +285,10 @@ public class Constants {
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
+        public static final DoubleTopic notePitchTopic = colorVisionTable.getDoubleTopic("targetPitch");
         
         // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
-        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(1.5, 1.5, 1.5); 
+        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(5.0, 5.0, 5.0); 
     }
 
     public static final class ShooterConstants {
@@ -296,8 +302,8 @@ public class Constants {
                 .withKI(0.0) // output (V) per unit integrated error (rotations)
                 .withKD(0.0) // output (V) per unit of error derivative (rps/s)
                 .withKS(0) // output (V) to overcome static friction
-                .withKV(0.123) // output (V) per unit of velocity (rps)
-                .withKA(0); // output (V) per unit of acceleration (rps/s)
+                .withKV(0.14) // output (V) per unit of velocity (rps)
+                .withKA(1.0); // output (V) per unit of acceleration (rps/s)
 
         public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
         public static final InvertedValue topFlywheelInverted = InvertedValue.Clockwise_Positive; // cw is shooting
@@ -307,6 +313,8 @@ public class Constants {
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
         public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
+        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(2000);
+        public static final Measure<Velocity<Velocity<Angle>>> flywheelAccel = RPM.per(Second).of(6000); 
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
 
@@ -342,23 +350,23 @@ public class Constants {
                 .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
-        public static final PIDController heightPID = new PIDController(2.0, 0, 0);
-        public static final Measure<Angle> pidDeadband = Degrees.of(0.5);
+        public static final PIDController heightPID = new PIDController(3.0, 0.2, 0);
+        public static final Measure<Angle> heightTolerance = Degrees.of(1.);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-        public static final double encoderValueAt90Deg = 0.667; // encoder value in rotations
+        public static final double encoderValueAt90Deg = 0.500; // encoder value in rotations
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
 
         // alignment
-        public static final Measure<Angle> readyAlignTolerance = Degrees.of(1);
+        public static final Measure<Distance> readyAlignTolerance = Inches.of(12);
     }
 
     public static final class FieldConstants {
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(196.17),
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(218.42),
                 Inches.of(80.5));
         public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
                 Inches.of(80.5));
@@ -377,9 +385,10 @@ public class Constants {
         public static final int minMicroseconds = 1000;
         public static final double ampActuatorPosition = 0.3;
 
+        public static final Measure<Distance> homePosition = Inches.of(0);
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
-        public static final Measure<Distance> trapPosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
-        public static final Measure<Distance> sourcePosition = Inches.of(20); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> trapPosition = Inches.of(18); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> sourcePosition = Inches.of(5); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> maxHeight = Inches.of(20);
 
         public static final Encoder heightEncoder = new Encoder(7, 6); // encoder for vertical movement
@@ -396,8 +405,8 @@ public class Constants {
         public static final double raiseSpeed = 0.25; // out of 1, max speed to raise
         public static final double lowerSpeed = 0.1; // out of 1, speed to home to zero
 
-        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(4);
-        public static final Measure<Time> intakeDelay = Seconds.of(0.3); // time to wait after note detected by lidar
+        public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(1);
+        public static final Measure<Time> intakeDelay = Seconds.of(0.15); // time to wait after note detected by lidar
     }
 
     public static final class ClimberConstants {
@@ -409,16 +418,13 @@ public class Constants {
     }
 
     public static final class AutoConstants {
-        public static final GoalPoint Note1 = new GoalPoint(0, 0, true, true);
-        public static final GoalPoint Note2 = new GoalPoint(0, 1, true, true);
-        public static final ArrayList<GoalPoint>  AutoGoalPoints = new ArrayList<GoalPoint>();
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
                 new PIDConstants(0.5, 0.0, 0.0), // rotational PID
                 SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
-                new Translation2d(SwerveConstants.swerveLength, SwerveConstants.swerveWidth).getNorm(),
-                new ReplanningConfig() // default replanning config          
+                new Translation2d(SwerveConstants.swerveLength.divide(2), SwerveConstants.swerveWidth.divide(2)).getNorm(),
+                new ReplanningConfig() // default replanning config
         );
     }
 }

@@ -5,11 +5,18 @@
 package frc.robot.commands.intake;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
@@ -19,7 +26,10 @@ public class AlignToNoteCommand extends Command {
   Swerve swerve;
   DoubleSubscriber angleSubscriber;
   BooleanSubscriber hasTargetSubscriber;
+  DoubleSubscriber pitchSubscriber;
   Rotation2d desiredRotation;
+  Timer timer;
+  boolean timingAlignment = false;
 
   /** Creates a new AlignToNoteCommand. */
   public AlignToNoteCommand(Swerve swerve) {
@@ -27,7 +37,9 @@ public class AlignToNoteCommand extends Command {
 
     angleSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
     hasTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
+    pitchSubscriber = VisionConstants.notePitchTopic.subscribe(0.0);
     desiredRotation = swerve.getPose().getRotation();
+    timer = new Timer();
 
     addRequirements(swerve);
   }
@@ -59,6 +71,26 @@ public class AlignToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return hasTargetSubscriber.get() && Math.abs(angleSubscriber.getAsDouble()) <= IntakeConstants.noteRotationalTolerance.in(Degrees);
+    double distanceToNote = distanceFromPitch().in(Meters);
+    Translation2d projectedNote = new Translation2d(distanceToNote, 0).rotateBy(swerve.getPose().getRotation());
+    Translation2d actualNote = new Translation2d(distanceToNote, 0).rotateBy(desiredRotation);
+    boolean aligned = projectedNote.getDistance(actualNote) <= IntakeConstants.noteAlignTolerance.in(Meters);
+    if (aligned && !timingAlignment) {
+      timer.restart();
+      timingAlignment = true;
+    }
+    else if (!aligned && timingAlignment) {
+      timingAlignment = false;
+    }
+    return hasTargetSubscriber.get() && aligned && timer.hasElapsed(IntakeConstants.alignedDelay.in(Seconds));
+  }
+
+  public Measure<Distance> distanceFromPitch() {
+    double pitch = Degrees.of(-pitchSubscriber.get()).in(Radians);
+    double cameraHeight = VisionConstants.robotToNoteDetectionCam.getZ(); // meters
+    double cameraPitch = -VisionConstants.robotToNoteDetectionCam.getRotation().getY(); // radians
+
+    double distance = cameraHeight * Math.tan(Math.PI/2 - cameraPitch - pitch);
+    return Meters.of(distance);
   }
 }

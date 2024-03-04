@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.484817124134603,
-        "y": 4.125011453424749
+        "x": 7.374273798866522,
+        "y": 4.119193383673798
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.101781632134693,
-        "y": 3.6683116223375305
+        "x": 4.991238306866612,
+        "y": 3.662493552586579
       },
       "isLocked": false,
       "linkedName": "Far 3"
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -167.2424678391234,
+    "rotation": 12.759999999999991,
     "rotateFast": false
   },
   "reversed": false,

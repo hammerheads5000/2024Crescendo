@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2653005603672443,
+      "y": 4.462459498979947
+    },
+    "rotation": -43.255490158411085
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 2 to Close 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note and Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

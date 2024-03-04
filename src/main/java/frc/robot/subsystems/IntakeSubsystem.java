@@ -13,7 +13,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,13 +23,12 @@ public class IntakeSubsystem extends SubsystemBase {
   private TalonSRX armFeedMotor;
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
-  private boolean IntakeON = false;
-  private boolean feederON = false;
-  private boolean IntakeFAST = true;
   private boolean armEnabled = false;
 
   private DigitalInput intakeLidar;
   private DigitalInput shooterLidar;
+
+  private double feedSpeed = IntakeConstants.fastFeedRate;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -46,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     shooterFeedMotor = IntakeConstants.shooterFeedMotor;
     shooterFeedMotor.setInverted(IntakeConstants.shooterFeedInverted);
 
-    SmartDashboard.putBoolean("Drop-Down Intake Enabled", true);
+    SmartDashboard.putBoolean("Drop-Down Intake Enabled", false);
 
     // allows SmartDashboard control of whether to enable arm
     NetworkTableListener.createListener(
@@ -60,21 +58,20 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Start arm if enabled and feed the intake */
   public void startAll() { 
     // starts feeders
-    intakeFeedMotor.set(IntakeConstants.fastFeedRate);
-    IntakeON = true;
-    IntakeFAST = true;
+    intakeFeedMotor.set(feedSpeed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
   }
-  public void startFeeder()
-  {
-    intakeFeedMotor.set(IntakeConstants.fastFeedRate);
+
+  public void startIntake() {
+    intakeFeedMotor.set(feedSpeed);
   }
 
   /**
    * Set the speed to run the intake at
    * @param speed speed (out of 1; duty cycle)
    */
-  public void setIntakeSpeed(double speed) {
-    intakeFeedMotor.set(speed);
+  public void setFeedSpeed(double speed) {
+    feedSpeed = speed;
   }
   
   public void raiseArm() {
@@ -85,18 +82,17 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void startShooterFeed() {
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.fastFeedRate);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
   }
 
-  public void stopFeeding() {
+  public void stopAll() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.neutralOutput();
-    IntakeON = false;
   }
 
   public void reverse() {
-    intakeFeedMotor.set(-IntakeConstants.fastFeedRate);
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.fastFeedRate);
+    intakeFeedMotor.set(-feedSpeed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -feedSpeed);
   }
 
   public void stopArm() {
@@ -109,22 +105,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("IntakeLIDAR", intakeLidarState());
-    if(IntakeON)
-    {
-      if(IntakeFAST && intakeLidarState())
-      {
-        SmartDashboard.putBoolean("YAY", true);
-        setIntakeSpeed(IntakeConstants.slowFeedRate);
-        IntakeFAST = false;
-        intakeFeedMotor.set(IntakeConstants.fastFeedRate);
-      }
-      if (IntakeON && shooterLidarState())
-      {
-        stopFeeding();
-        IntakeON = false;
-      }
-    }
   }
 
   public boolean intakeLidarState()

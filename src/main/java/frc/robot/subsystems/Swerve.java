@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -15,28 +14,24 @@ import org.photonvision.EstimatedRobotPose;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.commands.FollowPathHolonomic;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTableEvent;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableListener;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.GoalPoint;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -48,6 +43,8 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
+  StructArrayPublisher<SwerveModuleState> statePublisher = Constants.inst
+    .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
 
   private Field2d field = new Field2d();
 
@@ -129,10 +126,6 @@ public class Swerve extends SubsystemBase {
         getPose().getRotation().getRadians(),
         angle.getRadians());
 
-    SmartDashboard.putNumber("Desired Angle (deg)", angle.getDegrees());
-    SmartDashboard.putNumber("Current Rotation (deg)", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("Angular Velocity (deg/sec)", RadiansPerSecond.of(omega).in(DegreesPerSecond));
-
     drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))
         .withVelocityY(yVel.in(MetersPerSecond))
@@ -180,6 +173,7 @@ public class Swerve extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     drivetrain.seedFieldRelative(pose);
+    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
@@ -199,6 +193,7 @@ public class Swerve extends SubsystemBase {
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
+    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
@@ -214,27 +209,9 @@ public class Swerve extends SubsystemBase {
     drivetrain.addVisionMeasurement(pose, timestampSeconds);
   }
 
-  public Command CreatePathFollowCommand(GoalPoint goalpoint)
-  {
-    Path
-    return new FollowPathHolonomic(
-    path, 
-    this::getPose, 
-    this::getChassisSpeeds, 
-    this::driveRobotCentric, 
-    new HolonomicPathFollowerConfig( 
-    new PIDConstants(5.0, 0.0, 0.0), 
-    new PIDConstants(5.0, 0.0, 0.0), 
-    4.5, 
-    0.4, 
-    new ReplanningConfig()),
-    false, 
-    this);
-  }
-
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
-    SmartDashboard.putNumber("Robot Heading Angle (deg)", drivetrain.getPigeon2().getYaw().getValueAsDouble());
+    statePublisher.set(drivetrain.getState().ModuleStates);
   }
 }
