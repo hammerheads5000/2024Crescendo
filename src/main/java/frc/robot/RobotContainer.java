@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
@@ -57,7 +58,8 @@ public class RobotContainer {
   // commands
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
-  private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
+  private Command expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem)
+      .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt  
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
   private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
@@ -68,6 +70,8 @@ public class RobotContainer {
  
   private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
   private AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
+  private Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
+      .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   // autos
   private Command ampAuto;
   private Command sourceAuto;
@@ -93,6 +97,7 @@ public class RobotContainer {
   private Trigger raiseShooterTrigger = secondaryController.y();
   private Trigger lowerShooterTrigger = secondaryController.a();
   private Trigger spinShooterTrigger = driveController.rightBumper();
+  private Trigger closeShootTrigger = driveController.leftTrigger();
   // intake triggers
   private Trigger intakeTrigger = secondaryController.rightTrigger();
   private Trigger reverseIntakeTrigger = secondaryController.leftBumper();
@@ -103,7 +108,7 @@ public class RobotContainer {
       secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
-          private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
+  
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -126,13 +131,12 @@ public class RobotContainer {
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
-    
-
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
     lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     spinShooterTrigger.whileTrue(spinShooterCommand);
+    closeShootTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.closeAngle)));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));

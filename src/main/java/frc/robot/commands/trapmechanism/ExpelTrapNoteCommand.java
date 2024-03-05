@@ -4,37 +4,28 @@
 
 package frc.robot.commands.trapmechanism;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import static edu.wpi.first.units.Units.Seconds;
+
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.TrapConstants;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 
-public class ExpelTrapNoteCommand extends Command {
-  TrapMechanismSubsystem trapSubsystem;
-
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class ExpelTrapNoteCommand extends SequentialCommandGroup {
   /** Creates a new ExpelTrapNoteCommand. */
   public ExpelTrapNoteCommand(TrapMechanismSubsystem trapSubsystem) {
-    this.trapSubsystem = trapSubsystem;
-    addRequirements(trapSubsystem);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    trapSubsystem.forward();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    trapSubsystem.stopRollers();
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return !trapSubsystem.isNoteDetected();
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(
+      new InstantCommand(trapSubsystem::forward),
+      new WaitUntilCommand(() -> !trapSubsystem.isNoteDetected()),
+      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
+      new InstantCommand(trapSubsystem::stopRollers)
+    );
   }
 }
