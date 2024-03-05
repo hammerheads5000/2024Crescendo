@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.ClimbCommand;
-import frc.robot.commands.SafeClimbCommandGroup;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
 import frc.robot.commands.autos.ShootNoteCommand;
@@ -37,7 +36,6 @@ import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
-import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
 
 public class RobotContainer {
   private CommandXboxController driveController = new CommandXboxController(0);
@@ -59,7 +57,6 @@ public class RobotContainer {
   // commands
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
-  private Command safeClimbCommand = new SafeClimbCommandGroup(trapHeightPIDSubsystem, climberSubsystem, trapMechanismSubsystem);
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);

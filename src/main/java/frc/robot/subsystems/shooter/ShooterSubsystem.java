@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Second;
 
@@ -24,11 +25,12 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterSubsystem extends SubsystemBase {
   TalonFX topMotor;
   TalonFX bottomMotor;
-  DoublePublisher ShooterSpeedPublisher = Constants.LoggingConstants.ShooterSpeedPublisher;
-  DoublePublisher ShooterSpeedRequestPublisher = Constants.LoggingConstants.ShooterSpeedRequestPublisher;
-  BooleanPublisher ShooterAtSpeedPublisher = Constants.LoggingConstants.ShooterAtSpeedPublisher;
-  BooleanPublisher shooterNearSpeedPublisher = Constants.LoggingConstants.ShooterNearSpeedPublisher;
   VelocityTorqueCurrentFOC topRequest;
+  
+  DoublePublisher shooterSpeedPublisher;
+  DoublePublisher shooterSpeedRequestPublisher;
+  BooleanPublisher shooterAtSpeedPublisher;
+  BooleanPublisher shooterNearSpeedPublisher;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -42,18 +44,23 @@ public class ShooterSubsystem extends SubsystemBase {
     topRequest = new VelocityTorqueCurrentFOC(ShooterConstants.topSpeed.in(RotationsPerSecond));
     topRequest.Acceleration = ShooterConstants.flywheelAccel.in(RotationsPerSecond.per(Second));
     bottomMotor.setControl(new StrictFollower(topMotor.getDeviceID()));
+
+    shooterSpeedPublisher = Constants.LoggingConstants.shooterSpeedPublisher;
+    shooterSpeedRequestPublisher = Constants.LoggingConstants.shooterSpeedRequestPublisher;
+    shooterAtSpeedPublisher = Constants.LoggingConstants.shooterAtSpeedPublisher;
+    shooterNearSpeedPublisher = Constants.LoggingConstants.shooterNearSpeedPublisher;
   }
 
   /** Spin wheels up */
   public void start() {
     topMotor.setControl(topRequest);
-    ShooterSpeedRequestPublisher.set(topRequest.Velocity);
+    shooterSpeedRequestPublisher.set(RotationsPerSecond.of(topRequest.Velocity).in(RPM));
   }
 
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();
-    ShooterSpeedRequestPublisher.set(0);
+    shooterSpeedRequestPublisher.set(0);
   }
 
   public Measure<Velocity<Angle>> getFlywheelSpeed() {
@@ -70,8 +77,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  ShooterSpeedPublisher.set(getFlywheelSpeed().baseUnitMagnitude());
-  ShooterAtSpeedPublisher.set(flywheelsAtSpeed());
-  shooterNearSpeedPublisher.set(flywheelsAtCloseSpeed());
+    shooterSpeedPublisher.set(getFlywheelSpeed().in(RPM));
+    shooterAtSpeedPublisher.set(flywheelsAtSpeed());
+    shooterNearSpeedPublisher.set(flywheelsAtCloseSpeed());
   }
 }

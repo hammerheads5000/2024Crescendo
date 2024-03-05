@@ -18,7 +18,6 @@ import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -27,9 +26,10 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   TalonFX heightMotor;
   DutyCycleEncoder encoder;
   CoastOut coastOut;
-  DoublePublisher ShooterAnglePublisher = Constants.LoggingConstants.ShooterAnglePublisher;
-  DoublePublisher ShooterAngleRequestPublisher = Constants.LoggingConstants.ShooterAngleRequestPublisher;
   MutableMeasure<Angle> targetAngle;
+
+  DoublePublisher shooterAnglePublisher = Constants.LoggingConstants.shooterAnglePublisher;
+  DoublePublisher shooterAngleRequestPublisher = Constants.LoggingConstants.shooterAngleRequestPublisher;
 
   /** Creates a new ShooterHeightPIDSubsystem. */
   public ShooterHeightPIDSubsystem() {
@@ -63,9 +63,9 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   public double getMeasurement() {
     // Return the process variable measurement here
     double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
-    SmartDashboard.putNumber("Shooter Angle (deg)", motorPositionToAngle(Rotations.of(measured)).in(Degrees));
-    SmartDashboard.putNumber("Desired Shooter Angle (deg)", targetAngle.in(Degrees));
-    SmartDashboard.putNumber("Raw Encoder", encoder.get());
+    shooterAnglePublisher.set(motorPositionToAngle(Rotations.of(measured)).in(Degrees));
+    shooterAngleRequestPublisher.set(targetAngle.in(Degrees));
+
     return measured;
   }
 
@@ -155,11 +155,5 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     double t3 = Math.acos((d*d + s*s - c*c) / (2*d*s)); // angle from shooter to air pivot
     
     return Radians.of(t0-t3+Math.atan(pivH/pivX));
-  }
-
-  @Override
-  public void periodic() {
-  ShooterAnglePublisher.set(getMeasurement());
-  ShooterAngleRequestPublisher.set(getSetpoint());
   }
 }

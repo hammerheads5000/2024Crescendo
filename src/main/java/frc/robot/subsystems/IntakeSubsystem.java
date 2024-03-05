@@ -4,26 +4,18 @@
 
 package frc.robot.subsystems;
 
-import java.util.EnumSet;
-
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private TalonSRX armRaiseMotor;
-  private TalonSRX armFeedMotor;
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
-  private boolean armEnabled = false;
 
   private DigitalInput intakeLidar;
   private DigitalInput shooterLidar;
@@ -32,9 +24,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    armRaiseMotor = IntakeConstants.armRaiseMotor;
-    armFeedMotor = IntakeConstants.armFeedMotor;
-
     intakeLidar = Constants.IntakeConstants.intakeLidarSensor;
     shooterLidar = Constants.IntakeConstants.loadedNoteLidarSensor;
     
@@ -43,16 +32,6 @@ public class IntakeSubsystem extends SubsystemBase {
         .apply(new MotorOutputConfigs().withInverted(IntakeConstants.intakeFeederInverted));
     shooterFeedMotor = IntakeConstants.shooterFeedMotor;
     shooterFeedMotor.setInverted(IntakeConstants.shooterFeedInverted);
-
-    SmartDashboard.putBoolean("Drop-Down Intake Enabled", false);
-
-    // allows SmartDashboard control of whether to enable arm
-    NetworkTableListener.createListener(
-      Constants.inst.getTopic("/SmartDashboard/Drop-Down Intake Enabled"),
-      EnumSet.of(NetworkTableEvent.Kind.kValueAll), // listens for any value change
-        event -> {
-          setArmEnabled(event.valueData.value.getBoolean());
-        });
   }
 
   /** Start arm if enabled and feed the intake */
@@ -74,13 +53,6 @@ public class IntakeSubsystem extends SubsystemBase {
     feedSpeed = speed;
   }
   
-  public void raiseArm() {
-    if (armEnabled) {
-      armRaiseMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.armRaiseDutyCycle); // raises arm
-      armFeedMotor.neutralOutput();
-    }
-  }
-
   public void startShooterFeed() {
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
   }
@@ -93,14 +65,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void reverse() {
     intakeFeedMotor.set(-feedSpeed);
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -feedSpeed);
-  }
-
-  public void stopArm() {
-    armRaiseMotor.neutralOutput();
-  }
-
-  public void setArmEnabled(boolean armEnabled) {
-    this.armEnabled = armEnabled;
   }
 
   @Override

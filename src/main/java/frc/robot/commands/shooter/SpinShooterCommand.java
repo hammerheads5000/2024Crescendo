@@ -4,14 +4,13 @@
 
 package frc.robot.commands.shooter;
 
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 
 public class SpinShooterCommand extends Command {
   ShooterSubsystem shooterSubsystem;
+
   /** Creates a new SpinShooterCommand. */
   public SpinShooterCommand(ShooterSubsystem shooterSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -28,9 +27,6 @@ public class SpinShooterCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("Flywheels At Full Speed", shooterSubsystem.flywheelsAtSpeed());
-    SmartDashboard.putBoolean("Flywheels At Low Speed", shooterSubsystem.flywheelsAtCloseSpeed());
-    SmartDashboard.putNumber("Flywheel RPM", shooterSubsystem.getFlywheelSpeed().in(Units.RPM));
   }
 
   // Called once the command ends or is interrupted.

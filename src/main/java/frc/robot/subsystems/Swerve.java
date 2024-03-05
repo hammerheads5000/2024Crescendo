@@ -21,7 +21,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.Angle;
@@ -32,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -43,8 +43,8 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
-  StructArrayPublisher<SwerveModuleState> statePublisher = Constants.inst
-    .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> statesPublisher;
+  StructArrayPublisher<SwerveModuleState> desiredStatesPublisher;
 
   private Field2d field = new Field2d();
 
@@ -84,6 +84,9 @@ public class Swerve extends SubsystemBase {
     SwerveConstants.headingPID.setTolerance(SwerveConstants.rotationalPIDTolerance.in(Radians));
         
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
+
+    statesPublisher = LoggingConstants.moduleStatesPublisher;
+    desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
 
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
@@ -212,7 +215,7 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
-    statePublisher.set(drivetrain.getState().ModuleStates);
-    
+    statesPublisher.set(drivetrain.getState().ModuleStates);
+    desiredStatesPublisher.set(drivetrain.getState().ModuleTargets);
   }
 }

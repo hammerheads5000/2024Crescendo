@@ -22,13 +22,13 @@ public class AutoTrapCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-    new InstantCommand(trapSubsystem::contractActuator),
-    new InstantCommand(trapPIDSubsystem::moveToTrap),
-    new WaitCommand(3),
-    new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.climbSpeed)),
-    new WaitUntilCommand(climbSubsystem::reachedClimbLimit),
-    new WaitCommand(3),
-    new InstantCommand(trapSubsystem::forward)
+      new InstantCommand(trapSubsystem::contractActuator),
+      new InstantCommand(trapPIDSubsystem::moveToTrap),
+      new WaitCommand(3),
+      new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.climbSpeed)),
+      new WaitUntilCommand(climbSubsystem::reachedClimbLimit),
+      new WaitCommand(3),
+      new InstantCommand(trapSubsystem::forward)
     );
   }
 }
