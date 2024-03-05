@@ -189,7 +189,7 @@ public class Constants {
         }
 
         private static final class BackRight {
-            private static final int steerId = 5;
+            private static final int steerId = 20;
             private static final int driveId = 23;
             private static final int encoderId = 3;
             private static final double encoderOffset = -0.399;
