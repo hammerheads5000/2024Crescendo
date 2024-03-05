@@ -105,9 +105,9 @@ public class Constants {
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                .withKP(60.0) // output (V) per unit error in position (rotations)
-                .withKI(0.0) // output (V) per unit integrated error (rotations*s)
-                .withKD(25.0) // output (V) per unit of error derivative (rps)
+                .withKP(100.0) // output (V) per unit error in position (rotations)
+                .withKI(150.0) // output (V) per unit integrated error (rotations*s)
+                .withKD(60.0) // output (V) per unit of error derivative (rps)
                 .withKS(0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
@@ -177,7 +177,7 @@ public class Constants {
             private static final int steerId = 21;
             private static final int driveId = 0;
             private static final int encoderId = 1;
-            private static final double encoderOffset = -0.494;
+            private static final double encoderOffset = -0.493;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
@@ -192,7 +192,7 @@ public class Constants {
             private static final int steerId = 20;
             private static final int driveId = 23;
             private static final int encoderId = 3;
-            private static final double encoderOffset = -0.399;
+            private static final double encoderOffset = -0.4035;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;

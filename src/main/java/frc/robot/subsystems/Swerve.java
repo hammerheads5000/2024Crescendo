@@ -12,9 +12,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.util.EnumSet;
 import org.photonvision.EstimatedRobotPose;
 
-import com.ctre.phoenix6.configs.GyroTrimConfigs;
-import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -169,7 +166,7 @@ public class Swerve extends SubsystemBase {
    * @return robot centric chassis speeds
    */
   public ChassisSpeeds getChassisSpeeds() {
-    return SwerveConstants.kinematics.toChassisSpeeds(drivetrain.getState().ModuleStates);
+    return SwerveConstants.kinematics.toChassisSpeeds(drivetrain.getState().ModuleTargets);
   }
 
   /**
