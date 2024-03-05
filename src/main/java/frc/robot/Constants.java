@@ -448,9 +448,10 @@ public class Constants {
         public static final DoublePublisher feederSpeedPublisher = intakeTable.getDoubleTopic("Feeder Speed").publish();
 
         // Swerve Logs
-        public static final StructArrayPublisher<SwerveModuleState> moduleStatesPublisher = Constants.inst
+        public static final StructArrayPublisher<SwerveModuleState> moduleStatesPublisher = swerveTable
                 .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
-        public static final StructArrayPublisher<SwerveModuleState> desiredModuleStatesPublisher = Constants.inst
+        public static final StructArrayPublisher<SwerveModuleState> desiredModuleStatesPublisher = swerveTable
                 .getStructArrayTopic("Target Swerve Module States", SwerveModuleState.struct).publish();
+        public static final DoublePublisher rotationPublisher = swerveTable.getDoubleTopic("Rotation").publish();
     }
 }

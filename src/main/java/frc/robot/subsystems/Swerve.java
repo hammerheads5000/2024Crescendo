@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -11,6 +12,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.util.EnumSet;
 import org.photonvision.EstimatedRobotPose;
 
+import com.ctre.phoenix6.configs.GyroTrimConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -20,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -43,8 +48,9 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
-  StructArrayPublisher<SwerveModuleState> statesPublisher;
-  StructArrayPublisher<SwerveModuleState> desiredStatesPublisher;
+  StructArrayPublisher<SwerveModuleState> statesPublisher = LoggingConstants.moduleStatesPublisher;
+  StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
+  DoublePublisher rotationPublisher = LoggingConstants.rotationPublisher;
 
   private Field2d field = new Field2d();
 
@@ -84,9 +90,6 @@ public class Swerve extends SubsystemBase {
     SwerveConstants.headingPID.setTolerance(SwerveConstants.rotationalPIDTolerance.in(Radians));
         
     aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
-
-    statesPublisher = LoggingConstants.moduleStatesPublisher;
-    desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
 
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
@@ -188,6 +191,11 @@ public class Swerve extends SubsystemBase {
     return drivetrain.getState().Pose;
   }
 
+  private void updatePigeonYaw() {
+    MountPoseConfigs mountPose = new MountPoseConfigs().withMountPoseYaw(getPose().getRotation().getDegrees());
+    drivetrain.getPigeon2().getConfigurator().apply(mountPose);
+  }
+
   /**
    * Applies estimated pose from AprilTags to pose estimation
    * 
@@ -196,7 +204,7 @@ public class Swerve extends SubsystemBase {
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
-    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
+    updatePigeonYaw();
   }
 
   /**
@@ -217,5 +225,6 @@ public class Swerve extends SubsystemBase {
     field.setRobotPose(getPose());
     statesPublisher.set(drivetrain.getState().ModuleStates);
     desiredStatesPublisher.set(drivetrain.getState().ModuleTargets);
+    rotationPublisher.set(Degrees.of(drivetrain.getPigeon2().getAngle()).in(Radians));
   }
 }
