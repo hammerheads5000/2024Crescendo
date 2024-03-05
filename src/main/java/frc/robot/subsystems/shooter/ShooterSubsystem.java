@@ -12,16 +12,22 @@ import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
   TalonFX topMotor;
   TalonFX bottomMotor;
-
+  DoublePublisher ShooterSpeedPublisher = Constants.LoggingConstants.ShooterSpeedPublisher;
+  DoublePublisher ShooterSpeedRequestPublisher = Constants.LoggingConstants.ShooterSpeedRequestPublisher;
+  BooleanPublisher ShooterAtSpeedPublisher = Constants.LoggingConstants.ShooterAtSpeedPublisher;
+  BooleanPublisher shooterNearSpeedPublisher = Constants.LoggingConstants.ShooterNearSpeedPublisher;
   VelocityTorqueCurrentFOC topRequest;
 
   /** Creates a new ShooterSubsystem. */
@@ -41,11 +47,13 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Spin wheels up */
   public void start() {
     topMotor.setControl(topRequest);
+    ShooterSpeedRequestPublisher.set(topRequest.Velocity);
   }
 
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();
+    ShooterSpeedRequestPublisher.set(0);
   }
 
   public Measure<Velocity<Angle>> getFlywheelSpeed() {
@@ -62,5 +70,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+  ShooterSpeedPublisher.set(getFlywheelSpeed().baseUnitMagnitude());
+  ShooterAtSpeedPublisher.set(flywheelsAtSpeed());
+  shooterNearSpeedPublisher.set(flywheelsAtCloseSpeed());
   }
 }

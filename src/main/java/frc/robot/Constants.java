@@ -56,8 +56,12 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -426,5 +430,33 @@ public class Constants {
                 new Translation2d(SwerveConstants.swerveLength.divide(2), SwerveConstants.swerveWidth.divide(2)).getNorm(),
                 new ReplanningConfig() // default replanning config
         );
+    }
+
+    public static final class LoggingConstants { 
+        public static final NetworkTable GeneralTable = inst.getTable("General");
+        public static final NetworkTable ShooterTable = inst.getTable("Shooter");
+        public static final NetworkTable TrapTable = inst.getTable("Trap");
+        public static final NetworkTable SwerveTable = inst.getTable("Swerve");
+        public static final NetworkTable ClimberTable = inst.getTable("Climber");
+
+        // Trap Logs
+        public static final DoublePublisher TrapHeightPublisher = TrapTable.getDoubleTopic("TrapHeight").publish();
+        public static final BooleanPublisher ActuatorPublisher = TrapTable.getBooleanTopic("ActuatorExtended").publish(); 
+        public static final DoublePublisher TrapMechanismSpeedPublisher = TrapTable.getDoubleTopic("Trap Mechanism Speed").publish();
+        public static final DoublePublisher TrapMechanismSetpointPublisher = TrapTable.getDoubleTopic("Trap Mechanism Setpoint").publish();
+        public static final BooleanPublisher ColorSensorPublisher = TrapTable.getBooleanTopic("Color Sensor").publish(); 
+        public static final BooleanPublisher TrapLIDARPublisher = TrapTable.getBooleanTopic("Trap Intake LIDAR").publish();
+        
+        // Climber Logs
+        public static final BooleanPublisher ClimberDownPublisher = ClimberTable.getBooleanTopic("Climber Down").publish();
+        public static final DoublePublisher ClimberSpeedPublisher = ClimberTable.getDoubleTopic("Climber Speed").publish();
+
+        //Shooter Logs
+        public static final DoublePublisher ShooterSpeedPublisher = ShooterTable.getDoubleTopic("Shooter Speed").publish();
+        public static final DoublePublisher ShooterSpeedRequestPublisher = ShooterTable.getDoubleTopic("Shooter Speed Request").publish();
+        public static final BooleanPublisher ShooterAtSpeedPublisher = ShooterTable.getBooleanTopic("Shooter At Speed").publish();
+        public static final BooleanPublisher ShooterNearSpeedPublisher = ShooterTable.getBooleanTopic("Shooter Near Speed").publish();
+        public static final DoublePublisher ShooterAnglePublisher = ShooterTable.getDoubleTopic("Shooter Angle").publish();
+        public static final DoublePublisher ShooterAngleRequestPublisher = ShooterTable.getDoubleTopic("Shooter Angle request").publish();
     }
 }

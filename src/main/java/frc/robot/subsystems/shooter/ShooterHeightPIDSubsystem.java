@@ -13,19 +13,22 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterHeightPIDSubsystem extends PIDSubsystem {
   TalonFX heightMotor;
   DutyCycleEncoder encoder;
   CoastOut coastOut;
-
+  DoublePublisher ShooterAnglePublisher = Constants.LoggingConstants.ShooterAnglePublisher;
+  DoublePublisher ShooterAngleRequestPublisher = Constants.LoggingConstants.ShooterAngleRequestPublisher;
   MutableMeasure<Angle> targetAngle;
 
   /** Creates a new ShooterHeightPIDSubsystem. */
@@ -152,5 +155,11 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     double t3 = Math.acos((d*d + s*s - c*c) / (2*d*s)); // angle from shooter to air pivot
     
     return Radians.of(t0-t3+Math.atan(pivH/pivX));
+  }
+
+  @Override
+  public void periodic() {
+  ShooterAnglePublisher.set(getMeasurement());
+  ShooterAngleRequestPublisher.set(getSetpoint());
   }
 }
