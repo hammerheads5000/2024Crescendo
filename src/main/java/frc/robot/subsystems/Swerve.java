@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -51,6 +52,7 @@ public class Swerve extends SubsystemBase {
   StructArrayPublisher<SwerveModuleState> statesPublisher = LoggingConstants.moduleStatesPublisher;
   StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
   DoublePublisher rotationPublisher = LoggingConstants.rotationPublisher;
+  DoubleArrayPublisher chassisSpeedsPublisher = LoggingConstants.chassisSpeedsPublisher;
 
   private Field2d field = new Field2d();
 
@@ -191,11 +193,6 @@ public class Swerve extends SubsystemBase {
     return drivetrain.getState().Pose;
   }
 
-  private void updatePigeonYaw() {
-    MountPoseConfigs mountPose = new MountPoseConfigs().withMountPoseYaw(getPose().getRotation().getDegrees());
-    drivetrain.getPigeon2().getConfigurator().apply(mountPose);
-  }
-
   /**
    * Applies estimated pose from AprilTags to pose estimation
    * 
@@ -204,7 +201,6 @@ public class Swerve extends SubsystemBase {
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
-    updatePigeonYaw();
   }
 
   /**
@@ -226,5 +222,6 @@ public class Swerve extends SubsystemBase {
     statesPublisher.set(drivetrain.getState().ModuleStates);
     desiredStatesPublisher.set(drivetrain.getState().ModuleTargets);
     rotationPublisher.set(Degrees.of(drivetrain.getPigeon2().getAngle()).in(Radians));
+    chassisSpeedsPublisher.set(new double[]{ getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond, getChassisSpeeds().omegaRadiansPerSecond });
   }
 }

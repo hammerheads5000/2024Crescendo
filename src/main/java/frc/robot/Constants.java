@@ -45,6 +45,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.BooleanTopic;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -453,5 +454,6 @@ public class Constants {
         public static final StructArrayPublisher<SwerveModuleState> desiredModuleStatesPublisher = swerveTable
                 .getStructArrayTopic("Target Swerve Module States", SwerveModuleState.struct).publish();
         public static final DoublePublisher rotationPublisher = swerveTable.getDoubleTopic("Rotation").publish();
+        public static final DoubleArrayPublisher chassisSpeedsPublisher = swerveTable.getDoubleArrayTopic("Chassis Speeds").publish();
     }
 }
