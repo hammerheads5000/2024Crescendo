@@ -7,6 +7,9 @@ package frc.robot.subsystems.trapmechanism;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,7 +20,9 @@ import frc.robot.Constants.TrapConstants;
 public class TrapMechanismSubsystem extends SubsystemBase {
   TalonSRX rollerMotor;
   DigitalInput lidarSensor;
-
+  BooleanPublisher ActuatorPublisher = Constants.LoggingConstants.ActuatorPublisher;
+  BooleanPublisher TrapLIDARPublisher = Constants.LoggingConstants.TrapLIDARPublisher;
+  DoublePublisher trapMechanismDoublePublisher = Constants.LoggingConstants.TrapMechanismSpeedPublisher;
   Servo linearActuator;
 
   /** Creates a new TrapMechanismSubsystem. */
@@ -36,14 +41,17 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void forward() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, -TrapConstants.intakeSpeed);
+    trapMechanismDoublePublisher.set(-TrapConstants.intakeSpeed);
   }
 
   public void reverse() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.expelSpeed);
+    trapMechanismDoublePublisher.set(TrapConstants.intakeSpeed);
   }
 
   public void stopRollers() {
     rollerMotor.neutralOutput();
+    trapMechanismDoublePublisher.set(0);
   }
 
   public double getActuator(){
@@ -52,18 +60,22 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void extendActuator(){
     linearActuator.set(1.0);
+    ActuatorPublisher.set(true);
   }
 
   public void contractActuator(){
     linearActuator.set(0.0);
+    ActuatorPublisher.set(false);
   }
 
   public void toggleActuator() {
     if (linearActuator.get() == 1.0) {
       contractActuator();
+      ActuatorPublisher.set(false);
       return;
     }
     extendActuator();
+    ActuatorPublisher.set(true);
   }
 
   /** Set actuator position for shooting into amp */
@@ -78,6 +90,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("NotedDetectedTrap", isNoteDetected());
+    TrapLIDARPublisher.set(isNoteDetected());
   }
 }

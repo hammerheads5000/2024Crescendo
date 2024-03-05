@@ -8,13 +8,18 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   TalonFX climbMotor;
   DigitalInput lidarSensor;
+  BooleanPublisher ClimberDownPublisher = Constants.LoggingConstants.ClimberDownPublisher;
+  DoublePublisher climberSpeedPublisher = Constants.LoggingConstants.ClimberSpeedPublisher;
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
@@ -33,6 +38,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void climb(double speed) {
     //if (reachedClimbLimit() && speed > 0) return;
     climbMotor.set(ClimberConstants.climbSpeed * speed);
+    climberSpeedPublisher.set(speed);
   }
 
   public boolean reachedClimbLimit() {
@@ -41,6 +47,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    ClimberDownPublisher.set(reachedClimbLimit());
     if (reachedClimbLimit()) {
       climbMotor.stopMotor();
     }
