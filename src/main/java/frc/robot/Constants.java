@@ -115,9 +115,9 @@ public class Constants {
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                .withKP(50.0) // output (V) per unit error in position (rotations)
+                .withKP(60.0) // output (V) per unit error in position (rotations)
                 .withKI(0.0) // output (V) per unit integrated error (rotations*s)
-                .withKD(50.0) // output (V) per unit of error derivative (rps)
+                .withKD(25.0) // output (V) per unit of error derivative (rps)
                 .withKS(0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
@@ -292,7 +292,7 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(577.5);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(580);
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
