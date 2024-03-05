@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
@@ -11,6 +12,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import java.util.EnumSet;
 import org.photonvision.EstimatedRobotPose;
 
+import com.ctre.phoenix6.configs.GyroTrimConfigs;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -19,9 +23,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableListener;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.units.Angle;
@@ -32,6 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
 import frc.robot.Constants.VisionConstants;
@@ -43,8 +49,10 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
   private DoubleArraySubscriber aprilTagSubscriber;
-  StructArrayPublisher<SwerveModuleState> statePublisher = Constants.inst
-    .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> statesPublisher = LoggingConstants.moduleStatesPublisher;
+  StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
+  DoublePublisher rotationPublisher = LoggingConstants.rotationPublisher;
+  DoubleArrayPublisher chassisSpeedsPublisher = LoggingConstants.chassisSpeedsPublisher;
 
   private Field2d field = new Field2d();
 
@@ -193,7 +201,6 @@ public class Swerve extends SubsystemBase {
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
-    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
@@ -212,7 +219,9 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     field.setRobotPose(getPose());
-    statePublisher.set(drivetrain.getState().ModuleStates);
-    
+    statesPublisher.set(drivetrain.getState().ModuleStates);
+    desiredStatesPublisher.set(drivetrain.getState().ModuleTargets);
+    rotationPublisher.set(Degrees.of(drivetrain.getPigeon2().getAngle()).in(Radians));
+    chassisSpeedsPublisher.set(new double[]{ getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond, getChassisSpeeds().omegaRadiansPerSecond });
   }
 }

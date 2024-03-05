@@ -4,16 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.FeetPerSecond;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.InchesPerSecond;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -42,30 +32,26 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.BooleanTopic;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.units.Angle;
@@ -256,13 +242,8 @@ public class Constants {
         public static final TalonSRX shooterFeedMotor = new TalonSRX(3);
         public static final boolean shooterFeedInverted = false; // positive is in
 
-        public static final TalonSRX armFeedMotor = new TalonSRX(-1);
-        public static final TalonSRX armRaiseMotor = new TalonSRX(-1);
-
         public static final double fastFeedRate = 0.75; // Out of 1, how fast rollers should be driven
         public static final double slowFeedRate = .4;
-        public static final double armRaiseDutyCycle = 0.3; // Out of 1, how much power to put to raising arm
-        public static final double armDropDutyCycle = 0.1; // Out of 1, how much power to put into dropping arm
 
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
@@ -433,30 +414,46 @@ public class Constants {
     }
 
     public static final class LoggingConstants { 
-        public static final NetworkTable GeneralTable = inst.getTable("General");
-        public static final NetworkTable ShooterTable = inst.getTable("Shooter");
-        public static final NetworkTable TrapTable = inst.getTable("Trap");
-        public static final NetworkTable SwerveTable = inst.getTable("Swerve");
-        public static final NetworkTable ClimberTable = inst.getTable("Climber");
+        public static final NetworkTable generalTable = inst.getTable("General");
+        public static final NetworkTable shooterTable = inst.getTable("Shooter");
+        public static final NetworkTable trapTable = inst.getTable("Trap");
+        public static final NetworkTable swerveTable = inst.getTable("Swerve");
+        public static final NetworkTable climberTable = inst.getTable("Climber");
+        public static final NetworkTable intakeTable = inst.getTable("Intake");
 
         // Trap Logs
-        public static final DoublePublisher TrapHeightPublisher = TrapTable.getDoubleTopic("TrapHeight").publish();
-        public static final BooleanPublisher ActuatorPublisher = TrapTable.getBooleanTopic("ActuatorExtended").publish(); 
-        public static final DoublePublisher TrapMechanismSpeedPublisher = TrapTable.getDoubleTopic("Trap Mechanism Speed").publish();
-        public static final DoublePublisher TrapMechanismSetpointPublisher = TrapTable.getDoubleTopic("Trap Mechanism Setpoint").publish();
-        public static final BooleanPublisher ColorSensorPublisher = TrapTable.getBooleanTopic("Color Sensor").publish(); 
-        public static final BooleanPublisher TrapLIDARPublisher = TrapTable.getBooleanTopic("Trap Intake LIDAR").publish();
+        public static final DoublePublisher trapHeightPublisher = trapTable.getDoubleTopic("TrapHeight").publish();
+        public static final DoublePublisher actuatorPublisher = trapTable.getDoubleTopic("ActuatorExtended").publish(); 
+        public static final DoublePublisher trapMechanismSpeedPublisher = trapTable.getDoubleTopic("Trap Mechanism Speed").publish();
+        public static final DoublePublisher trapMechanismSetpointPublisher = trapTable.getDoubleTopic("Trap Mechanism Setpoint").publish();
+        public static final BooleanPublisher colorSensorPublisher = trapTable.getBooleanTopic("Color Sensor").publish(); 
+        public static final BooleanPublisher trapLIDARPublisher = trapTable.getBooleanTopic("Trap Intake LIDAR").publish();
         
         // Climber Logs
-        public static final BooleanPublisher ClimberDownPublisher = ClimberTable.getBooleanTopic("Climber Down").publish();
-        public static final DoublePublisher ClimberSpeedPublisher = ClimberTable.getDoubleTopic("Climber Speed").publish();
+        public static final BooleanPublisher climberDownPublisher = climberTable.getBooleanTopic("Climber Down").publish();
+        public static final DoublePublisher climberSpeedPublisher = climberTable.getDoubleTopic("Climber Speed").publish();
 
-        //Shooter Logs
-        public static final DoublePublisher ShooterSpeedPublisher = ShooterTable.getDoubleTopic("Shooter Speed").publish();
-        public static final DoublePublisher ShooterSpeedRequestPublisher = ShooterTable.getDoubleTopic("Shooter Speed Request").publish();
-        public static final BooleanPublisher ShooterAtSpeedPublisher = ShooterTable.getBooleanTopic("Shooter At Speed").publish();
-        public static final BooleanPublisher ShooterNearSpeedPublisher = ShooterTable.getBooleanTopic("Shooter Near Speed").publish();
-        public static final DoublePublisher ShooterAnglePublisher = ShooterTable.getDoubleTopic("Shooter Angle").publish();
-        public static final DoublePublisher ShooterAngleRequestPublisher = ShooterTable.getDoubleTopic("Shooter Angle request").publish();
+        // Shooter Logs
+        public static final DoublePublisher shooterSpeedPublisher = shooterTable.getDoubleTopic("Shooter Speed").publish();
+        public static final DoublePublisher shooterSpeedRequestPublisher = shooterTable.getDoubleTopic("Shooter Speed Request").publish();
+        public static final BooleanPublisher shooterAtSpeedPublisher = shooterTable.getBooleanTopic("Shooter At Speed").publish();
+        public static final BooleanPublisher shooterNearSpeedPublisher = shooterTable.getBooleanTopic("Shooter Near Speed").publish();
+        public static final DoublePublisher shooterAnglePublisher = shooterTable.getDoubleTopic("Shooter Angle").publish();
+        public static final DoublePublisher shooterAngleRequestPublisher = shooterTable.getDoubleTopic("Shooter Angle request").publish();
+        public static final BooleanPublisher alignedToSpeakerPublisher = shooterTable.getBooleanTopic("Aligned To Speaker").publish();
+
+        // Intake Logs
+        public static final BooleanPublisher intakeLIDARPublisher = intakeTable.getBooleanTopic("Intake LIDAR").publish();
+        public static final BooleanPublisher noteLoadedPublisher = intakeTable.getBooleanTopic("Note Loaded").publish();
+        public static final DoublePublisher intakeSpeedPublisher = intakeTable.getDoubleTopic("Intake Speed").publish();
+        public static final DoublePublisher feederSpeedPublisher = intakeTable.getDoubleTopic("Feeder Speed").publish();
+
+        // Swerve Logs
+        public static final StructArrayPublisher<SwerveModuleState> moduleStatesPublisher = swerveTable
+                .getStructArrayTopic("Swerve Module States", SwerveModuleState.struct).publish();
+        public static final StructArrayPublisher<SwerveModuleState> desiredModuleStatesPublisher = swerveTable
+                .getStructArrayTopic("Target Swerve Module States", SwerveModuleState.struct).publish();
+        public static final DoublePublisher rotationPublisher = swerveTable.getDoubleTopic("Rotation").publish();
+        public static final DoubleArrayPublisher chassisSpeedsPublisher = swerveTable.getDoubleArrayTopic("Chassis Speeds").publish();
     }
 }

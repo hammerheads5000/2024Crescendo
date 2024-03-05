@@ -6,7 +6,6 @@ package frc.robot.commands.trapmechanism;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -24,12 +23,12 @@ public class AmpCommandGroup extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-    new InstantCommand(trapPIDSubsystem::moveToAmp),
-    new InstantCommand(trapSubsystem::contractActuator),
-    new WaitUntilCommand(trigger),
-    new InstantCommand(trapSubsystem::forward),
-    new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
-    new InstantCommand(trapSubsystem::stopRollers)
+      new InstantCommand(trapPIDSubsystem::moveToAmp),
+      new InstantCommand(trapSubsystem::contractActuator),
+      new WaitUntilCommand(trigger),
+      new InstantCommand(trapSubsystem::forward),
+      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
+      new InstantCommand(trapSubsystem::stopRollers)
     );
   }
 }

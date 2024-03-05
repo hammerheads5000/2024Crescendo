@@ -5,7 +5,6 @@
 package frc.robot.commands.shooter;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
@@ -16,16 +15,17 @@ import java.util.Optional;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
@@ -37,6 +37,8 @@ public class AimShooterCommand extends Command {
   Translation3d speakerPos;
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem;
   boolean aligned = false;
+
+  BooleanPublisher alignedToSpeakerPublisher;
 
   /**
    * Construct AimShooterCommand with controller control
@@ -56,6 +58,8 @@ public class AimShooterCommand extends Command {
     }else{ //auto blue if there is no team because why not
       speakerPos = FieldConstants.blueSpeakerPos;
     }
+
+    alignedToSpeakerPublisher = LoggingConstants.alignedToSpeakerPublisher;
 
     addRequirements(swerve, shooterHeightPIDSubsystem);
   }
@@ -115,7 +119,7 @@ public class AimShooterCommand extends Command {
     Translation2d robotToDestination = robotHeadingVec.times(speakerToRobot.getNorm());
     Translation2d destinationPos = swerve.getPose().getTranslation().plus(robotToDestination); // where the note would reach distance of speaker
     aligned = Meters.of(speakerPos.toTranslation2d().getDistance(destinationPos)).lte(ShooterConstants.readyAlignTolerance);
-    SmartDashboard.putBoolean("Aligned To Speaker", aligned);
+    alignedToSpeakerPublisher.set(aligned);
   }
 
   private Translation2d getApproachVelocityVec(Translation2d speakerToRobot) {

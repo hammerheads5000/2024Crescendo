@@ -8,11 +8,9 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.networktables.BooleanPublisher;
-import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
@@ -20,10 +18,11 @@ import frc.robot.Constants.TrapConstants;
 public class TrapMechanismSubsystem extends SubsystemBase {
   TalonSRX rollerMotor;
   DigitalInput lidarSensor;
-  BooleanPublisher ActuatorPublisher = Constants.LoggingConstants.ActuatorPublisher;
-  BooleanPublisher TrapLIDARPublisher = Constants.LoggingConstants.TrapLIDARPublisher;
-  DoublePublisher trapMechanismDoublePublisher = Constants.LoggingConstants.TrapMechanismSpeedPublisher;
   Servo linearActuator;
+
+  DoublePublisher actuatorPublisher = Constants.LoggingConstants.actuatorPublisher;
+  BooleanPublisher trapLIDARPublisher = Constants.LoggingConstants.trapLIDARPublisher;
+  DoublePublisher trapMechanismDoublePublisher = Constants.LoggingConstants.trapMechanismSpeedPublisher;
 
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
@@ -60,27 +59,26 @@ public class TrapMechanismSubsystem extends SubsystemBase {
 
   public void extendActuator(){
     linearActuator.set(1.0);
-    ActuatorPublisher.set(true);
+    actuatorPublisher.set(1.0);
   }
 
   public void contractActuator(){
     linearActuator.set(0.0);
-    ActuatorPublisher.set(false);
+    actuatorPublisher.set(0.0);
   }
 
   public void toggleActuator() {
     if (linearActuator.get() == 1.0) {
       contractActuator();
-      ActuatorPublisher.set(false);
       return;
     }
     extendActuator();
-    ActuatorPublisher.set(true);
   }
 
   /** Set actuator position for shooting into amp */
   public void moveActuatorForAmp() {
     linearActuator.set(Constants.TrapConstants.ampActuatorPosition);
+    actuatorPublisher.set(Constants.TrapConstants.ampActuatorPosition);
   }
 
   public boolean isNoteDetected() {
@@ -90,6 +88,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    TrapLIDARPublisher.set(isNoteDetected());
+    trapLIDARPublisher.set(isNoteDetected());
   }
 }

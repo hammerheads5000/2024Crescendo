@@ -14,21 +14,21 @@ import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
 
 public class TrapHeightPIDSubsystem extends PIDSubsystem {
   CANSparkMax heightControlMotor;
+  Encoder encoder;
 
   ColorSensorV3 colorSensor;
   ColorMatch colorMatch;
-  DoublePublisher TrapHeightPublisher = Constants.LoggingConstants.TrapHeightPublisher;
-  BooleanPublisher  ColorSensorPublisher = Constants.LoggingConstants.ColorSensorPublisher;
-  DoublePublisher TrapMechanismSpeedPublisher = Constants.LoggingConstants.TrapMechanismSpeedPublisher;
-  DoublePublisher TrapMechanismSetpointPublisher = Constants.LoggingConstants.TrapMechanismSetpointPublisher;
-  Encoder encoder;
+
+  DoublePublisher trapHeightPublisher = Constants.LoggingConstants.trapHeightPublisher;
+  BooleanPublisher colorSensorPublisher = Constants.LoggingConstants.colorSensorPublisher;
+  DoublePublisher trapMechanismSpeedPublisher = Constants.LoggingConstants.trapMechanismSpeedPublisher;
+  DoublePublisher trapMechanismSetpointPublisher = Constants.LoggingConstants.trapMechanismSetpointPublisher;
   
   /** Creates a new TrapHeightPIDSubsystem. */
   public TrapHeightPIDSubsystem() {
@@ -52,11 +52,15 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
     double dutyCycle = output*TrapConstants.raiseSpeed;
     dutyCycle = Math.max(Math.min(dutyCycle, 1.0), -1.0); // cap between [-1,1]
     heightControlMotor.set(dutyCycle);
+
+    trapMechanismSetpointPublisher.set(setpoint);
+    trapMechanismSpeedPublisher.set(dutyCycle);
   }
 
   @Override
   public double getMeasurement() {
-    SmartDashboard.putNumber("Trap Height (in)", encoder.getDistance());
+    trapHeightPublisher.set(encoder.getDistance());
+    colorSensorPublisher.set(colorDetected());
     
     return encoder.getDistance();
   }
@@ -97,14 +101,5 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   public boolean colorDetected() {
     ColorMatchResult result = colorMatch.matchColor(colorSensor.getColor());
     return result != null;
-  }
- 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  TrapHeightPublisher.set(encoder.getDistance());
-  TrapMechanismSetpointPublisher.set(getSetpoint());
-  ColorSensorPublisher.set(colorDetected());
-  TrapMechanismSpeedPublisher.set(heightControlMotor.getOutputCurrent());
   }
 }
