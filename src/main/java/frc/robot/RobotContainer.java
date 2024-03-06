@@ -7,11 +7,13 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
@@ -31,6 +33,7 @@ import frc.robot.commands.trapmechanism.ManualTrapCommand;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -40,7 +43,8 @@ import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 public class RobotContainer {
   private CommandXboxController driveController = new CommandXboxController(0);
   private CommandXboxController secondaryController = new CommandXboxController(1);
-  
+  private CommandJoystick buttonBoardOne = new CommandJoystick(2);
+  private CommandJoystick buttonBoardTwo = new CommandJoystick(3);
   // subsystems
   private Swerve swerve = new Swerve();
   private AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
@@ -54,6 +58,7 @@ public class RobotContainer {
 
   private ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   
+  private LightsSubsystem lightsSubsystem = new LightsSubsystem();
   // commands
   private TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   private Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
@@ -104,6 +109,9 @@ public class RobotContainer {
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
           private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
+        
+  // Light Triggers
+private Trigger blueLightTrigger = buttonBoardOne.button(1);
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -140,6 +148,9 @@ public class RobotContainer {
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
+
+    // light bindings
+    blueLightTrigger.onTrue(new InstantCommand(lightsSubsystem::SetBlue));
   }
 
   private void configureAuto() {
