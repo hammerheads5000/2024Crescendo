@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj.util.Color;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +47,7 @@ public class RobotContainer {
 
   CommandXboxController driveController = new CommandXboxController(0);
   CommandXboxController secondaryController = new CommandXboxController(1);
+  CommandJoystick buttonBoardOne = new CommandJoystick(2);
 
   // subsystems
   Swerve swerve = new Swerve();
@@ -70,14 +71,14 @@ public class RobotContainer {
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt  
   HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
-  Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
+  Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
  
 
-  ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
+  ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
@@ -116,8 +117,6 @@ public class RobotContainer {
   Trigger climbTrigger = secondaryController.b().and(
       secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
-
-          private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
         
   // Light Triggers
   private Trigger blueLightTrigger = buttonBoardOne.button(1);
