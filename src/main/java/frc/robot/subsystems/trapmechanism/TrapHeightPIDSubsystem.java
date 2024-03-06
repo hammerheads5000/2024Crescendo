@@ -49,12 +49,13 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void useOutput(double output, double setpoint) {
+    if(!colorDetected()){
     double dutyCycle = output*TrapConstants.raiseSpeed;
     dutyCycle = Math.max(Math.min(dutyCycle, 1.0), -1.0); // cap between [-1,1]
     heightControlMotor.set(dutyCycle);
-
     trapMechanismSetpointPublisher.set(setpoint);
     trapMechanismSpeedPublisher.set(dutyCycle);
+    }
   }
 
   @Override

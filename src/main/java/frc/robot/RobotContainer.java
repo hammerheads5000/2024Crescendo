@@ -29,6 +29,7 @@ import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.commands.shooter.SpinShooterCommand;
 import frc.robot.commands.trapmechanism.AmpCommandGroup;
 import frc.robot.commands.trapmechanism.AutoTrapCommand;
+import frc.robot.commands.trapmechanism.AutoTrapHomeCommandGroup;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
@@ -48,7 +49,11 @@ public class RobotContainer {
   CommandXboxController driveController = new CommandXboxController(0);
   CommandXboxController secondaryController = new CommandXboxController(1);
   CommandJoystick buttonBoardOne = new CommandJoystick(2);
+<<<<<<< Updated upstream
 
+=======
+  CommandJoystick buttonBoardTwo = new CommandJoystick(3);
+>>>>>>> Stashed changes
   // subsystems
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
@@ -76,8 +81,12 @@ public class RobotContainer {
   
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
+<<<<<<< Updated upstream
  
 
+=======
+  AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem);
+>>>>>>> Stashed changes
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
@@ -93,21 +102,23 @@ public class RobotContainer {
   Trigger ampTrigger = driveController.a();
   Trigger sourceTrigger = driveController.b();
   // trap triggers
-  Trigger feedTrapTrigger = secondaryController.povRight();
-  Trigger expelTrapTrigger = secondaryController.povLeft();
-  Trigger toggleTrapTrigger = secondaryController.x();
-  Trigger homeTrapTrigger = secondaryController.start();
+  Trigger feedTrapTrigger = buttonBoardOne.button(12);
+  Trigger expelTrapTrigger = buttonBoardOne.button(7);
+  Trigger toggleTrapTrigger = buttonBoardOne.button(9);
+  Trigger homeTrapTrigger = buttonBoardOne.button(11);
   Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
                                 .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
-  Trigger AutoSourceTrigger = secondaryController.povUp();
-  Trigger AutoTrapTrigger = secondaryController.povDown();
-  Trigger Amptrigger = secondaryController.back();
+  Trigger AutoSourceTrigger = buttonBoardOne.button(8);
+  Trigger AutoTrapTrigger = buttonBoardOne.button(6);
+  Trigger Amptrigger = buttonBoardOne.button(5);
+  Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
   Trigger lowerShooterTrigger = secondaryController.a();
   Trigger spinShooterTrigger = driveController.rightBumper();
   Trigger closeShootTrigger = driveController.leftTrigger();
+  Trigger autoLowerShooterTrigger = buttonBoardOne.button(12);
   // intake triggers
   Trigger intakeTrigger = secondaryController.rightTrigger();
   Trigger reverseIntakeTrigger = secondaryController.leftBumper();
@@ -147,6 +158,8 @@ public class RobotContainer {
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
+    autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
+
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
@@ -158,6 +171,7 @@ public class RobotContainer {
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));
     intakeFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startAll, intakeSubsystem::stopAll, intakeSubsystem));
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
+    
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
 
