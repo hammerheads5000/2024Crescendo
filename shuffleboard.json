@@ -1,0 +1,293 @@
+{
+  "tabPane": [
+    {
+      "title": "SmartDashboard",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "SmartDashboard/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "5,3": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Network Table Tree",
+              "_source0": "network_table:///SmartDashboard/Scheduler",
+              "_title": "Scheduler",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Trap",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 4,
+              "Layout/Number of rows": 1,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Trap/Color Sensor",
+                  "_title": "Color Sensor",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,0": {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///Trap/TrapHeight",
+                  "_title": "Height",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 0.0,
+                  "Range/Max": 20.0,
+                  "Range/Center": 0.0,
+                  "Visuals/Num tick marks": 5,
+                  "Visuals/Show text": true,
+                  "Visuals/Orientation": "VERTICAL"
+                },
+                "3,0": {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///Trap/Trap Mechanism Setpoint",
+                  "_title": "Setpoint",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 0.0,
+                  "Range/Max": 20.0,
+                  "Range/Center": 0.0,
+                  "Visuals/Num tick marks": 5,
+                  "Visuals/Show text": true,
+                  "Visuals/Orientation": "VERTICAL"
+                },
+                "1,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Trap/Trap Intake LIDAR",
+                  "_title": "LIDAR",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          },
+          "5,0": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "Field",
+              "_source0": "network_table:///SmartDashboard/Field",
+              "_title": "Field",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Game/Game": "k2024Crescendo",
+              "Visuals/Robot Icon Size": 50.0,
+              "Visuals/Show Outside Circles": false
+            }
+          },
+          "0,2": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Shooter",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 3,
+              "Layout/Number of rows": 2,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "0,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Shooter/Shooter Angle",
+                  "_title": "Angle",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 25.0,
+                  "Range/Max": 57.0,
+                  "Visuals/Show value": true
+                },
+                "2,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Shooter/Shooter At Speed",
+                  "_title": "At Speed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "1,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Shooter/Shooter Near Speed",
+                  "_title": "Near Speed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "2,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Shooter/Shooter Speed",
+                  "_title": "Speed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 0.0,
+                  "Range/Max": 6000.0,
+                  "Visuals/Show value": true
+                },
+                "1,0": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Shooter/Aligned To Speaker",
+                  "_title": "Aligned To Speaker",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                "0,1": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Shooter/Shooter Angle request",
+                  "_title": "Angle request",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 25.0,
+                  "Range/Max": 57.0,
+                  "Visuals/Show value": true
+                }
+              }
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/SendableChooser[0]",
+              "_title": "Auto Chooser",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              2
+            ],
+            "content": {
+              "_type": "Grid Layout",
+              "_title": "Climber",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Number of columns": 1,
+              "Layout/Number of rows": 2,
+              "Layout/Label position": "BOTTOM",
+              "_children": {
+                "1,0": {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///Climber/Climber Speed",
+                  "_title": "Speed",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": 0.0,
+                  "Range/Max": 1.0,
+                  "Visuals/Show value": true
+                },
+                "1,1": {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///Climber/Climber Down",
+                  "_title": "Reached Limit",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                }
+              }
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              3
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "List Layout",
+              "_glyph": 149,
+              "_showGlyph": false,
+              "Layout/Label position": "BOTTOM",
+              "_children": [
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///photonvision/AprilTag Limelight/hasTarget",
+                  "_title": "AprilTag Detected",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Boolean Box",
+                  "_source0": "network_table:///photonvision/Note Detection Limelight/hasTarget",
+                  "_title": "Note Detected",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Colors/Color when true": "#7CFC00FF",
+                  "Colors/Color when false": "#8B0000FF"
+                },
+                {
+                  "_type": "Simple Dial",
+                  "_source0": "network_table:///photonvision/Note Detection Limelight/targetYaw",
+                  "_title": "Note Yaw",
+                  "_glyph": 148,
+                  "_showGlyph": false,
+                  "Range/Min": -40.0,
+                  "Range/Max": 40.0,
+                  "Visuals/Show value": true
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "LiveWindow",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "LiveWindow/",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {}
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": -6.400000095367432,
+    "y": -6.400000095367432,
+    "width": 1548.800048828125,
+    "height": 924.7999877929688
+  }
+}
