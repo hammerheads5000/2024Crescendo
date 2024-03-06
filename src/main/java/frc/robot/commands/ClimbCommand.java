@@ -30,7 +30,7 @@ public class ClimbCommand extends Command {
   public void initialize() {
     shooterSubsystem.disable();
     shooterSubsystem.coast();
-    trapPIDSubsystem.moveToHome();
+    //trapPIDSubsystem.moveToHome();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
