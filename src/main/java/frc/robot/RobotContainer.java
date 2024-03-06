@@ -4,14 +4,18 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
@@ -32,6 +36,7 @@ import frc.robot.commands.trapmechanism.ManualTrapCommand;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -39,9 +44,10 @@ import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 
 public class RobotContainer {
+
   CommandXboxController driveController = new CommandXboxController(0);
   CommandXboxController secondaryController = new CommandXboxController(1);
-  
+
   // subsystems
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
@@ -55,7 +61,9 @@ public class RobotContainer {
 
   ClimberSubsystem climberSubsystem = new ClimberSubsystem();
   
+  private LightsSubsystem lightsSubsystem = new LightsSubsystem();
   // commands
+
   TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
   Command expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem)
@@ -68,6 +76,7 @@ public class RobotContainer {
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
  
+
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
@@ -108,7 +117,15 @@ public class RobotContainer {
       secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
           .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
 
-  
+          private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
+        
+  // Light Triggers
+  private Trigger blueLightTrigger = buttonBoardOne.button(1);
+  private Trigger redLightTrigger = buttonBoardOne.button(2);
+  private Trigger testLightButton = buttonBoardOne.button(3);
+
+
+
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -144,6 +161,11 @@ public class RobotContainer {
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
+
+    // light bindings
+    blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.SetSolidColor(Color.kBlue)));
+    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSectionColor(0, 8/3, Color.kCrimson)));
+    testLightButton.onTrue(new InstantCommand(lightsSubsystem::TestColor));
   }
 
   void configureAuto() {
