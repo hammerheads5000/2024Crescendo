@@ -218,6 +218,5 @@ public class Swerve extends SubsystemBase {
     statesPublisher.set(drivetrain.getState().ModuleStates);
     desiredStatesPublisher.set(drivetrain.getState().ModuleTargets);
     rotationPublisher.set(Degrees.of(drivetrain.getPigeon2().getAngle()).in(Radians));
-    chassisSpeedsPublisher.set(new double[]{ getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond, getChassisSpeeds().omegaRadiansPerSecond });
   }
 }

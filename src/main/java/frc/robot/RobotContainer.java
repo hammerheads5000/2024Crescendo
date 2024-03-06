@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -91,8 +92,10 @@ public class RobotContainer {
 
   // swerve/movement triggers
   Trigger zeroPose = driveController.x();
-  Trigger ampTrigger = driveController.a();
-  Trigger sourceTrigger = driveController.b();
+  Trigger ampTrigger = driveController.povRight();
+  Trigger sourceTrigger = driveController.povLeft();
+  Trigger fastTrigger = driveController.y();
+  Trigger slowTrigger = driveController.a();
   // trap triggers
   Trigger feedTrapTrigger = buttonBoardOne.button(12);
   Trigger expelTrapTrigger = buttonBoardOne.button(7);
@@ -109,8 +112,8 @@ public class RobotContainer {
   Trigger raiseShooterTrigger = secondaryController.y();
   Trigger lowerShooterTrigger = secondaryController.a();
   Trigger spinShooterTrigger = driveController.rightBumper();
-  Trigger closeShootTrigger = driveController.leftTrigger();
-  Trigger autoLowerShooterTrigger = buttonBoardOne.button(12);
+  Trigger shooterLowAngleTrigger = driveController.povDown();
+  Trigger shooterHighAngleTrigger = buttonBoardOne.povUp();
   // intake triggers
   Trigger intakeTrigger = secondaryController.rightTrigger();
   Trigger reverseIntakeTrigger = secondaryController.leftBumper();
@@ -141,6 +144,8 @@ public class RobotContainer {
     ampTrigger.whileTrue(ampAuto);
     ampTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     sourceTrigger.whileTrue(sourceAuto);
+    fastTrigger.whileTrue(new StartEndCommand(teleopSwerve::setFastSpeed, teleopSwerve::setDefaultSpeed, new Subsystem[0]));
+    slowTrigger.whileTrue(new StartEndCommand(teleopSwerve::setSlowSpeed, teleopSwerve::setDefaultSpeed, new Subsystem[0]));
     // trap bindings
     feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::forward, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::reverse, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
@@ -157,7 +162,8 @@ public class RobotContainer {
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
     lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     spinShooterTrigger.whileTrue(spinShooterCommand);
-    closeShootTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.closeAngle)));
+    shooterLowAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)));
+    shooterHighAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.closeAngle)));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));

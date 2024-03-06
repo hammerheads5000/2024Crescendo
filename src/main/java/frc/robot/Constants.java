@@ -88,8 +88,14 @@ public class Constants {
     }
 
     public static final class SwerveConstants {
-        public static final Measure<Velocity<Distance>> maxDriveSpeed = MetersPerSecond.of(3); // m/s
-        public static final Measure<Velocity<Angle>> maxRotSpeed = RadiansPerSecond.of(2 * Math.PI); // rad/s
+        public static final Measure<Velocity<Distance>> defaultDriveSpeed = MetersPerSecond.of(3); // m/s
+        public static final Measure<Velocity<Angle>> defaultRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
+        
+        public static final Measure<Velocity<Distance>> fastDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Angle>> fastRotSpeed = RadiansPerSecond.of(4 * Math.PI); // rad/s
+        
+        public static final Measure<Velocity<Distance>> slowDriveSpeed = MetersPerSecond.of(1); // m/s
+        public static final Measure<Velocity<Angle>> slowRotSpeed = RadiansPerSecond.of(1 * Math.PI); // rad/s
 
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
                                                                             // from left to right
@@ -127,8 +133,8 @@ public class Constants {
         public static final DriveRequestType driveRequestType = DriveRequestType.Velocity;
         public static final SteerRequestType steerRequestType = SteerRequestType.MotionMagicExpo;
 
-        public static final Measure<Velocity<Distance>> velocityDeadband = maxDriveSpeed.times(0.02);
-        public static final Measure<Velocity<Angle>> rotationDeadband = maxRotSpeed.times(0.01);
+        public static final Measure<Velocity<Distance>> velocityDeadband = defaultDriveSpeed.times(0.02);
+        public static final Measure<Velocity<Angle>> rotationDeadband = defaultRotSpeed.times(0.01);
 
         private static final SwerveModuleConstantsFactory constantsCreator = new SwerveModuleConstantsFactory()
                 .withDriveMotorGearRatio(driveMotorGearRatio)
@@ -406,7 +412,7 @@ public class Constants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
                 new PIDConstants(0.5, 0.0, 0.0), // rotational PID
-                SwerveConstants.maxDriveSpeed.in(MetersPerSecond), // max drive speed
+                SwerveConstants.defaultDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
                 new Translation2d(SwerveConstants.swerveLength.divide(2), SwerveConstants.swerveWidth.divide(2)).getNorm(),
                 new ReplanningConfig() // default replanning config
