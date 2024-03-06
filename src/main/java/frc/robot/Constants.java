@@ -257,13 +257,13 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength.times(-0.5), Meters.zero(), Meters.zero()),
+                        new Translation3d(SwerveConstants.swerveLength.times(-0.5), Meters.zero(), Inches.of(7)),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
-        public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        public static final PoseStrategy poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
         private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
@@ -273,7 +273,7 @@ public class Constants {
         public static final DoubleTopic notePitchTopic = colorVisionTable.getDoubleTopic("targetPitch");
         
         // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
-        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(5.0, 5.0, 5.0); 
+        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(2.0, 2.0, 2.0); 
     }
 
     public static final class ShooterConstants {
