@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -111,7 +113,9 @@ public class RobotContainer {
           private AmpCommandGroup ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, expelTrapTrigger);
         
   // Light Triggers
-private Trigger blueLightTrigger = buttonBoardOne.button(1);
+  private Trigger blueLightTrigger = buttonBoardOne.button(1);
+  private Trigger redLightTrigger = buttonBoardOne.button(0);
+
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -151,6 +155,7 @@ private Trigger blueLightTrigger = buttonBoardOne.button(1);
 
     // light bindings
     blueLightTrigger.onTrue(new InstantCommand(lightsSubsystem::SetBlue));
+    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSectionColor(0, 8, Color.kDarkRed)));
   }
 
   private void configureAuto() {

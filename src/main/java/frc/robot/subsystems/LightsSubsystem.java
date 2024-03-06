@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LightsSubsystem extends SubsystemBase {
@@ -14,9 +15,10 @@ public class LightsSubsystem extends SubsystemBase {
   AddressableLEDBuffer m_ledBuffer;
   public LightsSubsystem() 
   {
+    m_ledBuffer = new AddressableLEDBuffer(60);
     ledstrip = new AddressableLED(0);
     ledstrip.setLength(m_ledBuffer.getLength());
-    m_ledBuffer = new AddressableLEDBuffer(60);
+   
 
     ledstrip.setData(m_ledBuffer);
     ledstrip.start();
@@ -35,5 +37,14 @@ public class LightsSubsystem extends SubsystemBase {
    }
    
    ledstrip.setData(m_ledBuffer);
+  }
+
+  public void setSectionColor(int firstLight, int lastLight, Color color)
+  {
+    for(int i = firstLight; i <= lastLight; i++)
+    {
+      m_ledBuffer.setLED(i, color);
+    }
+    ledstrip.setData(m_ledBuffer);
   }
 }
