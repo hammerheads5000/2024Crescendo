@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -49,11 +50,8 @@ public class RobotContainer {
   CommandXboxController driveController = new CommandXboxController(0);
   CommandXboxController secondaryController = new CommandXboxController(1);
   CommandJoystick buttonBoardOne = new CommandJoystick(2);
-<<<<<<< Updated upstream
-
-=======
   CommandJoystick buttonBoardTwo = new CommandJoystick(3);
->>>>>>> Stashed changes
+
   // subsystems
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
@@ -81,12 +79,7 @@ public class RobotContainer {
   
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
-<<<<<<< Updated upstream
- 
-
-=======
   AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem);
->>>>>>> Stashed changes
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
@@ -220,6 +213,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
+    return new SpinShooterCommand(shooterSubsystem).alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 }
