@@ -73,6 +73,8 @@ public class AimShooterCommand extends Command {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
     
+    alignedToSpeakerPublisher = LoggingConstants.alignedToSpeakerPublisher;
+
     addRequirements(swerve, shooterHeightPIDSubsystem);
   }
   

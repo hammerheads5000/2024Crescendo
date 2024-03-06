@@ -19,14 +19,15 @@ import frc.robot.Constants.TrapConstants;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AmpCommandGroup extends SequentialCommandGroup {
   /** Creates a new AmpCommandGroup. */
-  public AmpCommandGroup(TrapMechanismSubsystem trapSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem,Trigger trigger) {
+  public AmpCommandGroup(TrapMechanismSubsystem trapSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(trapPIDSubsystem::moveToAmp),
       new InstantCommand(trapSubsystem::contractActuator),
-      new WaitUntilCommand(trigger),
+      new WaitUntilCommand(() -> trapPIDSubsystem.getController().atSetpoint()),
       new InstantCommand(trapSubsystem::forward),
+      new WaitUntilCommand(trapSubsystem::isNoteDetected),
       new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
       new InstantCommand(trapSubsystem::stopRollers)
     );

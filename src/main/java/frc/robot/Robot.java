@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,9 +20,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    SmartDashboard.putData(CommandScheduler.getInstance());
+    m_robotContainer.swerve.resetPose(new Pose2d()); // reset field relative
     
     // logging
+    SmartDashboard.putData(CommandScheduler.getInstance());
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
   }
