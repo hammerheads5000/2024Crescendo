@@ -178,7 +178,6 @@ public class Swerve extends SubsystemBase {
 
   public void resetPose(Pose2d pose) {
     drivetrain.seedFieldRelative(pose);
-    drivetrain.getPigeon2().setYaw(drivetrain.getState().Pose.getRotation().getDegrees());
   }
 
   /**
