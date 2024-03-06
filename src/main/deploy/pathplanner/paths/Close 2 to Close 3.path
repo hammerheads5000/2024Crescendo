@@ -44,9 +44,6 @@
   },
   "reversed": false,
   "folder": "Close-Close Paths",
-  "previewStartingState": {
-    "rotation": 180.0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

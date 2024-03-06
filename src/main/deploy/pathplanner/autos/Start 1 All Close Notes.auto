@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 1 to Close 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note and Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close 1 to Close 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note and Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close 2 to Close 3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note and Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

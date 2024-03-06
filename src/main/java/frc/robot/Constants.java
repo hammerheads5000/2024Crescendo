@@ -277,7 +277,7 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(580);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(590);
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
@@ -341,7 +341,7 @@ public class Constants {
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
         public static final int minPulseMicroseconds = 1;
         public static final int maxPulseMicroseconds = 1024;
-        public static final double encoderValueAt90Deg = 0.485; // encoder value in rotations
+        public static final double encoderValueAt90Deg = 0.495; // encoder value in rotations
 
         // manual height control
         public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
