@@ -13,9 +13,10 @@ public class LightsSubsystem extends SubsystemBase {
   /** Creates a new LightsSubsystem. */
   AddressableLED ledstrip;
   AddressableLEDBuffer m_ledBuffer;
+  int k = 0;
   public LightsSubsystem() 
   {
-    m_ledBuffer = new AddressableLEDBuffer(60);
+    m_ledBuffer = new AddressableLEDBuffer(36);
     ledstrip = new AddressableLED(0);
     ledstrip.setLength(m_ledBuffer.getLength());
    
@@ -29,21 +30,28 @@ public class LightsSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void SetBlue()
+  public void SetSolidColor(Color color)
   {
-    for (var i = 0; i < 60; i++) {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
       // Sets the specified LED to the RGB values for red
-      m_ledBuffer.setRGB(i, 0, 0, 255);
+      m_ledBuffer.setLED(i, color);
    }
    
    ledstrip.setData(m_ledBuffer);
   }
 
+  public void TestColor()
+  {
+    m_ledBuffer.setLED(k, Color.kGold);
+    k += 1;
+    ledstrip.setData(m_ledBuffer);
+  }
   public void setSectionColor(int firstLight, int lastLight, Color color)
   {
-    for(int i = firstLight; i <= lastLight; i++)
+    for(int i = firstLight; i < lastLight; i++)
     {
       m_ledBuffer.setLED(i, color);
+      System.out.println("fuck");
     }
     ledstrip.setData(m_ledBuffer);
   }

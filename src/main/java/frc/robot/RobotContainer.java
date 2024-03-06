@@ -67,13 +67,13 @@ public class RobotContainer {
   private ExpelTrapNoteCommand expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem);
   private HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
   private ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
-  private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
+  private Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   
   private AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   private SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
  
-  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem);
+  private ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   private AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
   // autos
   private Command ampAuto;
@@ -114,7 +114,8 @@ public class RobotContainer {
         
   // Light Triggers
   private Trigger blueLightTrigger = buttonBoardOne.button(1);
-  private Trigger redLightTrigger = buttonBoardOne.button(0);
+  private Trigger redLightTrigger = buttonBoardOne.button(2);
+  private Trigger testLightButton = buttonBoardOne.button(3);
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -154,8 +155,9 @@ public class RobotContainer {
     climbTrigger.whileTrue(climbCommand);
 
     // light bindings
-    blueLightTrigger.onTrue(new InstantCommand(lightsSubsystem::SetBlue));
-    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSectionColor(0, 8, Color.kDarkRed)));
+    blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.SetSolidColor(Color.kBlue)));
+    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSectionColor(0, 8/3, Color.kCrimson)));
+    testLightButton.onTrue(new InstantCommand(lightsSubsystem::TestColor));
   }
 
   private void configureAuto() {

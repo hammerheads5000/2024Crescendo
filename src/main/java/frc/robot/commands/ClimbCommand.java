@@ -8,19 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
+import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 
 public class ClimbCommand extends Command {
   ClimberSubsystem climbSubsystem;
   CommandXboxController controller;
   ShooterHeightPIDSubsystem shooterSubsystem;
-  
+  TrapHeightPIDSubsystem trapPIDSubsystem;
   /** Creates a new ClimbCommand. */
-  public ClimbCommand(ClimberSubsystem climbSubsystem, CommandXboxController controller, ShooterHeightPIDSubsystem shooterSubsystem) {
+  public ClimbCommand(ClimberSubsystem climbSubsystem, CommandXboxController controller, ShooterHeightPIDSubsystem shooterSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
     this.climbSubsystem = climbSubsystem;
     this.shooterSubsystem = shooterSubsystem;
     addRequirements(climbSubsystem, shooterSubsystem);
+    this.trapPIDSubsystem = trapPIDSubsystem;
   }
 
   // Called when the command is initially scheduled.
@@ -28,6 +30,7 @@ public class ClimbCommand extends Command {
   public void initialize() {
     shooterSubsystem.disable();
     shooterSubsystem.coast();
+    trapPIDSubsystem.moveToHome();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
