@@ -14,6 +14,7 @@ import frc.robot.commands.intake.AlignToNoteCommand;
 import frc.robot.commands.intake.MoveOverNoteCommand;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -23,13 +24,13 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
   /** Creates a new PickUpNoteAndShootCommand. */
-  public PickUpNoteAndShootCommand(Swerve swerve, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
+  public PickUpNoteAndShootCommand(Swerve swerve, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem, LightsSubsystem lightsSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
-      new AlignToNoteCommand(swerve),
+      new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       Commands.race( // and aimShooterCommand when shot

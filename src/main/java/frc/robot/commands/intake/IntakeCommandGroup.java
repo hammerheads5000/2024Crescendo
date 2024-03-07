@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -17,11 +18,13 @@ import frc.robot.subsystems.Swerve;
 public class IntakeCommandGroup extends SequentialCommandGroup {
   public static boolean isFinished;
   /** Creates a new IntakeCommandGroup. */
-  public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem) {    
+  public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem, LightsSubsystem lightsSubsystem) {    
     addCommands(
-      new AlignToNoteCommand(swerve),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)),
+      new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN)),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(Constants.IntakeConstants.slowFeedRate)),
       new WaitUntilCommand(intakeSubsystem::shooterLidarState),
       new InstantCommand(intakeSubsystem::stopAll)

@@ -5,16 +5,18 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 
 public class SpinShooterCommand extends Command {
   ShooterSubsystem shooterSubsystem;
-
+  LightsSubsystem lightsSubsystem;
   /** Creates a new SpinShooterCommand. */
-  public SpinShooterCommand(ShooterSubsystem shooterSubsystem) {
+  public SpinShooterCommand(ShooterSubsystem shooterSubsystem, LightsSubsystem lightsSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
-
+    this.lightsSubsystem = lightsSubsystem;
     addRequirements(shooterSubsystem);
   }
 
@@ -22,6 +24,7 @@ public class SpinShooterCommand extends Command {
   @Override
   public void initialize() {
     shooterSubsystem.start();
+    lightsSubsystem.setSolidColor(Constants.LightConstants.RED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

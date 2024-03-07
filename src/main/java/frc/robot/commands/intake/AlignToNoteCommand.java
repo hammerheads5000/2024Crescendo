@@ -18,8 +18,10 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 
 public class AlignToNoteCommand extends Command {
@@ -30,11 +32,11 @@ public class AlignToNoteCommand extends Command {
   Rotation2d desiredRotation;
   Timer timer;
   boolean timingAlignment = false;
-
+  LightsSubsystem lightsSubsystem;
   /** Creates a new AlignToNoteCommand. */
-  public AlignToNoteCommand(Swerve swerve) {
+  public AlignToNoteCommand(Swerve swerve, LightsSubsystem lightsSubsystem) {
     this.swerve = swerve;
-
+    this.lightsSubsystem = lightsSubsystem;
     angleSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
     hasTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     pitchSubscriber = VisionConstants.notePitchTopic.subscribe(0.0);
@@ -52,8 +54,12 @@ public class AlignToNoteCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!hasTargetSubscriber.get()) return;
-    
+    if (!hasTargetSubscriber.get()) 
+    {
+    lightsSubsystem.setSolidColor(Constants.LightConstants.RED);
+    return;
+    }
+    lightsSubsystem.setSolidColor(Constants.LightConstants.BLUE);
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
     desiredRotation = robotAngle.rotateBy(robotToNoteRotation);

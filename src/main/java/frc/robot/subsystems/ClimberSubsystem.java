@@ -20,14 +20,14 @@ public class ClimberSubsystem extends SubsystemBase {
   DigitalInput lidarSensor;
   BooleanPublisher climberDownPublisher = Constants.LoggingConstants.climberDownPublisher;
   DoublePublisher climberSpeedPublisher = Constants.LoggingConstants.climberSpeedPublisher;
-
+  LightsSubsystem lightsSubsystem;
   /** Creates a new ClimberSubsystem. */
-  public ClimberSubsystem() {
+  public ClimberSubsystem(LightsSubsystem lightsSubsystem) {
     climbMotor = ClimberConstants.climberMotor;
     climbMotor.getConfigurator().apply(new MotorOutputConfigs()
       .withInverted(ClimberConstants.climberInverted)
       .withNeutralMode(NeutralModeValue.Brake));
-    
+    this.lightsSubsystem = lightsSubsystem;
     lidarSensor = ClimberConstants.limitLidarSensor;
   }
 
@@ -50,6 +50,7 @@ public class ClimberSubsystem extends SubsystemBase {
     climberDownPublisher.set(reachedClimbLimit());
     if (reachedClimbLimit()) {
       climbMotor.stopMotor();
+      lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN);
     }
   }
 }

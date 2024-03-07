@@ -53,6 +53,7 @@ public class RobotContainer {
   CommandJoystick buttonBoardOne = new CommandJoystick(2);
   CommandJoystick buttonBoardTwo = new CommandJoystick(3);
   // subsystems
+  private LightsSubsystem lightsSubsystem = new LightsSubsystem();
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
@@ -63,13 +64,13 @@ public class RobotContainer {
   ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
 
-  ClimberSubsystem climberSubsystem = new ClimberSubsystem();
+  ClimberSubsystem climberSubsystem = new ClimberSubsystem(lightsSubsystem);
   
-  private LightsSubsystem lightsSubsystem = new LightsSubsystem();
+
   // commands
 
   TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
-  Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem).handleInterrupt(intakeSubsystem::stopAll);
+  Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem).handleInterrupt(intakeSubsystem::stopAll);
   Command expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt  
   HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
@@ -78,10 +79,10 @@ public class RobotContainer {
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
-  SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem);
+  SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
   AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem);
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
-  AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem);
+  AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   // autos
@@ -174,8 +175,8 @@ public class RobotContainer {
     climbTrigger.whileTrue(climbCommand);
 
     // light bindings
-    blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.SetSolidColor(Color.kBlue)));
-    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSectionColor(0, 8/3, Color.kCrimson)));
+    blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.BLUE)));
+    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)));
     testLightButton.onTrue(new InstantCommand(lightsSubsystem::TestColor));
   }
 
@@ -206,7 +207,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
-    NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
+    NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
     NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
 
@@ -218,6 +219,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new SpinShooterCommand(shooterSubsystem).alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
+    return new SpinShooterCommand(shooterSubsystem, lightsSubsystem).alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 }

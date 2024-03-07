@@ -54,6 +54,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Current;
 import edu.wpi.first.units.Distance;
@@ -378,7 +379,7 @@ public class Constants {
 
         public static final Measure<Distance> homePosition = Inches.of(0);
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
-        public static final Measure<Distance> trapPosition = Inches.of(18); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> trapPosition = Inches.of(17.5); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(5); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> maxHeight = Inches.of(20);
 
@@ -403,7 +404,7 @@ public class Constants {
     public static final class ClimberConstants {
         public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
         public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
-        public static final double climbSpeed = 0.8;
+        public static final double climbSpeed =         1;
 
         public static final DigitalInput limitLidarSensor = new DigitalInput(5);
     }
@@ -461,5 +462,13 @@ public class Constants {
                 .getStructArrayTopic("Target Swerve Module States", SwerveModuleState.struct).publish();
         public static final DoublePublisher rotationPublisher = swerveTable.getDoubleTopic("Rotation").publish();
         public static final DoubleArrayPublisher chassisSpeedsPublisher = swerveTable.getDoubleArrayTopic("Chassis Speeds").publish();
+    }
+
+    public static final class LightConstants
+    {
+        public static final Color8Bit RED = new Color8Bit(255,0,0);
+        public static final Color8Bit BLUE = new Color8Bit(0,255,0);
+        public static final Color8Bit GREEN = new Color8Bit(0,0,255);
+        public static final Color8Bit PINK = new Color8Bit(244,235,0);
     }
 }

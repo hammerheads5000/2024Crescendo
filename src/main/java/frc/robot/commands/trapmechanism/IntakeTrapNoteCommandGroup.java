@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -26,13 +27,14 @@ public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(trapPIDSubsystem::enable),
-      new InstantCommand(() -> lightsSubsystem.SetSolidColor(Color.kMagenta)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.PINK)),
       new InstantCommand(trapPIDSubsystem::moveToSource),
       new InstantCommand(trapSubsystem::extendActuator),
       new InstantCommand(trapSubsystem::forward),
       new WaitUntilCommand(trapSubsystem::isNoteDetected),
       new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
       new InstantCommand(trapSubsystem::stopRollers)
+      //new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN))
     );
   }
 }

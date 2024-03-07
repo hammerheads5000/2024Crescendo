@@ -37,6 +37,7 @@ public class ClimbCommand extends Command {
   @Override
   public void execute() 
   {
+
       climbSubsystem.climb(controller.getLeftY());
   }
 
