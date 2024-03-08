@@ -196,6 +196,7 @@ public class Swerve extends SubsystemBase {
    * Contains a Pose3d and a timestamp
    */
   public void applyVisionMeasurement(EstimatedRobotPose estimatedRobotPose) {
+    drivetrain.seedFieldRelative(getPose());
     drivetrain.addVisionMeasurement(estimatedRobotPose.estimatedPose.toPose2d(), estimatedRobotPose.timestampSeconds);
   }
 

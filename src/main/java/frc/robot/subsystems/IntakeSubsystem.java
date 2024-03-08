@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,7 +19,8 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
-
+  private BooleanPublisher intakeLIDARPublisher;
+  private BooleanPublisher shooterLIDARPublisher;
   private DigitalInput intakeLidar;
   private DigitalInput shooterLidar;
 
@@ -61,7 +64,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopAll() {
     intakeFeedMotor.stopMotor();
     shooterFeedMotor.neutralOutput();
-    System.out.println("Fuckery");
   }
 
   public void reverse() {
@@ -71,7 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putBoolean("Shooter LIDAR", shooterLidarState());
+   
   }
 
   public boolean intakeLidarState()

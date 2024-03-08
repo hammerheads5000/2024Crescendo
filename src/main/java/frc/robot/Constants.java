@@ -264,7 +264,7 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
-                        new Translation3d(SwerveConstants.swerveLength.times(-0.5), Meters.zero(), Inches.of(7)),
+                        new Translation3d(Inches.of(-13.5), Inches.of(-3.25), Inches.of(7)),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),

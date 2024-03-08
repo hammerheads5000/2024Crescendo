@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.util.Color;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -13,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -74,14 +71,14 @@ public class RobotContainer {
   Command expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt  
   HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);
-  ManualTrapCommand manualTrapCommand = new ManualTrapCommand(secondaryController, trapHeightPIDSubsystem);
+  ManualTrapCommand manualTrapCommand = new ManualTrapCommand(buttonBoardTwo, trapHeightPIDSubsystem);
   Command intakeTrapNoteCommand = new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem);
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
-  AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem);
-  ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
+  AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem, trapMechanismSubsystem);
+  ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, buttonBoardOne, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
@@ -102,8 +99,7 @@ public class RobotContainer {
   Trigger expelTrapTrigger = buttonBoardOne.button(7);
   Trigger toggleTrapTrigger = buttonBoardOne.button(9);
   Trigger homeTrapTrigger = buttonBoardOne.button(11);
-  Trigger moveAmpTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband)
-                                .or(secondaryController.axisLessThan(5, -Constants.controllerDeadband)); // right joystick moved
+  Trigger moveAmpTrigger = buttonBoardTwo.button(10);
   Trigger AutoSourceTrigger = buttonBoardOne.button(8);
   Trigger AutoTrapTrigger = buttonBoardOne.button(6);
   Trigger Amptrigger = buttonBoardOne.button(5);
@@ -121,16 +117,11 @@ public class RobotContainer {
   Trigger intakeFeedTrigger = secondaryController.rightBumper();
   Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
   // climb triggers
-  Trigger climbTrigger = secondaryController.b().and(
-      secondaryController.axisGreaterThan(1, Constants.controllerDeadband)
-          .or(secondaryController.axisLessThan(1, -Constants.controllerDeadband))); // left joystick y moved while b held
+  Trigger climbTrigger = buttonBoardTwo.button(9);
         
   // Light Triggers
   private Trigger blueLightTrigger = buttonBoardOne.button(1);
   private Trigger redLightTrigger = buttonBoardOne.button(2);
-  private Trigger testLightButton = buttonBoardOne.button(3);
-
-
 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -157,7 +148,7 @@ public class RobotContainer {
     AutoTrapTrigger.whileTrue(autoTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
-
+    
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
@@ -177,7 +168,6 @@ public class RobotContainer {
     // light bindings
     blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.BLUE)));
     redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)));
-    testLightButton.onTrue(new InstantCommand(lightsSubsystem::TestColor));
   }
 
   void configureAuto() {

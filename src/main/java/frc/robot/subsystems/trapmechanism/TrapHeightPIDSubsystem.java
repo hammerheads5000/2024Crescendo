@@ -66,7 +66,10 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void raise(double speed) {
+    if(!colorDetected() && speed < 0)
+    {
     heightControlMotor.set(TrapConstants.raiseSpeed * speed);
+    }
   }
 
   public void lower() {
