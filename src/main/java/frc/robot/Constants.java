@@ -466,9 +466,22 @@ public class Constants {
 
     public static final class LightConstants
     {
+        // green and blue are flipped
         public static final Color8Bit RED = new Color8Bit(255,0,0);
-        public static final Color8Bit BLUE = new Color8Bit(0,255,0);
+        public static final Color8Bit ORANGE = new Color8Bit(255, 0, 165);
+        public static final Color8Bit YELLOW = new Color8Bit(0, 255, 255);
         public static final Color8Bit GREEN = new Color8Bit(0,0,255);
+        public static final Color8Bit BLUE = new Color8Bit(0,255,0);
+        public static final Color8Bit PURPLE = new Color8Bit(91, 104, 0);
         public static final Color8Bit PINK = new Color8Bit(244,235,0);
+
+        public static final int numLEDGroups = 12;
+
+        public static final Color8Bit[] rainbow = new Color8Bit[] {
+                RED, ORANGE, YELLOW, 
+                GREEN, BLUE, PURPLE, 
+                RED, ORANGE, YELLOW,
+                GREEN, BLUE, PURPLE
+        };
     }
 }

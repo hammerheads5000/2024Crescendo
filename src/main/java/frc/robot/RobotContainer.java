@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DisabledLightsCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
 import frc.robot.commands.autos.ShootNoteCommand;
@@ -82,11 +83,12 @@ public class RobotContainer {
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
+
+  DisabledLightsCommand disabledLightsCommand = new DisabledLightsCommand(lightsSubsystem, aprilTagSubsystem);
   // autos
   Command ampAuto;
   Command sourceAuto;
   SendableChooser<Command> autoChooser;
-  Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
 
   // swerve/movement triggers
   Trigger zeroPose = driveController.x();
@@ -126,6 +128,7 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
+
     configureAuto();
     configureBindings();
   }
@@ -209,6 +212,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new SpinShooterCommand(shooterSubsystem, lightsSubsystem).alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
+    Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
+    Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
+
+    return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 }

@@ -21,6 +21,8 @@ public class AprilTagSubsystem extends SubsystemBase {
 
   private DoubleArrayPublisher publisher;
 
+  private boolean hasTarget = false;
+
   /** Creates a new AprilTagSubsystem. */
   public AprilTagSubsystem() {
     fieldLayout = VisionConstants.aprilTagFieldLayout;
@@ -32,9 +34,13 @@ public class AprilTagSubsystem extends SubsystemBase {
 
   public void update() {
     Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
+
     if (optionalPose.isEmpty()) {
+      hasTarget = false;
       return;
     }
+
+    hasTarget = true;
     EstimatedRobotPose estimatedRobotPose = optionalPose.get();
     Pose2d pose = estimatedRobotPose.estimatedPose.toPose2d();
     
@@ -46,6 +52,10 @@ public class AprilTagSubsystem extends SubsystemBase {
     long timeMicroseconds = (long)(estimatedRobotPose.timestampSeconds * UnitConstants.secondsToMicroseconds);
 
     publisher.set(poseArray, timeMicroseconds);
+  }
+
+  public boolean hasAprilTag() {
+    return hasTarget;
   }
 
   @Override

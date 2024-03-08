@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LightConstants;
 
 public class LightsSubsystem extends SubsystemBase {
   /** Creates a new LightsSubsystem. */
   AddressableLED ledstrip;
   AddressableLEDBuffer m_ledBuffer;
-  int k = 0;
+
   public LightsSubsystem() 
   {
-    m_ledBuffer = new AddressableLEDBuffer(36);
+    m_ledBuffer = new AddressableLEDBuffer(LightConstants.numLEDGroups);
     ledstrip = new AddressableLED(0);
     ledstrip.setLength(m_ledBuffer.getLength());
    
-
     ledstrip.setData(m_ledBuffer);
     ledstrip.start();
   }
@@ -41,18 +41,20 @@ public class LightsSubsystem extends SubsystemBase {
    ledstrip.setData(m_ledBuffer);
   }
 
-  public void TestColor()
-  {
-    m_ledBuffer.setLED(k, Color.kGold);
-    k += 1;
-    ledstrip.setData(m_ledBuffer);
-  }
-  public void setSectionColor(int firstLight, int lastLight, Color color)
+  public void setSectionColor(int firstLight, int lastLight, Color8Bit color)
   {
     for(int i = firstLight; i < lastLight; i++)
     {
       m_ledBuffer.setLED(i, color);
-      System.out.println("fuck");
+    }
+    ledstrip.setData(m_ledBuffer);
+  }
+
+  public void setPattern(Color8Bit[] pattern) {
+    if (pattern.length != m_ledBuffer.getLength()) throw new Error("Pattern length must match number of LEDs");
+
+    for (int i = 0; i < pattern.length; i++) {
+      m_ledBuffer.setLED(i, pattern[i]);
     }
     ledstrip.setData(m_ledBuffer);
   }
