@@ -51,7 +51,9 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.Publisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -65,6 +67,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -82,6 +85,9 @@ public class Constants {
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     public static final double controllerDeadband = 0.225;
+
+    public static final PowerDistribution pdh = new PowerDistribution();
+    public static final double lowStartVoltage = 13.0;
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;

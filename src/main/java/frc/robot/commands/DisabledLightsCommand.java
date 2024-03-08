@@ -5,18 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.LightConstants;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.PowerSubsystem;
 
 public class DisabledLightsCommand extends Command {
   LightsSubsystem lightsSubsystem;
   AprilTagSubsystem aprilTagSubsystem;
+  PowerSubsystem powerSubsystem;
 
   /** Creates a new DisabledLightsCommand. */
-  public DisabledLightsCommand(LightsSubsystem lightsSubsystem, AprilTagSubsystem aprilTagSubsystem) {
+  public DisabledLightsCommand(LightsSubsystem lightsSubsystem, AprilTagSubsystem aprilTagSubsystem, PowerSubsystem powerSubsystem) {
     this.lightsSubsystem = lightsSubsystem;
     this.aprilTagSubsystem = aprilTagSubsystem;
+    this.powerSubsystem = powerSubsystem;
 
     addRequirements(lightsSubsystem, aprilTagSubsystem);
   }
@@ -30,7 +34,10 @@ public class DisabledLightsCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (aprilTagSubsystem.hasAprilTag()) {
+    if (powerSubsystem.getVoltage() < Constants.lowStartVoltage) {
+      lightsSubsystem.setSolidColor(LightConstants.RED);
+    }
+    else if (aprilTagSubsystem.hasAprilTag()) {
       lightsSubsystem.setSolidColor(LightConstants.GREEN);
     }
     else {
