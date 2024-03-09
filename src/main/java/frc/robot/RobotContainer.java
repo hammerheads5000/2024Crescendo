@@ -131,6 +131,7 @@ public class RobotContainer {
   // climb triggers
   Trigger climbUpTrigger = buttonBoardTwo.button(10);
   Trigger climbDownTrigger = buttonBoardTwo.button(11);
+ 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -158,6 +159,7 @@ public class RobotContainer {
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);
+    TrapRollerJoystickTrigger.whileTrue(climbCommand) ;
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -196,6 +198,7 @@ public class RobotContainer {
       swerve);
     
     // bind commands
+    NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::toggleActuator));
     NamedCommands.registerCommand("Raise To Amp", new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));

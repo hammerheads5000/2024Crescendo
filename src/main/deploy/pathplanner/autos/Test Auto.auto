@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Flip Trap Down"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Test Path"
