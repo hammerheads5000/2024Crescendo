@@ -89,7 +89,7 @@ public class RobotContainer {
   Command ampAuto;
   Command sourceAuto;
   SendableChooser<Command> autoChooser;
-  Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
+  Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
 
   // swerve/movement triggers
   Trigger zeroPose = driveController.x();
@@ -170,13 +170,9 @@ public class RobotContainer {
     slowRollIntakeTrigger.whileTrue(new StartEndCommand(() -> intakeSubsystem.StartAll(Constants.IntakeConstants.slowFeedRate), intakeSubsystem::stopAll, intakeSubsystem));
     
     // climb bindings
-<<<<<<< Updated upstream
-    climbTrigger.whileTrue(climbCommand);
-=======
     climbUpTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
     climbDownTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(-Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
     climbJoystickTrigger.whileTrue(climbCommand);
->>>>>>> Stashed changes
   }
 
   void configureAuto() {
@@ -218,13 +214,9 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-<<<<<<< Updated upstream
     Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
 
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
-=======
-    return new SpinShooterCommand(shooterSubsystem, lightsSubsystem).alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
->>>>>>> Stashed changes
   }
 }
