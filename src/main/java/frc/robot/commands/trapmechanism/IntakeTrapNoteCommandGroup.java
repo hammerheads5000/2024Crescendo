@@ -34,7 +34,7 @@ public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
       new WaitUntilCommand(trapSubsystem::isNoteDetected),
       new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
       new InstantCommand(trapSubsystem::stopRollers),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN))
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.BLANK))
     );
   }
 }

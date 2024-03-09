@@ -22,11 +22,11 @@ public class ManualIntakeCommand extends SequentialCommandGroup {
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),
       new InstantCommand(intakeSubsystem::startAll),
       new WaitUntilCommand(intakeSubsystem::intakeLidarState),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLUE)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
       new WaitUntilCommand(intakeSubsystem::shooterLidarState),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
-      new InstantCommand(intakeSubsystem::stopAll)
+      new InstantCommand(intakeSubsystem::stopAll),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
     );
   }
 }

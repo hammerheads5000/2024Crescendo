@@ -480,6 +480,7 @@ public class Constants {
         public static final Color8Bit BLUE = new Color8Bit(0,255,0);
         public static final Color8Bit PURPLE = new Color8Bit(91, 104, 0);
         public static final Color8Bit PINK = new Color8Bit(244,235,0);
+        public static final Color8Bit BLANK = new Color8Bit(0, 0, 0);
 
         public static final int numLEDGroups = 12;
 

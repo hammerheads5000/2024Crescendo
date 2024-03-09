@@ -24,7 +24,6 @@ public class SpinShooterCommand extends Command {
   @Override
   public void initialize() {
     shooterSubsystem.start();
-    lightsSubsystem.setSolidColor(Constants.LightConstants.RED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
@@ -56,10 +57,9 @@ public class AlignToNoteCommand extends Command {
   public void execute() {
     if (!hasTargetSubscriber.get()) 
     {
-    lightsSubsystem.setSolidColor(Constants.LightConstants.RED);
-    return;
+      lightsSubsystem.setSolidColor(LightConstants.RED);
+      return;
     }
-    lightsSubsystem.setSolidColor(Constants.LightConstants.BLUE);
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
     desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
@@ -72,7 +72,9 @@ public class AlignToNoteCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    lightsSubsystem.setSolidColor(LightConstants.BLANK);
+  }
 
   // Returns true when the command should end.
   @Override

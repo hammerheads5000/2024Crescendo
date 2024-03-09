@@ -170,10 +170,6 @@ public class RobotContainer {
     
     // climb bindings
     climbTrigger.whileTrue(climbCommand);
-
-    // light bindings
-    blueLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.BLUE)));
-    redLightTrigger.onTrue(new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)));
   }
 
   void configureAuto() {
@@ -205,7 +201,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
     NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
-    NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem));
+    NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");
@@ -215,7 +211,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem);
+    Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
 
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));

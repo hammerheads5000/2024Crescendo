@@ -51,7 +51,8 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
               new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem)
                   .until(() -> !intakeSubsystem.shooterLidarState()) // feed to shoot until note not detected
           )
-      )
+      ),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
     );
   }
 }

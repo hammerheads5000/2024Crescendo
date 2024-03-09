@@ -50,7 +50,6 @@ public class ClimberSubsystem extends SubsystemBase {
     climberDownPublisher.set(reachedClimbLimit());
     if (reachedClimbLimit()) {
       climbMotor.stopMotor();
-      lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN);
     }
   }
 }
