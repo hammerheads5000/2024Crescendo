@@ -58,4 +58,30 @@ public class LightsSubsystem extends SubsystemBase {
     }
     ledstrip.setData(m_ledBuffer);
   }
+
+  public Color8Bit[] interpolatePatterns(Color8Bit[] pattern1, Color8Bit[] pattern2, double t) {
+    if (pattern1.length != pattern2.length) throw new Error("Pattern lengths must match");
+
+    Color8Bit[] result = new Color8Bit[pattern1.length];
+    
+    for (int i = 0; i < pattern1.length; i++) {
+      int r = (int)(pattern1[i].red*(1-t) + pattern2[i].red*t);
+      int g = (int)(pattern1[i].green*(1-t) + pattern2[i].green*t);
+      int b = (int)(pattern1[i].blue*(1-t) + pattern2[i].blue*t);
+
+      result[i] = new Color8Bit(r, g, b);
+    }
+
+    return result;
+  }
+
+  public Color8Bit[] shiftPattern(Color8Bit[] pattern) {
+    Color8Bit[] result = new Color8Bit[pattern.length];
+    result[0] = pattern[pattern.length-1];
+
+    for (int i = 1; i < pattern.length; i++) {
+      result[i] = pattern[i-1];
+    }
+    return result;
+  }
 }

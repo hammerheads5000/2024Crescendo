@@ -38,6 +38,7 @@ import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.PowerSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -63,6 +64,7 @@ public class RobotContainer {
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem = new ShooterHeightPIDSubsystem();
 
   ClimberSubsystem climberSubsystem = new ClimberSubsystem(lightsSubsystem);
+  PowerSubsystem powerSubsystem = new PowerSubsystem();
   
 
   // commands
@@ -84,7 +86,7 @@ public class RobotContainer {
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
 
-  DisabledLightsCommand disabledLightsCommand = new DisabledLightsCommand(lightsSubsystem, aprilTagSubsystem);
+  DisabledLightsCommand disabledLightsCommand = new DisabledLightsCommand(lightsSubsystem, aprilTagSubsystem, powerSubsystem);
   // autos
   Command ampAuto;
   Command sourceAuto;

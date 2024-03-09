@@ -87,7 +87,7 @@ public class Constants {
     public static final double controllerDeadband = 0.225;
 
     public static final PowerDistribution pdh = new PowerDistribution();
-    public static final double lowStartVoltage = 13.0;
+    public static final double lowStartVoltage = 1.0;
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
@@ -474,14 +474,16 @@ public class Constants {
     {
         // green and blue are flipped
         public static final Color8Bit RED = new Color8Bit(255,0,0);
-        public static final Color8Bit ORANGE = new Color8Bit(255, 0, 165);
-        public static final Color8Bit YELLOW = new Color8Bit(0, 255, 255);
+        public static final Color8Bit ORANGE = new Color8Bit(255, 0, 40);
+        public static final Color8Bit YELLOW = new Color8Bit(255, 0, 70);
         public static final Color8Bit GREEN = new Color8Bit(0,0,255);
         public static final Color8Bit BLUE = new Color8Bit(0,255,0);
         public static final Color8Bit PURPLE = new Color8Bit(91, 104, 0);
         public static final Color8Bit PINK = new Color8Bit(244,235,0);
 
         public static final int numLEDGroups = 12;
+
+        public static final double rainbowSpeed = 1;
 
         public static final Color8Bit[] rainbow = new Color8Bit[] {
                 RED, ORANGE, YELLOW, 
