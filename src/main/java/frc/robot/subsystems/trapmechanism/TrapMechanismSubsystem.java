@@ -43,6 +43,11 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     trapMechanismDoublePublisher.set(-TrapConstants.intakeSpeed);
   }
 
+  public void moveManual(double speed)
+  {
+    rollerMotor.set(TalonSRXControlMode.PercentOutput, speed);
+    trapMechanismDoublePublisher.set(speed);
+  }
   public void reverse() {
     rollerMotor.set(TalonSRXControlMode.PercentOutput, TrapConstants.expelSpeed);
     trapMechanismDoublePublisher.set(TrapConstants.intakeSpeed);

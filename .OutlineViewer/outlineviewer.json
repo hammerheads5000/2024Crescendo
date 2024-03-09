@@ -1,9 +1,36 @@
 {
+  "Connections": {
+    "open": true
+  },
   "NetworkTables Settings": {
-    "mode": "Client (NT3)"
+    "mode": "Client (NT4)"
+  },
+  "Persistent Values": {
+    "open": false
+  },
+  "Retained Values": {
+    "open": false
   },
   "transitory": {
+    "LiveWindow": {
+      "open": true
+    },
+    "Shooter": {
+      "open": true
+    },
+    "SmartDashboard": {
+      "open": true
+    },
+    "Swerve": {
+      "open": true
+    },
+    "Trap": {
+      "open": true
+    },
     "photonvision": {
+      "AprilTag Limelight": {
+        "open": true
+      },
       "Camera_Module_v1": {
         "open": true
       },
