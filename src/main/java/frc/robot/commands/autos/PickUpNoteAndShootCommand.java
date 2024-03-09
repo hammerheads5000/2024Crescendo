@@ -34,7 +34,7 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),
-      //new AlignToNoteCommand(swerve, lightsSubsystem),
+      new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),

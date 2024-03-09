@@ -226,8 +226,8 @@ public class RobotContainer {
   }
 
   public void enablePhotonvisionPortForwarding() {
-    // PortForwarder.add(5800, "10.50.0.37", 5800);
-    // PortForwarder.add(5800, "10.50.0.11", 5800);
-    // PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "10.50.0.11", 5800);
+    PortForwarder.add(5800, "10.50.0.205", 5800);
   }
 }
