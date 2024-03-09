@@ -19,7 +19,7 @@ public class ManualIntakeCommand extends SequentialCommandGroup {
   /** Creates a new ManualIntakeCommand. */
   public ManualIntakeCommand(IntakeSubsystem intakeSubsystem, LightsSubsystem lightsSubsystem) {
     addCommands(
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.RED)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),
       new InstantCommand(intakeSubsystem::startAll),
       new WaitUntilCommand(intakeSubsystem::intakeLidarState),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLUE)),

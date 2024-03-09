@@ -40,6 +40,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Start arm if enabled and feed the intake */
   public void startAll() { 
+    feedSpeed = IntakeConstants.fastFeedRate;
     // starts feeders
     intakeFeedMotor.set(feedSpeed);
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);

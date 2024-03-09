@@ -20,7 +20,7 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
   /** Creates a new IntakeCommandGroup. */
   public IntakeCommandGroup(Swerve swerve, IntakeSubsystem intakeSubsystem, LightsSubsystem lightsSubsystem) {    
     addCommands(
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.ORANGE)),
       new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),

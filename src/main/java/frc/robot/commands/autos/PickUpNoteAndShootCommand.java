@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.intake.AlignToNoteCommand;
 import frc.robot.commands.intake.MoveOverNoteCommand;
@@ -30,17 +32,22 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
     AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),
       new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
+      new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLUE)),
       Commands.race( // and aimShooterCommand when shot
           aimShooterCommand,
           Commands.sequence(
               new WaitUntilCommand(intakeSubsystem::shooterLidarState), // wait for note loaded
               new InstantCommand(intakeSubsystem::stopAll),
+              new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
               new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()
                   && shooterHeightPIDSubsystem.getController().atSetpoint()
                   && aimShooterCommand.isAligned()), // wait until ready to shoot
+              new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.PINK)),
               new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem)
                   .until(() -> !intakeSubsystem.shooterLidarState()) // feed to shoot until note not detected
           )
