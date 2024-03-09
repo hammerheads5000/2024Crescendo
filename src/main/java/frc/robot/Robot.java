@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    m_robotContainer.disabledLightsCommand.schedule();
+   m_robotContainer.disabledLightsCommand.schedule();
   }
 
   @Override

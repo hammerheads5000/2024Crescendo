@@ -45,6 +45,11 @@ public class ClimberSubsystem extends SubsystemBase {
     return !lidarSensor.get();
   }
 
+  public void stopMotor()
+  {
+    climbMotor.stopMotor();
+  }
+  
   @Override
   public void periodic() {
     climberDownPublisher.set(reachedClimbLimit());
