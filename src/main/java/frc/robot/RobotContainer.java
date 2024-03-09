@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -218,5 +219,11 @@ public class RobotContainer {
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
 
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
+  }
+
+  public void enablePhotonvisionPortForwarding() {
+    PortForwarder.add(5800, "10.50.0.37", 5800);
+    PortForwarder.add(5800, "10.50.0.11", 5800);
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 }
