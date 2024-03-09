@@ -35,6 +35,7 @@ import frc.robot.commands.trapmechanism.AutoTrapHomeCommandGroup;
 import frc.robot.commands.trapmechanism.ExpelTrapNoteCommand;
 import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
+import frc.robot.commands.trapmechanism.ManualRollerCommand;
 import frc.robot.commands.trapmechanism.ManualTrapCommand;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -86,6 +87,8 @@ public class RobotContainer {
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
+  ManualRollerCommand manualRollerCommand = new ManualRollerCommand(trapMechanismSubsystem, secondaryController);
+
   // autos
   Command ampAuto;
   Command sourceAuto;
@@ -110,6 +113,8 @@ public class RobotContainer {
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
   Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
   Trigger TrapMoveJoystickTrigger = secondaryController.axisLessThan(1, -Constants.controllerDeadband).or(secondaryController.axisGreaterThan(1, Constants.controllerDeadband));
+  Trigger TrapRollerJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
+  
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
@@ -126,8 +131,7 @@ public class RobotContainer {
   // climb triggers
   Trigger climbUpTrigger = buttonBoardTwo.button(10);
   Trigger climbDownTrigger = buttonBoardTwo.button(11);
-  Trigger climbJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
-  
+ 
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
@@ -155,6 +159,7 @@ public class RobotContainer {
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);
+    TrapRollerJoystickTrigger.whileTrue(climbCommand) ;
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -173,7 +178,6 @@ public class RobotContainer {
     // climb bindings
     climbUpTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
     climbDownTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(-Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
-    climbJoystickTrigger.whileTrue(climbCommand);
   }
 
   void configureAuto() {
@@ -194,6 +198,7 @@ public class RobotContainer {
       swerve);
     
     // bind commands
+    NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::toggleActuator));
     NamedCommands.registerCommand("Raise To Amp", new InstantCommand(trapHeightPIDSubsystem::moveToAmp));
     NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
@@ -217,7 +222,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
-
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 

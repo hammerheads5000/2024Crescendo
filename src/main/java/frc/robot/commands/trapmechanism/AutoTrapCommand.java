@@ -33,7 +33,7 @@ public class AutoTrapCommand extends SequentialCommandGroup {
       new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.climbSpeed)),
       new WaitUntilCommand(climbSubsystem::reachedClimbLimit),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN)),
-      new WaitCommand(3),
+      new WaitCommand(.5),
       new InstantCommand(trapSubsystem::forward)
     );
   }

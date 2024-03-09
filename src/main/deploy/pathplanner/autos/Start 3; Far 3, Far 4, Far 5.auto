@@ -6,9 +6,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Flip Trap Down"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Start 3 to Far 3"
+            "pathName": "Start 2 to Far 3"
           }
         },
         {
@@ -20,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Far 3 to Shoot 2 Under Stage"
+            "pathName": "Shoot 2 to Far 3 Around Stage"
           }
         },
         {
