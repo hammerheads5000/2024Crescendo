@@ -84,4 +84,14 @@ public class LightsSubsystem extends SubsystemBase {
     }
     return result;
   }
+
+  public Color8Bit[] rearrangePattern(Color8Bit[] pattern, int[] indices) {
+    Color8Bit[] result = new Color8Bit[pattern.length];
+
+    for (int i = 0; i < pattern.length; i++) {
+      result[i] = pattern[indices[i]];
+    }
+
+    return result;
+  }
 }

@@ -14,6 +14,7 @@ import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.intake.AlignToNoteCommand;
 import frc.robot.commands.intake.MoveOverNoteCommand;
+import frc.robot.commands.lights.IntakeTrailsLightsCommand;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -37,11 +38,10 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLUE)),
       Commands.race( // and aimShooterCommand when shot
           aimShooterCommand,
           Commands.sequence(
-              new WaitUntilCommand(intakeSubsystem::shooterLidarState), // wait for note loaded
+              new IntakeTrailsLightsCommand(lightsSubsystem).until(intakeSubsystem::shooterLidarState),
               new InstantCommand(intakeSubsystem::stopAll),
               new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
               new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()

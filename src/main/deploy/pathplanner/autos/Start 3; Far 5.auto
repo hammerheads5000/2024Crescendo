@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 3 to Far 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pick Up Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Far 5 to Shoot 2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
