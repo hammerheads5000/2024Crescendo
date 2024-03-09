@@ -27,6 +27,7 @@ public class ShootNoteCommand extends ParallelRaceGroup {
     // addCommands(new FooCommand(), new BarCommand());
     AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
     addCommands(
+      new InstantCommand(() -> shooterHeightPIDSubsystem.enable()),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
       aimShooterCommand,
       Commands.sequence(
