@@ -477,7 +477,7 @@ public class Constants {
         public static final Color8Bit ORANGE = new Color8Bit(255, 0, 40);
         public static final Color8Bit YELLOW = new Color8Bit(255, 0, 70);
         public static final Color8Bit GREEN = new Color8Bit(0,0,255);
-        public static final Color8Bit DARK_GREEN = new Color8Bit(0,0,40);
+        public static final Color8Bit DARK_GREEN = new Color8Bit(0,0,0);
         public static final Color8Bit BLUE = new Color8Bit(0,255,0);
         public static final Color8Bit PURPLE = new Color8Bit(91, 104, 0);
         public static final Color8Bit PINK = new Color8Bit(244,235,0);
@@ -493,6 +493,8 @@ public class Constants {
                 RED, ORANGE, YELLOW,
                 GREEN, BLUE, PURPLE
         };
+
+        public static final double trailSpeed = 4;
 
         public static final Color8Bit[] greenTrails = new Color8Bit[] {
                 GREEN, DARK_GREEN, BLANK,

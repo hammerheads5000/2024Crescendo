@@ -53,7 +53,7 @@ public class RobotContainer {
   CommandJoystick buttonBoardOne = new CommandJoystick(2);
   CommandJoystick buttonBoardTwo = new CommandJoystick(3);
   // subsystems
-  private LightsSubsystem lightsSubsystem = new LightsSubsystem();
+  LightsSubsystem lightsSubsystem = new LightsSubsystem();
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
   IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
