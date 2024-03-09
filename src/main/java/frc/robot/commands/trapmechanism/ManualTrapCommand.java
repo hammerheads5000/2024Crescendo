@@ -6,16 +6,19 @@ package frc.robot.commands.trapmechanism;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 
 public class ManualTrapCommand extends Command {
-  CommandJoystick controller;
+  CommandXboxController controller;
   TrapHeightPIDSubsystem trapSub;
-  public ManualTrapCommand(CommandJoystick controller, TrapHeightPIDSubsystem trapSub) {
+  public ManualTrapCommand(CommandXboxController controller, TrapHeightPIDSubsystem trapSub) {
     this.controller = controller;
     this.trapSub = trapSub;
     addRequirements(trapSub);
@@ -29,12 +32,7 @@ public class ManualTrapCommand extends Command {
   @Override
   public void execute() 
   {
-    // check for endstops
-    if ((Inches.of(trapSub.getMeasurement()).gte(TrapConstants.maxHeight) && -controller.getX() > 0)
-        || (trapSub.getMeasurement() <= 0 && -controller.getX() < 0))
-      return;
-
-    trapSub.raise(-controller.getX());
+    trapSub.raise(-controller.getLeftY());
   }
 
   @Override

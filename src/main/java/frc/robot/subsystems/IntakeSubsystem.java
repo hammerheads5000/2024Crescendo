@@ -46,6 +46,12 @@ public class IntakeSubsystem extends SubsystemBase {
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
   }
 
+  public void StartAll(double speed)
+  {
+    intakeFeedMotor.set(speed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, speed);
+  }
+
   public void startIntake() {
     intakeFeedMotor.set(feedSpeed);
   }
