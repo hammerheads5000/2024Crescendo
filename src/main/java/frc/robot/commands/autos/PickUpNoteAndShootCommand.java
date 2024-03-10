@@ -38,10 +38,10 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
+      new IntakeTrailsLightsCommand(lightsSubsystem).until(intakeSubsystem::shooterLidarState),
       Commands.race( // and aimShooterCommand when shot
           aimShooterCommand,
           Commands.sequence(
-              new IntakeTrailsLightsCommand(lightsSubsystem).until(intakeSubsystem::shooterLidarState),
               new InstantCommand(intakeSubsystem::stopAll),
               new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
               new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()

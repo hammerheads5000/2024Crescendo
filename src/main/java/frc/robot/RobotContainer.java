@@ -84,7 +84,7 @@ public class RobotContainer {
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
   AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem, trapMechanismSubsystem);
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
-  AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, lightsSubsystem);
+  AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   ManualRollerCommand manualRollerCommand = new ManualRollerCommand(trapMechanismSubsystem, secondaryController);
@@ -148,8 +148,8 @@ public class RobotContainer {
     fastTrigger.whileTrue(new StartEndCommand(teleopSwerve::setFastSpeed, teleopSwerve::setDefaultSpeed, new Subsystem[0]));
     slowTrigger.whileTrue(new StartEndCommand(teleopSwerve::setSlowSpeed, teleopSwerve::setDefaultSpeed, new Subsystem[0]));
     // trap bindings
-    feedTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::forward, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
-    expelTrapTrigger.whileTrue(new StartEndCommand(trapMechanismSubsystem::reverse, trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    feedTrapTrigger.whileTrue(new StartEndCommand(() -> trapMechanismSubsystem.moveManual(Constants.TrapConstants.slowExpelSpeed), trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
+    expelTrapTrigger.whileTrue(new StartEndCommand(() -> trapMechanismSubsystem.moveManual(-Constants.TrapConstants.expelSpeed), trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     moveUpManualTrigger.whileTrue(new StartEndCommand(() -> trapHeightPIDSubsystem.raise(Constants.TrapConstants.raiseSpeed), trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));

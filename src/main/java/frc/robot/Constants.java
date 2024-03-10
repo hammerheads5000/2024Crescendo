@@ -113,7 +113,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(6.5,0.1,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(3.0,0.1,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
@@ -401,6 +401,7 @@ public class Constants {
 
         public static final double intakeSpeed = 0.9; // out of 1, how fast to feed note in (from source)
         public static final double expelSpeed = 1; // out of 1, how fast to expel note (pretty much never used)
+        public static final double slowExpelSpeed = expelSpeed * .5;
         public static final double raiseSpeed = 0.25; // out of 1, max speed to raise
         public static final double lowerSpeed = 0.1; // out of 1, speed to home to zero
 

@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
+import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 
@@ -22,17 +24,18 @@ import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoTrapCommand extends SequentialCommandGroup {
   /** Creates a new AutoTrapCommand. */
-  public AutoTrapCommand(TrapHeightPIDSubsystem trapPIDSubsystem, TrapMechanismSubsystem trapSubsystem, ClimberSubsystem climbSubsystem, LightsSubsystem lightsSubsystem) {
+  public AutoTrapCommand(TrapHeightPIDSubsystem trapPIDSubsystem, TrapMechanismSubsystem trapSubsystem, ClimberSubsystem climbSubsystem, ShooterHeightPIDSubsystem shooterSubsystem, LightsSubsystem lightsSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new InstantCommand(() -> shooterSubsystem.setTargetAngle(ShooterConstants.farAngle)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.RED)),
       new InstantCommand(trapSubsystem::contractActuator),
       new InstantCommand(trapPIDSubsystem::moveToTrap),
       new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.climbSpeed)),
       new WaitUntilCommand(climbSubsystem::reachedClimbLimit),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN)),
-      new InstantCommand(trapSubsystem::forward)
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN))//,
+      //new InstantCommand(trapSubsystem::forward)
     );
   }
 
