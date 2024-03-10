@@ -229,6 +229,7 @@ public class RobotContainer {
     for (int port = 5800; port <= 5807; port++) {
       PortForwarder.add(port, "10.50.0.11", port);
       PortForwarder.add(port, "10.50.0.205", port);
+      PortForwarder.add(port, "photonvision.local", port);
     }
   }
 }
