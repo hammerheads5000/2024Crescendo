@@ -30,7 +30,7 @@ public class ShootNoteCommand extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.enable()),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
-      Commands.parallel(
+      Commands.race(
         aimShooterCommand,
         Commands.sequence(
             new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtCloseSpeed()
