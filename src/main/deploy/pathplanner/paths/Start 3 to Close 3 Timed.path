@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.103102604504288,
-        "y": 4.1133753139228455
+        "x": 2.6515838745995532,
+        "y": 4.097935338727821
       },
       "prevControl": {
-        "x": 1.5850003081171493,
-        "y": 4.1133753139228455
+        "x": 1.5095047889210822,
+        "y": 4.049757126062925
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Close 3"
     }
   ],
   "rotationTargets": [],
@@ -40,12 +40,12 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Start Timed Paths",
   "previewStartingState": {
-    "rotation": 114.66942891846323,
+    "rotation": -65.32999999999998,
     "velocity": 0
   },
   "useDefaultConstraints": true

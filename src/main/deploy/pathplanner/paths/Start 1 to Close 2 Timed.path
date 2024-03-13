@@ -8,29 +8,47 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.271118630118196,
-        "y": 6.545328469820654
+        "x": 1.9715047394696559,
+        "y": 6.593043982548142
       },
       "isLocked": false,
       "linkedName": "Start 1"
     },
     {
       "anchor": {
-        "x": 2.0332857674928677,
-        "y": 5.57371082141172
+        "x": 2.8999600856344565,
+        "y": 5.5479153815450495
       },
       "prevControl": {
-        "x": 1.5151834711057288,
-        "y": 5.57371082141172
+        "x": 1.4729107334320863,
+        "y": 5.458628262389268
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Close 2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 8.0,
@@ -40,13 +58,10 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Start Timed Paths",
-  "previewStartingState": {
-    "rotation": -129.1554341226131,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

@@ -16,21 +16,55 @@
     },
     {
       "anchor": {
-        "x": 7.426636426625087,
-        "y": 2.478497713905421
+        "x": 5.566870691263506,
+        "y": 1.8175197412341726
       },
       "prevControl": {
-        "x": 5.802121749024303,
-        "y": 1.0352305416567906
+        "x": 4.057534992045611,
+        "y": 1.7776355328194677
+      },
+      "nextControl": {
+        "x": 7.0762063904814,
+        "y": 1.8574039496488775
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.274830797449205,
+        "y": 2.4396186845471037
+      },
+      "prevControl": {
+        "x": 6.989464598398223,
+        "y": 2.462489969227727
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far 4"
+      "linkedName": "Far 4 Timed"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 1.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 8.0,
@@ -40,7 +74,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 0.0,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Start Timed Paths",

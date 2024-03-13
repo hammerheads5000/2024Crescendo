@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8943600906337186,
-        "y": 6.999137910394885
+        "x": 1.143121095597259,
+        "y": 6.737324771602059
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.268840546185699,
-        "y": 7.051500538153451
+        "x": 1.6192869553880698,
+        "y": 6.057855921021577
       },
       "isLocked": false,
-      "linkedName": "Close 1"
+      "linkedName": "Start 1"
     },
     {
       "anchor": {
-        "x": 6.957444799845351,
-        "y": 5.650747053706497
+        "x": 5.653781573049871,
+        "y": 6.323162823316797
       },
       "prevControl": {
-        "x": 6.910145556291595,
-        "y": 6.402168442495976
+        "x": 4.329561886193947,
+        "y": 6.3430202709102135
       },
       "nextControl": {
-        "x": 7.004744043399106,
-        "y": 4.899325664917018
+        "x": 6.9780012599057955,
+        "y": 6.30330537572338
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.293127825193704,
-        "y": 4.100073952360294
+        "x": 8.270256540513081,
+        "y": 5.774251990981858
       },
       "prevControl": {
-        "x": 6.971167570653725,
-        "y": 4.0451828691268
+        "x": 6.60980127269989,
+        "y": 5.632450025961998
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far 3 Timed"
+      "linkedName": "Far 2 Timed"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +49,7 @@
   "eventMarkers": [
     {
       "name": "Start Intake",
-      "waypointRelativePos": 1.2,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -77,10 +77,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Close-Far Timed Paths",
-  "previewStartingState": {
-    "rotation": -157.01128319791945,
-    "velocity": 0
-  },
+  "folder": "Start Timed Paths",
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

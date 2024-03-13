@@ -203,14 +203,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
     NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
-    NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
-    NamedCommands.registerCommand("Intake Trap Note", intakeTrapNoteCommand);
+    NamedCommands.registerCommand("Expel Trap Note", new ExpelTrapNoteCommand(trapMechanismSubsystem));
+    NamedCommands.registerCommand("Intake Trap Note", new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
-    NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
+    NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Start Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");

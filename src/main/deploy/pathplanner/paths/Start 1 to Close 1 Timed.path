@@ -8,29 +8,47 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.521295629409119,
-        "y": 5.788979402196933
+        "x": 1.343121095597259,
+        "y": 6.737324771602059
       },
       "isLocked": false,
       "linkedName": "Start 1"
     },
     {
       "anchor": {
-        "x": 7.409182217372232,
-        "y": 5.806433611449789
+        "x": 2.8943600906337186,
+        "y": 6.999137910394885
       },
       "prevControl": {
-        "x": 7.164823287832259,
-        "y": 6.917684933881561
+        "x": 2.300851238870619,
+        "y": 7.073340960841214
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Close 1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 6.0,
     "maxAcceleration": 8.0,
@@ -44,9 +62,6 @@
   },
   "reversed": false,
   "folder": "Start Timed Paths",
-  "previewStartingState": {
-    "rotation": -129.1554341226131,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }
