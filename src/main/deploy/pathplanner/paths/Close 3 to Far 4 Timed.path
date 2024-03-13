@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.6515838745995532,
+        "y": 4.097935338727821
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.9211879131722862,
+        "y": 2.5219553093973444
+      },
+      "isLocked": false,
+      "linkedName": "Close 3"
+    },
+    {
+      "anchor": {
+        "x": 5.576019205135755,
+        "y": 1.735183116383932
+      },
+      "prevControl": {
+        "x": 4.281311422926057,
+        "y": 1.2858960357617302
+      },
+      "nextControl": {
+        "x": 6.870726987345453,
+        "y": 2.1844701970061333
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.274830797449205,
+        "y": 2.4396186845471037
+      },
+      "prevControl": {
+        "x": 6.692137897550132,
+        "y": 2.448767198419353
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 4 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Close-Far Timed Paths",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
