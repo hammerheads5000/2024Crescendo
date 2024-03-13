@@ -16,6 +16,7 @@
     "Teleop Paths"
   ],
   "autoFolders": [
+    "Timed Autos",
     "Teleop Autos"
   ],
   "defaultMaxVel": 6.0,
