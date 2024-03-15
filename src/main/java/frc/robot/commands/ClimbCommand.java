@@ -19,7 +19,6 @@ public class ClimbCommand extends Command {
   TrapHeightPIDSubsystem trapPIDSubsystem;
   /** Creates a new ClimbCommand. */
   public ClimbCommand(ClimberSubsystem climbSubsystem, CommandXboxController controller, ShooterHeightPIDSubsystem shooterSubsystem, TrapHeightPIDSubsystem trapPIDSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.controller = controller;
     this.climbSubsystem = climbSubsystem;
     this.shooterSubsystem = shooterSubsystem;

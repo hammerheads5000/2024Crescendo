@@ -33,9 +33,12 @@ public class AutoTrapCommand extends SequentialCommandGroup {
       new InstantCommand(trapSubsystem::contractActuator),
       new InstantCommand(trapPIDSubsystem::moveToTrap),
       new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.climbSpeed)),
+      new WaitUntilCommand(climbSubsystem::reachedSlowLimit),
+      new InstantCommand(() -> climbSubsystem.climb(ClimberConstants.slowClimbSpeed)),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.YELLOW)),
       new WaitUntilCommand(climbSubsystem::reachedClimbLimit),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN))//,
-      //new InstantCommand(trapSubsystem::forward)
+      new InstantCommand(() -> climbSubsystem.stopMotor()),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.GREEN))
     );
   }
 
