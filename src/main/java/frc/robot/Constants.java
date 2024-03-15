@@ -266,7 +266,7 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Limelight");
+        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Camera");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
@@ -279,7 +279,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
+        private static final NetworkTable colorVisionTable = inst.getTable("notevision").getSubTable("Note Detection Limelight");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
