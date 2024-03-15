@@ -413,8 +413,10 @@ public class Constants {
         public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
         public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
         public static final double climbSpeed =         1;
+        public static final double slowClimbSpeed = .5;
 
-        public static final DigitalInput limitLidarSensor = new DigitalInput(5);
+        public static final DigitalInput slowLidarSensor = new DigitalInput(4);
+        public static final DigitalInput limitLidarSensor = new DigitalInput(5);        
     }
 
     public static final class AutoConstants {
