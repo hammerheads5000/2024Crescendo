@@ -173,7 +173,7 @@ public class RobotContainer {
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));
     intakeFeedTrigger.whileTrue(manualIntakeCommand);
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
-    slowRollIntakeTrigger.whileTrue(new StartEndCommand(() -> intakeSubsystem.StartAll(Constants.IntakeConstants.slowFeedRate), intakeSubsystem::stopAll, intakeSubsystem));
+    slowRollIntakeTrigger.whileTrue(new StartEndCommand(() -> intakeSubsystem.startAll(Constants.IntakeConstants.slowFeedRate), intakeSubsystem::stopAll, intakeSubsystem));
     
     // climb bindings
     climbUpTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));

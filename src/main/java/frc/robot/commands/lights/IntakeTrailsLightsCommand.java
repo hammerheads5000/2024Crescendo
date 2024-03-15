@@ -7,11 +7,8 @@ package frc.robot.commands.lights;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.Constants.LightConstants;
-import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
-import frc.robot.subsystems.PowerSubsystem;
 
 public class IntakeTrailsLightsCommand extends Command {
   LightsSubsystem lightsSubsystem;
