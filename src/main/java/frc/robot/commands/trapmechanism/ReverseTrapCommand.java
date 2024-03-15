@@ -7,10 +7,10 @@ package frc.robot.commands.trapmechanism;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 
-public class AdjustActuatorCommand extends Command {
+public class ReverseTrapCommand extends Command {
   TrapMechanismSubsystem trapMechanismSubsystem;
   /** Creates a new AdjustActuatorCommand. */
-  public AdjustActuatorCommand(TrapMechanismSubsystem trapMechanismSubsystem) {
+  public ReverseTrapCommand(TrapMechanismSubsystem trapMechanismSubsystem) {
     this.trapMechanismSubsystem = trapMechanismSubsystem;
     addRequirements(trapMechanismSubsystem);
   }
@@ -35,10 +35,6 @@ public class AdjustActuatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(trapMechanismSubsystem.isNoteDetected()){
-      return false;
-    }else{
-      return true;
-    }
+    return !trapMechanismSubsystem.isNoteDetected();
   }
 }
