@@ -49,10 +49,6 @@ public class ClimberSubsystem extends SubsystemBase {
   public boolean reachedSlowLimit(){
     return !slowLidarSensor.get();
   }
-  public void climbSlow(){
-    climbMotor.set(ClimberConstants.slowClimbSpeed);
-    climberSpeedPublisher.set(ClimberConstants.slowClimbSpeed);//not sure how this works
-  }
   public void stopMotor()
   {
     climbMotor.stopMotor();
@@ -61,9 +57,6 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     climberDownPublisher.set(reachedClimbLimit());
-    if(reachedSlowLimit()){
-      climbSlow();
-    }
     if (reachedClimbLimit()) {
       climbMotor.stopMotor();
     }
