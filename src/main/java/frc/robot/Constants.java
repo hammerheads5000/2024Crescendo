@@ -51,9 +51,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.Publisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
@@ -266,7 +264,7 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Limelight");
+        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Camera");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCam = new Transform3d(
@@ -279,7 +277,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
+        private static final NetworkTable colorVisionTable = inst.getTable("notevision").getSubTable("Note Detection Limelight");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");
@@ -412,9 +410,11 @@ public class Constants {
     public static final class ClimberConstants {
         public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
         public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
-        public static final double climbSpeed =         1;
+        public static final double climbSpeed = 1;
+        public static final double slowClimbSpeed = 0.2;
 
-        public static final DigitalInput limitLidarSensor = new DigitalInput(5);
+        public static final DigitalInput slowLidarSensor = new DigitalInput(4);
+        public static final DigitalInput limitLidarSensor = new DigitalInput(5);        
     }
 
     public static final class AutoConstants {

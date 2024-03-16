@@ -11,9 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -28,8 +26,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeLidar = Constants.IntakeConstants.intakeLidarSensor;
-    shooterLidar = Constants.IntakeConstants.loadedNoteLidarSensor;
+    intakeLidar = IntakeConstants.intakeLidarSensor;
+    shooterLidar = IntakeConstants.loadedNoteLidarSensor;
     
     intakeFeedMotor = IntakeConstants.intakeFeedMotor;
     intakeFeedMotor.getConfigurator()
@@ -46,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
   }
 
-  public void StartAll(double speed)
+  public void startAll(double speed)
   {
     intakeFeedMotor.set(speed);
     shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, speed);
@@ -80,7 +78,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-   
+    intakeLIDARPublisher.set(intakeLidarState());
+    shooterLIDARPublisher.set(shooterLidarState());
   }
 
   public boolean intakeLidarState()

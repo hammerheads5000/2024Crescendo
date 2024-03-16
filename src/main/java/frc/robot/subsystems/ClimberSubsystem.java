@@ -17,7 +17,8 @@ import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   TalonFX climbMotor;
-  DigitalInput lidarSensor;
+  DigitalInput limitLidarSensor;
+  DigitalInput slowLidarSensor;
   BooleanPublisher climberDownPublisher = Constants.LoggingConstants.climberDownPublisher;
   DoublePublisher climberSpeedPublisher = Constants.LoggingConstants.climberSpeedPublisher;
   LightsSubsystem lightsSubsystem;
@@ -28,7 +29,8 @@ public class ClimberSubsystem extends SubsystemBase {
       .withInverted(ClimberConstants.climberInverted)
       .withNeutralMode(NeutralModeValue.Brake));
     this.lightsSubsystem = lightsSubsystem;
-    lidarSensor = ClimberConstants.limitLidarSensor;
+    limitLidarSensor = ClimberConstants.limitLidarSensor;
+    slowLidarSensor = ClimberConstants.slowLidarSensor;
   }
 
   /**
@@ -42,9 +44,11 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public boolean reachedClimbLimit() {
-    return !lidarSensor.get();
+    return !limitLidarSensor.get();
   }
-
+  public boolean reachedSlowLimit(){
+    return !slowLidarSensor.get();
+  }
   public void stopMotor()
   {
     climbMotor.stopMotor();

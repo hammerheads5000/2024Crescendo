@@ -5,8 +5,6 @@
 package frc.robot.commands.trapmechanism;
 
 import static edu.wpi.first.units.Units.Seconds;
-import edu.wpi.first.wpilibj.util.Color;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -32,7 +30,7 @@ public class IntakeTrapNoteCommandGroup extends SequentialCommandGroup {
       new InstantCommand(trapSubsystem::extendActuator),
       new InstantCommand(trapSubsystem::forward),
       new WaitUntilCommand(trapSubsystem::isNoteDetected),
-      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),
+      new WaitCommand(TrapConstants.intakeDelay.in(Seconds)),//if isNoteContained() then set speed to half
       new InstantCommand(trapSubsystem::stopRollers),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(Constants.LightConstants.BLANK))
     );

@@ -4,15 +4,8 @@
 
 package frc.robot.commands.trapmechanism;
 
-import static edu.wpi.first.units.Units.Inches;
-
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
-import frc.robot.Constants.TrapConstants;
 import frc.robot.subsystems.trapmechanism.TrapHeightPIDSubsystem;
 
 public class ManualTrapCommand extends Command {
