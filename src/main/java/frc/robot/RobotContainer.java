@@ -106,15 +106,14 @@ public class RobotContainer {
   Trigger expelTrapTrigger = buttonBoardOne.button(7).or(secondaryController.start());
   Trigger toggleTrapTrigger = buttonBoardOne.button(9).or(secondaryController.x());
   Trigger homeTrapTrigger = buttonBoardOne.button(11);
-  Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
-  Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
   Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight());
   Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft());
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
   Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
   Trigger TrapMoveJoystickTrigger = secondaryController.axisLessThan(1, -Constants.controllerDeadband).or(secondaryController.axisGreaterThan(1, Constants.controllerDeadband));
   Trigger TrapRollerJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
-  
+  Trigger UnlockTrapSafetyTrigger = buttonBoardTwo.button(9);
+  Trigger lockTrapSafetyTrigger = buttonBoardTwo.button(8);
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
@@ -135,6 +134,7 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
+    enablePhotonvisionPortForwarding();
     configureAuto();
     configureBindings();
   }
@@ -152,14 +152,16 @@ public class RobotContainer {
     expelTrapTrigger.whileTrue(new StartEndCommand(() -> trapMechanismSubsystem.moveManual(-Constants.TrapConstants.expelSpeed), trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
-    moveUpManualTrigger.whileTrue(new StartEndCommand(() -> trapHeightPIDSubsystem.raise(Constants.TrapConstants.raiseSpeed), trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
-    moveDownManualTrigger.whileTrue(new StartEndCommand(trapHeightPIDSubsystem::lower, trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);
     TrapRollerJoystickTrigger.whileTrue(climbCommand) ;
+    UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::disableSafety));
+    UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::disableSafety));
+    lockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::enableSafety));
+    lockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::enableSafety));
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
