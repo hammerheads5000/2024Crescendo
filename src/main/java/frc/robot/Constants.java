@@ -245,7 +245,7 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(1.); // velocity to move over note for intake
+        public static final Measure<Velocity<Distance>> moveOverVelocity = MetersPerSecond.of(2.); // velocity to move over note for intake
         
         public static final TalonFX intakeFeedMotor = new TalonFX(24, LowSpeedCANbusName);
         public static final InvertedValue intakeFeederInverted = InvertedValue.Clockwise_Positive; // clockwise is in
@@ -259,7 +259,7 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final Measure<Distance> noteAlignTolerance = Inches.of(4);
+        public static final Measure<Distance> noteAlignTolerance = Inches.of(1);
         public static final Measure<Time> alignedDelay = Seconds.of(0.3);
     }
 
@@ -277,7 +277,7 @@ public class Constants {
         public static final PoseStrategy poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("notevision").getSubTable("Note Detection Limelight");
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");

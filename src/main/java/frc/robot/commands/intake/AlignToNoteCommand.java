@@ -59,10 +59,11 @@ public class AlignToNoteCommand extends Command {
       lightsSubsystem.setSolidColor(LightConstants.RED);
       return;
     }
+    lightsSubsystem.setSolidColor(LightConstants.BLUE);
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
     desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
-
+    System.out.println(desiredRotation.getDegrees());
     swerve.driveFacingAngle(
         MetersPerSecond.zero(),
         MetersPerSecond.zero(),

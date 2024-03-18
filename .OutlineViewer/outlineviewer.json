@@ -27,11 +27,17 @@
     "Trap": {
       "open": true
     },
+    "Vision": {
+      "open": true
+    },
     "photonvision": {
       "AprilTag Limelight": {
         "open": true
       },
       "Camera_Module_v1": {
+        "open": true
+      },
+      "Note Detection Limelight": {
         "open": true
       },
       "open": true
