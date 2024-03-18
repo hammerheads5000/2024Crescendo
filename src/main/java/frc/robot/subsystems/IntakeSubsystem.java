@@ -78,8 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    intakeLIDARPublisher.set(intakeLidarState());
-    shooterLIDARPublisher.set(shooterLidarState());
+ 
   }
 
   public boolean intakeLidarState()
