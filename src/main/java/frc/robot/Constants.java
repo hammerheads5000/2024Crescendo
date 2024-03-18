@@ -111,7 +111,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(3.0,0.1,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(5.0,0.1,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
 
