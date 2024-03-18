@@ -177,7 +177,7 @@ public class Constants {
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
-            private static final boolean invertedDrive = true;
+            private static final boolean invertedDrive = false;
 
             public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
                     steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive)
@@ -192,7 +192,7 @@ public class Constants {
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = false;
-            private static final boolean invertedDrive = false;
+            private static final boolean invertedDrive = true;
 
             public static final SwerveModuleConstants moduleConstants = constantsCreator.createModuleConstants(
                     steerId, driveId, encoderId, encoderOffset, xPos, yPos, invertedDrive)
