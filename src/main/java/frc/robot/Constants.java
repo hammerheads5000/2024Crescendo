@@ -44,6 +44,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArrayTopic;
@@ -111,14 +112,14 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(5.0,0.1,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(7.5,0.1,0.); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
-        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.5);
+        public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.1);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                .withKP(100.0) // output (V) per unit error in position (rotations)
-                .withKI(150.0) // output (V) per unit integrated error (rotations*s)
-                .withKD(60.0) // output (V) per unit of error derivative (rps)
+                .withKP(150.0) // output (V) per unit error in position (rotations)
+                .withKI(0) // output (V) per unit integrated error (rotations*s)
+                .withKD(50.0) // output (V) per unit of error derivative (rps)
                 .withKS(0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
@@ -259,8 +260,9 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final Measure<Distance> noteAlignTolerance = Inches.of(1);
-        public static final Measure<Time> alignedDelay = Seconds.of(0.3);
+        public static final PIDController noteAlignmentPID = new PIDController(3.0, 0.2, 0);
+        public static final Measure<Angle> noteAlignTolerance = Degrees.of(7.5);
+        public static final Measure<Time> alignedDelay = Seconds.of(0.1);
     }
 
     public static final class VisionConstants {
@@ -274,7 +276,7 @@ public class Constants {
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
-        public static final PoseStrategy poseStrategy = PoseStrategy.LOWEST_AMBIGUITY;
+        public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
         public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
 
         private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
@@ -284,7 +286,7 @@ public class Constants {
         public static final DoubleTopic notePitchTopic = colorVisionTable.getDoubleTopic("targetPitch");
         
         // (x, y, theta) in meters and radians. increase for less confidence. default is (0.9, 0.9, 0.9)
-        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(2.0, 2.0, 2.0); 
+        public static final Matrix<N3, N1> stdDvsMatrix = VecBuilder.fill(3.0, 3.0, 3.0); 
     }
 
     public static final class ShooterConstants {
@@ -346,7 +348,7 @@ public class Constants {
                 .withCurrentLimits(heightCurrentLimits);
         
         // height motor PID
-        public static final PIDController heightPID = new PIDController(3.0, 0.2, 0);
+        public static final PIDController heightPID = new PIDController(4.2, 0.2, 0);
         public static final Measure<Angle> heightTolerance = Degrees.of(1.);
 
         public static final DutyCycleEncoder heightMotorEncoder = new DutyCycleEncoder(0); // DIO port 0
@@ -420,7 +422,7 @@ public class Constants {
     public static final class AutoConstants {
         public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(0.5, 0.0, 0.0), // translational PID
-                new PIDConstants(0.5, 0.0, 0.0), // rotational PID
+                new PIDConstants(1.5, 0.0, 0.0), // rotational PID
                 SwerveConstants.defaultDriveSpeed.in(MetersPerSecond), // max drive speed
                 // radius of drivetrain (distance from center to furthest module)
                 new Translation2d(SwerveConstants.swerveLength.divide(2), SwerveConstants.swerveWidth.divide(2)).getNorm(),
@@ -462,6 +464,8 @@ public class Constants {
         public static final BooleanPublisher noteLoadedPublisher = intakeTable.getBooleanTopic("Note Loaded").publish();
         public static final DoublePublisher intakeSpeedPublisher = intakeTable.getDoubleTopic("Intake Speed").publish();
         public static final DoublePublisher feederSpeedPublisher = intakeTable.getDoubleTopic("Feeder Speed").publish();
+        public static final BooleanPublisher hasNotePublisher = intakeTable.getBooleanTopic("Has Note").publish();
+        public static final BooleanSubscriber hasNoteSubscriber = intakeTable.getBooleanTopic("Has Note").subscribe(false);
 
         // Swerve Logs
         public static final StructArrayPublisher<SwerveModuleState> moduleStatesPublisher = swerveTable

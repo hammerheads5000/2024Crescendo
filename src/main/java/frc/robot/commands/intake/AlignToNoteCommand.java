@@ -28,7 +28,6 @@ public class AlignToNoteCommand extends Command {
   Swerve swerve;
   DoubleSubscriber angleSubscriber;
   BooleanSubscriber hasTargetSubscriber;
-  DoubleSubscriber pitchSubscriber;
   Rotation2d desiredRotation;
   Timer timer;
   boolean timingAlignment = false;
@@ -39,7 +38,6 @@ public class AlignToNoteCommand extends Command {
     this.lightsSubsystem = lightsSubsystem;
     angleSubscriber = VisionConstants.noteYawTopic.subscribe(0.0);
     hasTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
-    pitchSubscriber = VisionConstants.notePitchTopic.subscribe(0.0);
     desiredRotation = swerve.getPose().getRotation();
     timer = new Timer();
 
@@ -49,6 +47,7 @@ public class AlignToNoteCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    IntakeConstants.noteAlignmentPID.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,8 +62,8 @@ public class AlignToNoteCommand extends Command {
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
     desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
-    System.out.println(desiredRotation.getDegrees());
-    swerve.driveFacingAngle(
+
+    swerve.driveFacingNote(
         MetersPerSecond.zero(),
         MetersPerSecond.zero(),
         desiredRotation); // turn to face note
@@ -79,10 +78,9 @@ public class AlignToNoteCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double distanceToNote = distanceFromPitch().in(Meters);
-    Translation2d projectedNote = new Translation2d(distanceToNote, 0).rotateBy(swerve.getPose().getRotation());
-    Translation2d actualNote = new Translation2d(distanceToNote, 0).rotateBy(desiredRotation);
-    boolean aligned = projectedNote.getDistance(actualNote) <= IntakeConstants.noteAlignTolerance.in(Meters);
+    if (!hasTargetSubscriber.get()) return false;
+
+    boolean aligned = Math.abs(angleSubscriber.get()) <= IntakeConstants.noteAlignTolerance.in(Degrees);
     if (aligned && !timingAlignment) {
       timer.restart();
       timingAlignment = true;
@@ -93,8 +91,7 @@ public class AlignToNoteCommand extends Command {
     return hasTargetSubscriber.get() && aligned && timer.hasElapsed(IntakeConstants.alignedDelay.in(Seconds));
   }
 
-  public Measure<Distance> distanceFromPitch() {
-    double pitch = Degrees.of(-pitchSubscriber.get()).in(Radians);
+  public Measure<Distance> distanceFromPitch(double pitch) {
     double cameraHeight = VisionConstants.robotToNoteDetectionCam.getZ(); // meters
     double cameraPitch = -VisionConstants.robotToNoteDetectionCam.getRotation().getY(); // radians
 

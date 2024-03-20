@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LightConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.intake.AlignToNoteCommand;
 import frc.robot.commands.intake.MoveOverNoteCommand;
@@ -34,7 +35,7 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),
-      //new AlignToNoteCommand(swerve, lightsSubsystem),
+      new AlignToNoteCommand(swerve, lightsSubsystem),
       new InstantCommand(intakeSubsystem::startAll),
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
@@ -52,7 +53,8 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
                   .until(() -> !intakeSubsystem.shooterLidarState()) // feed to shoot until note not detected
           )
       ),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK)),
+      new InstantCommand(() -> LoggingConstants.hasNotePublisher.set(false))
     );
   }
 }

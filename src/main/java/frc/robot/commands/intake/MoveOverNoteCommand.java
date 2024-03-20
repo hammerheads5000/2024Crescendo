@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Swerve;
 
@@ -38,6 +39,9 @@ public class MoveOverNoteCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // stop
+    if (!interrupted) {
+      LoggingConstants.hasNotePublisher.set(true);
+    }
   }
 
   // Returns true when the command should end.

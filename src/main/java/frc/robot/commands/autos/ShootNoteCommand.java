@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.LightConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
@@ -40,7 +41,8 @@ public class ShootNoteCommand extends SequentialCommandGroup {
                 .until(() -> !intakeSubsystem.shooterLidarState()), // feed to shoot until note not detected
               new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
         )
-      )
+      ),
+      new InstantCommand(() -> LoggingConstants.hasNotePublisher.set(false))
     );
   }
 }

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -214,6 +215,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Start Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Finish Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem).onlyIf(() -> LoggingConstants.hasNoteSubscriber.get()));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");
