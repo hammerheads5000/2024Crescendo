@@ -49,6 +49,7 @@ import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -291,6 +292,7 @@ public class Constants {
 
     public static final class ShooterConstants {
         public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(590);
+        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(100); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
@@ -458,6 +460,7 @@ public class Constants {
         public static final DoublePublisher shooterAnglePublisher = shooterTable.getDoubleTopic("Shooter Angle").publish();
         public static final DoublePublisher shooterAngleRequestPublisher = shooterTable.getDoubleTopic("Shooter Angle request").publish();
         public static final BooleanPublisher alignedToSpeakerPublisher = shooterTable.getBooleanTopic("Aligned To Speaker").publish();
+        public static final DoubleSubscriber shooterSpeedRequestSubscriber = shooterTable.getDoubleTopic("Shooter Speed Request").subscribe(0);
 
         // Intake Logs
         public static final BooleanPublisher intakeLIDARPublisher = intakeTable.getBooleanTopic("Intake LIDAR").publish();

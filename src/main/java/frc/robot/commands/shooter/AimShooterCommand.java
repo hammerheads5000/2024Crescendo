@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +32,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AimShooterCommand extends Command {
   Swerve swerve;
@@ -113,8 +116,12 @@ public class AimShooterCommand extends Command {
         MetersPerSecond.of(totalVelocityVec.getY()),
         angleToFace);
 
-    Measure<Angle> shooterAngle = angleFromDistance(getDistanceToSpeaker());
+    Measure<Distance> distance = getDistanceToSpeaker();
+    Measure<Velocity<Distance>> velocity = velocityToShoot(distance);
+    Measure<Angle> shooterAngle = angleFromDistanceAndVelocity(distance, velocity);
     shooterHeightPIDSubsystem.setTargetAngle(shooterAngle);
+
+    LoggingConstants.shooterSpeedRequestPublisher.set(linearToAngularVelocity(velocity).in(RPM));
 
     // alignment
     Translation2d robotHeadingVec = new Translation2d(Meters.of(-1), Meters.zero()).rotateBy(swerve.getPose().getRotation()); // points in direction of shot
@@ -147,14 +154,40 @@ public class AimShooterCommand extends Command {
   }
 
   private Measure<Angle> angleFromDistance(Measure<Distance> distance) {
-    double v = ShooterConstants.exitVelocity.in(MetersPerSecond);
+    return angleFromDistanceAndVelocity(distance, ShooterConstants.exitVelocity);
+  }
+
+  private Measure<Angle> angleFromDistanceAndVelocity(Measure<Distance> distance, Measure<Velocity<Distance>> velocity) {
+    double v = velocity.in(MetersPerSecond);
     double g = ShooterConstants.gravity.in(MetersPerSecondPerSecond);
     double d = distance.in(Meters);
     double h = speakerPos.getZ();
 
     double a = Math.atan2(h, d);
-    
+    // got formula from https://iitutor.com/the-trajectory-of-projectile-motion-on-an-inclined-plane-with-maximum-range-explained/
+    // from part 4, solving for theta (with wolfram alpha)
     return Radians.of(0.5 * Math.asin( (d*g*Math.pow(Math.cos(a),2)) / (v*v) + Math.sin(a)) + a/2); // formula!
+  }
+
+  private Measure<Velocity<Angle>> linearToAngularVelocity(Measure<Velocity<Distance>> velocity) {
+    double proportion = velocity.in(MetersPerSecond) / ShooterConstants.exitVelocity.in(MetersPerSecond);
+    return ShooterConstants.topSpeed.times(proportion);
+  }
+
+  private Measure<Velocity<Distance>> minimumVelocity(Measure<Distance> distance) {
+    double g = ShooterConstants.gravity.in(MetersPerSecondPerSecond);
+    double d = distance.in(Meters);
+    double h = speakerPos.getZ();
+
+    return MetersPerSecond.of(Math.sqrt(g * (d*d + 4*h*h) / (2*h))); // formula!
+  }
+
+  private Measure<Velocity<Distance>> velocityToShoot(Measure<Distance> distance) {
+    double minVel = minimumVelocity(distance).in(MetersPerSecond);
+    double maxVel = ShooterConstants.exitVelocity.in(MetersPerSecond);
+    double gain = ShooterConstants.variableVelocityGain.in(MetersPerSecond);
+
+    return MetersPerSecond.of(Math.min(minVel+gain, maxVel));
   }
 
   /**

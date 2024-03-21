@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -29,6 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   DoublePublisher shooterSpeedPublisher;
   DoublePublisher shooterSpeedRequestPublisher;
+  DoubleSubscriber shooterSpeedRequestSubscriber;
   BooleanPublisher shooterAtSpeedPublisher;
   BooleanPublisher shooterNearSpeedPublisher;
 
@@ -47,14 +49,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterSpeedPublisher = Constants.LoggingConstants.shooterSpeedPublisher;
     shooterSpeedRequestPublisher = Constants.LoggingConstants.shooterSpeedRequestPublisher;
+    shooterSpeedRequestSubscriber = Constants.LoggingConstants.shooterSpeedRequestSubscriber;
     shooterAtSpeedPublisher = Constants.LoggingConstants.shooterAtSpeedPublisher;
     shooterNearSpeedPublisher = Constants.LoggingConstants.shooterNearSpeedPublisher;
+
+    shooterSpeedRequestPublisher.set(ShooterConstants.topSpeed.in(RPM));
   }
 
   /** Spin wheels up */
   public void start() {
-    topMotor.setControl(topRequest);
-    shooterSpeedRequestPublisher.set(RotationsPerSecond.of(topRequest.Velocity).in(RPM));
+    Measure<Velocity<Angle>> velocity = RPM.of(shooterSpeedRequestSubscriber.get());
+    topMotor.setControl(topRequest.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
   /** Let wheels spin down */
