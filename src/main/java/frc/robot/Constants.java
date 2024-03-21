@@ -416,7 +416,8 @@ public class Constants {
         public static final double slowClimbSpeed = 0.2;
 
         public static final DigitalInput slowLidarSensor = new DigitalInput(4);
-        public static final DigitalInput limitLidarSensor = new DigitalInput(5);        
+        public static final DigitalInput limitLidarSensor = new DigitalInput(5);  
+        public static final DigitalInput limitLidarSensor2 = new DigitalInput(8);      
     }
 
     public static final class AutoConstants {
