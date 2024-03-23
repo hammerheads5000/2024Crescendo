@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.143121095597259,
+        "y": 6.737324771602059
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.243148167712264,
+        "y": 5.3534203528584055
+      },
+      "isLocked": false,
+      "linkedName": "Start 1"
+    },
+    {
+      "anchor": {
+        "x": 8.293127825193704,
+        "y": 7.434707258795048
+      },
+      "prevControl": {
+        "x": 5.644633059177623,
+        "y": 7.411835974114426
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 1 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0.75,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Start Timed Paths",
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}

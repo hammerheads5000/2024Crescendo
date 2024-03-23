@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.UnitConstants;
@@ -128,6 +129,25 @@ public class Swerve extends SubsystemBase {
   public void driveFacingAngle(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
     // calculate rotational velocity with pid (radians per second)
     double omega = SwerveConstants.headingPID.calculate(
+        getPose().getRotation().getRadians(),
+        angle.getRadians());
+
+    drivetrain.setControl(fieldCentricRequest
+        .withVelocityX(xVel.in(MetersPerSecond))
+        .withVelocityY(yVel.in(MetersPerSecond))
+        .withRotationalRate(omega));
+  }
+
+  /**
+   * Drive robot while facing note
+   * 
+   * @param xVel field centric forward velocity
+   * @param yVel field centric left velocity
+   * @param angle angle to face note (field centric)
+   */
+  public void driveFacingNote(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
+    // calculate rotational velocity with pid (radians per second)
+    double omega = IntakeConstants.noteAlignmentPID.calculate(
         getPose().getRotation().getRadians(),
         angle.getRadians());
 

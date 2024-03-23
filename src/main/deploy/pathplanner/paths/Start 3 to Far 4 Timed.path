@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0267597005782252,
+        "y": 2.85667224771728
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4107523041410366,
+        "y": 2.3679543886373375
+      },
+      "isLocked": false,
+      "linkedName": "Start 3"
+    },
+    {
+      "anchor": {
+        "x": 5.566870691263506,
+        "y": 1.8175197412341726
+      },
+      "prevControl": {
+        "x": 4.057534992045611,
+        "y": 1.7776355328194677
+      },
+      "nextControl": {
+        "x": 7.0762063904814,
+        "y": 1.8574039496488775
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.274830797449205,
+        "y": 2.4396186845471037
+      },
+      "prevControl": {
+        "x": 6.989464598398223,
+        "y": 2.462489969227727
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 4 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 1.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Start Timed Paths",
+  "previewStartingState": {
+    "rotation": 114.66942891846323,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

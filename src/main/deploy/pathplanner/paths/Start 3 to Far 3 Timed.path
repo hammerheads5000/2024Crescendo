@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0267597005782252,
+        "y": 2.85667224771728
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.076136247240603,
+        "y": 3.1533938050158166
+      },
+      "isLocked": false,
+      "linkedName": "Start 3"
+    },
+    {
+      "anchor": {
+        "x": 8.293127825193704,
+        "y": 4.100073952360294
+      },
+      "prevControl": {
+        "x": 4.9186473696417226,
+        "y": 4.070983603605535
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 3 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Start Timed Paths",
+  "previewStartingState": {
+    "rotation": 114.66942891846323,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

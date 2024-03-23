@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6515838745995532,
-        "y": 4.097935338727821
+        "x": 2.3590976735461626,
+        "y": 4.619547382255643
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4770492398127653,
-        "y": 4.353024420334555
+        "x": 2.1073379607494336,
+        "y": 5.0829787282739485
       },
       "isLocked": false,
-      "linkedName": "Close 3"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.2834627667837903,
-        "y": 5.05590261357702
+        "x": 2.0972845347533364,
+        "y": 5.596983100415527
       },
       "prevControl": {
-        "x": 2.202908319960611,
-        "y": 4.86122936708767
+        "x": 2.0798303255004815,
+        "y": 5.090811032082731
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,18 +32,21 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 6.0,
-    "maxAcceleration": 12.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 1200.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 56.30993247402018,
+    "rotation": -2.030914236853111,
     "rotateFast": true
   },
   "reversed": false,
   "folder": "Close-Close Paths",
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": -76.56706179718769,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

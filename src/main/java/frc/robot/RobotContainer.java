@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.TeleopSwerve;
@@ -109,16 +110,18 @@ public class RobotContainer {
   Trigger expelTrapTrigger = buttonBoardOne.button(7).or(secondaryController.start());
   Trigger toggleTrapTrigger = buttonBoardOne.button(9).or(secondaryController.x());
   Trigger homeTrapTrigger = buttonBoardOne.button(11);
-  Trigger adjustActuatorTrigger = buttonBoardOne.button(9);
+  Trigger adjustActuatorTrigger = buttonBoardOne.button(15);
   Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
   Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
+
   Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight());
   Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft());
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
   Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
   Trigger TrapMoveJoystickTrigger = secondaryController.axisLessThan(1, -Constants.controllerDeadband).or(secondaryController.axisGreaterThan(1, Constants.controllerDeadband));
   Trigger TrapRollerJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
-  
+  Trigger UnlockTrapSafetyTrigger = buttonBoardTwo.button(9);
+  Trigger lockTrapSafetyTrigger = buttonBoardTwo.button(8);
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
@@ -139,6 +142,7 @@ public class RobotContainer {
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
     swerve.resetPose();
+    enablePhotonvisionPortForwarding();
     configureAuto();
     configureBindings();
   }
@@ -156,8 +160,6 @@ public class RobotContainer {
     expelTrapTrigger.whileTrue(new StartEndCommand(() -> trapMechanismSubsystem.moveManual(-Constants.TrapConstants.expelSpeed), trapMechanismSubsystem::stopRollers, trapMechanismSubsystem));
     toggleTrapTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::toggleActuator));
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
-    moveUpManualTrigger.whileTrue(new StartEndCommand(() -> trapHeightPIDSubsystem.raise(Constants.TrapConstants.raiseSpeed), trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
-    moveDownManualTrigger.whileTrue(new StartEndCommand(trapHeightPIDSubsystem::lower, trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
     adjustActuatorTrigger.whileTrue(adjustActuatorCommand);
@@ -165,6 +167,10 @@ public class RobotContainer {
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);
     TrapRollerJoystickTrigger.whileTrue(climbCommand) ;
+    UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::disableSafety));
+    UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::disableSafety));
+    lockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::enableSafety));
+    lockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::enableSafety));
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -178,7 +184,7 @@ public class RobotContainer {
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));
     intakeFeedTrigger.whileTrue(manualIntakeCommand);
     shooterFeedTrigger.whileTrue(new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem));
-    slowRollIntakeTrigger.whileTrue(new StartEndCommand(() -> intakeSubsystem.StartAll(Constants.IntakeConstants.slowFeedRate), intakeSubsystem::stopAll, intakeSubsystem));
+    slowRollIntakeTrigger.whileTrue(new StartEndCommand(() -> intakeSubsystem.startAll(Constants.IntakeConstants.slowFeedRate), intakeSubsystem::stopAll, intakeSubsystem));
     
     // climb bindings
     climbUpTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
@@ -208,14 +214,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
     NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
-    NamedCommands.registerCommand("Expel Trap Note", expelTrapNoteCommand);
-    NamedCommands.registerCommand("Intake Trap Note", intakeTrapNoteCommand);
+    NamedCommands.registerCommand("Expel Trap Note", new ExpelTrapNoteCommand(trapMechanismSubsystem));
+    NamedCommands.registerCommand("Intake Trap Note", new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
 
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
-    NamedCommands.registerCommand("Pick Up Note", intakeCommandGroup);
+    NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Start Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Finish Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem).onlyIf(() -> LoggingConstants.hasNoteSubscriber.get()));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");

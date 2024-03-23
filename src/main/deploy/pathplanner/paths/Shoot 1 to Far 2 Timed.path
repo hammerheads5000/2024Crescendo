@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.7321621347707623,
+        "y": 6.330059889035441
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.724157696103002,
+        "y": 6.794311287737619
+      },
+      "isLocked": false,
+      "linkedName": "Shoot 1"
+    },
+    {
+      "anchor": {
+        "x": 8.270256540513081,
+        "y": 5.774251990981858
+      },
+      "prevControl": {
+        "x": 6.632672557380512,
+        "y": 5.723935164684488
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 2 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Shoot-Far Timed Paths",
+  "previewStartingState": {
+    "rotation": -166.3353996194431,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

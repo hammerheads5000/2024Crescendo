@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0267597005782252,
+        "y": 2.85667224771728
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3234812578767612,
+        "y": 3.1533938050158166
+      },
+      "isLocked": false,
+      "linkedName": "Start 3"
+    },
+    {
+      "anchor": {
+        "x": 2.6515838745995532,
+        "y": 4.097935338727821
+      },
+      "prevControl": {
+        "x": 1.5095047889210822,
+        "y": 4.049757126062925
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Close 3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Start Timed Paths",
+  "previewStartingState": {
+    "rotation": -65.32999999999998,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Flip Trap Down"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start 2 to Close 3 Timed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close 3 to Close 2 Timed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close 2 to Close 1 Timed"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Finish Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Timed Autos",
+  "choreoAuto": false
+}

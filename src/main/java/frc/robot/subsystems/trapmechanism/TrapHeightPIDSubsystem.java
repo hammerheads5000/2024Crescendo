@@ -21,7 +21,7 @@ import frc.robot.Constants.TrapConstants;
 public class TrapHeightPIDSubsystem extends PIDSubsystem {
   CANSparkMax heightControlMotor;
   Encoder encoder;
-
+  boolean safety;
   ColorSensorV3 colorSensor;
   ColorMatch colorMatch;
 
@@ -33,7 +33,7 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   /** Creates a new TrapHeightPIDSubsystem. */
   public TrapHeightPIDSubsystem() {
     super(TrapConstants.heightPIDController);
-
+    safety = true;
     heightControlMotor = TrapConstants.heightControlMotor;
     heightControlMotor.setInverted(TrapConstants.heightMotorInverted);
 
@@ -49,12 +49,14 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void useOutput(double output, double setpoint) {
+    if(!safety)
+    {
     double dutyCycle = output*TrapConstants.raiseSpeed;
     dutyCycle = Math.max(Math.min(dutyCycle, 1.0), -1.0); // cap between [-1,1]
     heightControlMotor.set(dutyCycle);
     trapMechanismSetpointPublisher.set(setpoint);
     trapMechanismSpeedPublisher.set(dutyCycle);
-    
+    }
   }
 
   @Override
@@ -66,12 +68,15 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   }
 
   public void raise(double speed) {
- 
+    if(!safety){
       heightControlMotor.set(TrapConstants.raiseSpeed * speed);
+    }
   }
 
   public void lower() {
+    if(!safety){
     heightControlMotor.set(-TrapConstants.lowerSpeed);
+    }
   }
 
   /** Stop the height control motor */
@@ -102,5 +107,14 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
   public boolean colorDetected() {
     ColorMatchResult result = colorMatch.matchColor(colorSensor.getColor());
     return result != null;
+  }
+
+  public void disableSafety(){
+    safety = false;
+    moveToHome();
+  }
+
+  public void enableSafety(){
+    safety = true;
   }
 }

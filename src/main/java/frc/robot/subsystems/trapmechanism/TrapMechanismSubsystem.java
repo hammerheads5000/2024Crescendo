@@ -19,13 +19,14 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   TalonSRX rollerMotor;
   DigitalInput lidarSensor;
   Servo linearActuator;
-
+  boolean safety;
   DoublePublisher actuatorPublisher = Constants.LoggingConstants.actuatorPublisher;
   BooleanPublisher trapLIDARPublisher = Constants.LoggingConstants.trapLIDARPublisher;
   DoublePublisher trapMechanismDoublePublisher = Constants.LoggingConstants.trapMechanismSpeedPublisher;
 
   /** Creates a new TrapMechanismSubsystem. */
   public TrapMechanismSubsystem() {
+    safety = true;
     rollerMotor = TrapConstants.rollerMotor;
     rollerMotor.setInverted(TrapConstants.rollerInverted);
 
@@ -68,10 +69,16 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   }
 
   public void contractActuator(){
+    if(!safety){
+    linearActuator.set(0.0);
+    actuatorPublisher.set(0.0);
+    }
+  }
+
+  public void dangerContractActuator(){
     linearActuator.set(0.0);
     actuatorPublisher.set(0.0);
   }
-
   public void toggleActuator() {
     if (linearActuator.get() == 1.0) {
       contractActuator();
@@ -94,5 +101,16 @@ public class TrapMechanismSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     trapLIDARPublisher.set(isNoteDetected());
+  }
+
+  public void enableSafety()
+  {
+    contractActuator();
+    safety = true;
+  }
+
+  public void disableSafety()
+  {
+    safety = false;
   }
 }

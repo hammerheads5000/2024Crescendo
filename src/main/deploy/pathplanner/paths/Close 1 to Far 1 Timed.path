@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8943600906337186,
+        "y": 6.999137910394885
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.255788412356415,
+        "y": 7.260951049187711
+      },
+      "isLocked": false,
+      "linkedName": "Close 1"
+    },
+    {
+      "anchor": {
+        "x": 8.293127825193704,
+        "y": 7.434707258795048
+      },
+      "prevControl": {
+        "x": 7.635042666258282,
+        "y": 7.434707258795048
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far 1 Timed"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 0.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Start Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 1200.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": true
+  },
+  "reversed": false,
+  "folder": "Close-Far Timed Paths",
+  "previewStartingState": {
+    "rotation": -157.01128319791945,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
