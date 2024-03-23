@@ -33,7 +33,7 @@ public class ShootNoteCommand extends SequentialCommandGroup {
       Commands.race(
         aimShooterCommand,
         Commands.sequence(
-            new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtCloseSpeed()
+            new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()
                 && shooterHeightPIDSubsystem.getController().atSetpoint()
                 && aimShooterCommand.isAligned()), // wait until ready to shoot
             new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.PINK)),

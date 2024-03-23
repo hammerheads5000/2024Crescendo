@@ -32,7 +32,6 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class AimShooterCommand extends Command {
   Swerve swerve;

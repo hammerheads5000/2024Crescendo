@@ -298,12 +298,12 @@ public class Constants {
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
 
         public static final Slot0Configs flywheelGains = new Slot0Configs()
-                .withKP(0.0) // output (V) per unit error in position (rps)
+                .withKP(1.5) // output (V) per unit error in position (rps)
                 .withKI(0.0) // output (V) per unit integrated error (rotations)
                 .withKD(0.0) // output (V) per unit of error derivative (rps/s)
                 .withKS(0) // output (V) to overcome static friction
-                .withKV(0.14) // output (V) per unit of velocity (rps)
-                .withKA(1.0); // output (V) per unit of acceleration (rps/s)
+                .withKV(0.05) // output (V) per unit of velocity (rps)
+                .withKA(0.0); // output (V) per unit of acceleration (rps/s)
 
         public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
         public static final InvertedValue topFlywheelInverted = InvertedValue.Clockwise_Positive; // cw is shooting
@@ -312,8 +312,7 @@ public class Constants {
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
-        public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
-        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(2000);
+        public static final double readySpeedTolerance = 0.1;
         public static final Measure<Velocity<Velocity<Angle>>> flywheelAccel = RPM.per(Second).of(6000); 
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
@@ -366,10 +365,10 @@ public class Constants {
     }
 
     public static final class FieldConstants {
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(218.42),
-                Inches.of(80.5));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
-                Inches.of(80.5));
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(656.23), Inches.of(218.42),
+                Inches.of(75));
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-5), Inches.of(218.42),
+                Inches.of(75));
     }
 
     public static final class TrapConstants {
