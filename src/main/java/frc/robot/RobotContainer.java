@@ -25,6 +25,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.TeleopSwerve;
 import frc.robot.commands.autos.PickUpNoteAndShootCommand;
 import frc.robot.commands.autos.ShootNoteCommand;
+import frc.robot.commands.intake.FinishIntakeCommand;
 import frc.robot.commands.intake.IntakeCommandGroup;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.lights.DisabledLightsCommand;
@@ -223,7 +224,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Start Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem));
-    NamedCommands.registerCommand("Finish Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem).onlyIf(() -> LoggingConstants.hasNoteSubscriber.get()));
+    NamedCommands.registerCommand("Finish Intake", new FinishIntakeCommand(intakeSubsystem, lightsSubsystem).onlyIf(() -> LoggingConstants.hasNoteSubscriber.get()));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");

@@ -38,7 +38,7 @@ public class ShootNoteCommand extends SequentialCommandGroup {
                 && aimShooterCommand.isAligned()), // wait until ready to shoot
             new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.PINK)),
             new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem)
-                .until(() -> !intakeSubsystem.shooterLidarState()), // feed to shoot until note not detected
+                .onlyWhile(intakeSubsystem::shooterLidarState), // feed to shoot until note not detected
               new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
         )
       ),
