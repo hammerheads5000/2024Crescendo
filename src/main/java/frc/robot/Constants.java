@@ -49,6 +49,7 @@ import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -112,7 +113,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(7.5,0.1,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(7.5,0.5,0.3); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.1);
 
@@ -290,18 +291,19 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(590);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(640);
+        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(400); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
 
         public static final Slot0Configs flywheelGains = new Slot0Configs()
-                .withKP(0.0) // output (V) per unit error in position (rps)
+                .withKP(1.5) // output (V) per unit error in position (rps)
                 .withKI(0.0) // output (V) per unit integrated error (rotations)
                 .withKD(0.0) // output (V) per unit of error derivative (rps/s)
                 .withKS(0) // output (V) to overcome static friction
-                .withKV(0.14) // output (V) per unit of velocity (rps)
-                .withKA(1.0); // output (V) per unit of acceleration (rps/s)
+                .withKV(0.05) // output (V) per unit of velocity (rps)
+                .withKA(0.0); // output (V) per unit of acceleration (rps/s)
 
         public static final TalonFX topFlywheel = new TalonFX(32, HighSpeedCANbusName);
         public static final InvertedValue topFlywheelInverted = InvertedValue.Clockwise_Positive; // cw is shooting
@@ -310,8 +312,7 @@ public class Constants {
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
-        public static final Measure<Velocity<Angle>> readySpeedTolerance = RPM.of(800);
-        public static final Measure<Velocity<Angle>> closeSpeedTolerance = RPM.of(2000);
+        public static final double readySpeedTolerance = 0.1;
         public static final Measure<Velocity<Velocity<Angle>>> flywheelAccel = RPM.per(Second).of(6000); 
 
         public static final Measure<Velocity<Velocity<Distance>>> gravity = MetersPerSecondPerSecond.of(9.81);
@@ -366,7 +367,7 @@ public class Constants {
     public static final class FieldConstants {
         public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(218.42),
                 Inches.of(80.5));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.50), Inches.of(218.42),
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.5), Inches.of(218.42),
                 Inches.of(80.5));
     }
 
@@ -459,6 +460,7 @@ public class Constants {
         public static final DoublePublisher shooterAnglePublisher = shooterTable.getDoubleTopic("Shooter Angle").publish();
         public static final DoublePublisher shooterAngleRequestPublisher = shooterTable.getDoubleTopic("Shooter Angle request").publish();
         public static final BooleanPublisher alignedToSpeakerPublisher = shooterTable.getBooleanTopic("Aligned To Speaker").publish();
+        public static final DoubleSubscriber shooterSpeedRequestSubscriber = shooterTable.getDoubleTopic("Shooter Speed Request").subscribe(0);
 
         // Intake Logs
         public static final BooleanPublisher intakeLIDARPublisher = intakeTable.getBooleanTopic("Intake LIDAR").publish();

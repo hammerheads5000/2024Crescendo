@@ -9,16 +9,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LoggingConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private TalonFX intakeFeedMotor;
   private TalonSRX shooterFeedMotor;
-  private BooleanPublisher intakeLIDARPublisher;
-  private BooleanPublisher shooterLIDARPublisher;
   private DigitalInput intakeLidar;
   private DigitalInput shooterLidar;
 
@@ -78,6 +76,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    LoggingConstants.intakeLIDARPublisher.set(intakeLidarState());
+    LoggingConstants.noteLoadedPublisher.set(shooterLidarState());
   }
 
   public boolean intakeLidarState()

@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
@@ -29,8 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
   
   DoublePublisher shooterSpeedPublisher;
   DoublePublisher shooterSpeedRequestPublisher;
+  DoubleSubscriber shooterSpeedRequestSubscriber;
   BooleanPublisher shooterAtSpeedPublisher;
-  BooleanPublisher shooterNearSpeedPublisher;
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -47,14 +48,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     shooterSpeedPublisher = Constants.LoggingConstants.shooterSpeedPublisher;
     shooterSpeedRequestPublisher = Constants.LoggingConstants.shooterSpeedRequestPublisher;
+    shooterSpeedRequestSubscriber = Constants.LoggingConstants.shooterSpeedRequestSubscriber;
     shooterAtSpeedPublisher = Constants.LoggingConstants.shooterAtSpeedPublisher;
-    shooterNearSpeedPublisher = Constants.LoggingConstants.shooterNearSpeedPublisher;
+
+    shooterSpeedRequestPublisher.set(ShooterConstants.topSpeed.in(RPM));
   }
 
   /** Spin wheels up */
-  public void start() {
-    topMotor.setControl(topRequest);
-    shooterSpeedRequestPublisher.set(RotationsPerSecond.of(topRequest.Velocity).in(RPM));
+  public void spin() {
+    Measure<Velocity<Angle>> velocity = RPM.of(shooterSpeedRequestSubscriber.get());
+    topMotor.setControl(topRequest.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
   /** Let wheels spin down */
@@ -68,17 +71,13 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean flywheelsAtSpeed() {
-    return getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.readySpeedTolerance));
-  }
-
-  public boolean flywheelsAtCloseSpeed() {
-    return getFlywheelSpeed().gte(ShooterConstants.topSpeed.minus(ShooterConstants.closeSpeedTolerance));
+    double speedDiff = Math.abs(topMotor.getVelocity().getValueAsDouble() - getFlywheelSpeed().in(RotationsPerSecond));
+    return speedDiff <= topMotor.getVelocity().getValueAsDouble()*ShooterConstants.readySpeedTolerance;
   }
 
   @Override
   public void periodic() {
     shooterSpeedPublisher.set(getFlywheelSpeed().in(RPM));
     shooterAtSpeedPublisher.set(flywheelsAtSpeed());
-    shooterNearSpeedPublisher.set(flywheelsAtCloseSpeed());
   }
 }

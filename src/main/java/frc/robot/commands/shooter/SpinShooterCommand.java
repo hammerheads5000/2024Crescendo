@@ -22,12 +22,12 @@ public class SpinShooterCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterSubsystem.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    shooterSubsystem.spin();
   }
 
   // Called once the command ends or is interrupted.
