@@ -135,7 +135,7 @@ public class AimShooterCommand extends Command {
   
     approachVelocityVec = approachVelocityVec.times(SwerveConstants.defaultDriveSpeed.times(
       Math.abs(controller.getLeftY()) >= Constants.controllerDeadband
-            ? -controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
+            ? controller.getLeftY() : 0).in(MetersPerSecond)); // scale to speed
     return approachVelocityVec;
   }
 
@@ -144,7 +144,7 @@ public class AimShooterCommand extends Command {
     strafeVelocityVec = strafeVelocityVec.div(strafeVelocityVec.getNorm()); // normalize
     strafeVelocityVec = strafeVelocityVec.times(SwerveConstants.defaultDriveSpeed.times(
         Math.abs(controller.getLeftX()) >= Constants.controllerDeadband
-            ? -controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
+            ? controller.getLeftX() : 0).in(MetersPerSecond)); // scale to speed
     return strafeVelocityVec;
   }
 
@@ -161,11 +161,12 @@ public class AimShooterCommand extends Command {
     double g = ShooterConstants.gravity.in(MetersPerSecondPerSecond);
     double d = distance.in(Meters);
     double h = speakerPos.getZ();
-
+    
+    double r = Math.sqrt(d*d + h*h); // linear distance to opening
     double a = Math.atan2(h, d);
     // got formula from https://iitutor.com/the-trajectory-of-projectile-motion-on-an-inclined-plane-with-maximum-range-explained/
     // from part 4, solving for theta (with wolfram alpha)
-    return Radians.of(0.5 * Math.asin( (d*g*Math.pow(Math.cos(a),2)) / (v*v) + Math.sin(a)) + a/2); // formula!
+    return Radians.of(0.5 * Math.asin( (r*g*Math.pow(Math.cos(a),2)) / (v*v) + Math.sin(a)) + a/2); // formula!
   }
 
   private Measure<Velocity<Angle>> linearToAngularVelocity(Measure<Velocity<Distance>> velocity) {

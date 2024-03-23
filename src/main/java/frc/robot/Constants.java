@@ -113,7 +113,7 @@ public class Constants {
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
-        public static final PIDController headingPID = new PIDController(7.5,0.1,0.); // controls PID rotating to angle
+        public static final PIDController headingPID = new PIDController(7.5,0.5,0.3); // controls PID rotating to angle
         public static final Measure<Velocity<Angle>> minAngularVel = DegreesPerSecond.of(30);
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.1);
 
@@ -291,8 +291,8 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(590);
-        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(100); // amount to add to minimum velocity
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(640);
+        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(400); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
@@ -365,10 +365,10 @@ public class Constants {
     }
 
     public static final class FieldConstants {
-        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(656.23), Inches.of(218.42),
-                Inches.of(75));
-        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-5), Inches.of(218.42),
-                Inches.of(75));
+        public static final Translation3d redSpeakerPos = new Translation3d(Inches.of(652.73), Inches.of(218.42),
+                Inches.of(80.5));
+        public static final Translation3d blueSpeakerPos = new Translation3d(Inches.of(-1.5), Inches.of(218.42),
+                Inches.of(80.5));
     }
 
     public static final class TrapConstants {
