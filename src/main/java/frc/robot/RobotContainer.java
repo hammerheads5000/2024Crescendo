@@ -30,6 +30,7 @@ import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.lights.DisabledLightsCommand;
 import frc.robot.commands.shooter.AimShooterCommand;
 import frc.robot.commands.shooter.SpinShooterCommand;
+import frc.robot.commands.trapmechanism.AdjustActuatorCommand;
 import frc.robot.commands.trapmechanism.AmpCommandGroup;
 import frc.robot.commands.trapmechanism.AutoTrapCommand;
 import frc.robot.commands.trapmechanism.AutoTrapHomeCommandGroup;
@@ -88,6 +89,8 @@ public class RobotContainer {
   AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
+  AdjustActuatorCommand adjustActuatorCommand = new AdjustActuatorCommand(trapMechanismSubsystem);
+
   ManualRollerCommand manualRollerCommand = new ManualRollerCommand(trapMechanismSubsystem, secondaryController);
 
   // autos
@@ -107,6 +110,10 @@ public class RobotContainer {
   Trigger expelTrapTrigger = buttonBoardOne.button(7).or(secondaryController.start());
   Trigger toggleTrapTrigger = buttonBoardOne.button(9).or(secondaryController.x());
   Trigger homeTrapTrigger = buttonBoardOne.button(11);
+  Trigger adjustActuatorTrigger = buttonBoardOne.button(15);
+  Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
+  Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
+
   Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight());
   Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft());
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
@@ -155,6 +162,7 @@ public class RobotContainer {
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
+    adjustActuatorTrigger.whileTrue(adjustActuatorCommand);
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);
