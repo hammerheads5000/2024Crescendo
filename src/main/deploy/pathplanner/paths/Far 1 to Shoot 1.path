@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.360656445115663,
-        "y": 7.157663981218414
+        "x": 6.146661081415714,
+        "y": 7.3947666534596
       },
       "isLocked": false,
       "linkedName": "Far 1"
     },
     {
       "anchor": {
-        "x": 3.7321621347707623,
-        "y": 6.330059889035441
+        "x": 2.731454137607071,
+        "y": 6.161335866257842
       },
       "prevControl": {
-        "x": 4.665251143805923,
-        "y": 6.524733135524791
+        "x": 3.1387190201736903,
+        "y": 7.2667691189386625
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1200.0
@@ -40,7 +40,7 @@
   "goalEndState": {
     "velocity": 0,
     "rotation": 12.759999999999991,
-    "rotateFast": false
+    "rotateFast": true
   },
   "reversed": false,
   "folder": "Shoot-Far Paths",
