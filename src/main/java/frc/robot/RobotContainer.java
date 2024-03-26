@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -97,6 +100,9 @@ public class RobotContainer {
   // autos
   Command ampAuto;
   Command sourceAuto;
+  Command stage1Auto;
+  Command stage2Auto;
+  HashMap<Integer, Command> stageAutos = new HashMap<Integer, Command>();
   SendableChooser<Command> autoChooser;
   Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
 
@@ -139,6 +145,7 @@ public class RobotContainer {
   // climb triggers
   Trigger climbUpTrigger = buttonBoardTwo.button(10);
   Trigger climbDownTrigger = buttonBoardTwo.button(11);
+  Trigger climbAlignmentTrigger = driveController.b();
  
   public RobotContainer() {
     swerve.setDefaultCommand(teleopSwerve);
@@ -190,6 +197,7 @@ public class RobotContainer {
     // climb bindings
     climbUpTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
     climbDownTrigger.whileTrue(new StartEndCommand(() -> climberSubsystem.climb(-Constants.ClimberConstants.climbSpeed), climberSubsystem::stopMotor, climberSubsystem));
+    climbAlignmentTrigger.whileTrue(new ProxyCommand(() -> stageAutos.get(climberSubsystem.getStageAutoNumber())));
   }
 
   void configureAuto() {
@@ -219,6 +227,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake Trap Note", new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
+    NamedCommands.registerCommand("Trap Climb", new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Align Trap Note", new ReverseTrapCommand(trapMechanismSubsystem));
 
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
     NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
@@ -228,6 +238,11 @@ public class RobotContainer {
 
     ampAuto = AutoBuilder.buildAuto("Amp");
     sourceAuto = AutoBuilder.buildAuto("Source");
+
+    stage1Auto = AutoBuilder.buildAuto("Stage 1");
+    stage2Auto = AutoBuilder.buildAuto("Stage 2");
+    stageAutos.put(1, stage1Auto);
+    stageAutos.put(2, stage2Auto);
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData(autoChooser);
