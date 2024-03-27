@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -17,8 +18,12 @@ public class PowerSubsystem extends SubsystemBase {
     return pdh.getVoltage();
   }
 
+  public double climbCurrent() {
+    return pdh.getCurrent(14);
+  }
+
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putData(pdh);
   }
 }

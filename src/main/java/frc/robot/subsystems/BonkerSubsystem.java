@@ -31,12 +31,17 @@ public class BonkerSubsystem extends SubsystemBase {
 
   public void bonkForward()
   {
-   bonker.set(0);
+    bonker.set(0);
+    System.out.println("bonk");
   }
 
   public void bonkBackward()
   {
     bonker.set(1);
+  }
+
+  public void windUpBonk() {
+    bonker.set(TrapConstants.bonkWindupPosition);
   }
 
   public void toggleBonk()

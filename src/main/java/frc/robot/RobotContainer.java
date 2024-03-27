@@ -42,6 +42,7 @@ import frc.robot.commands.trapmechanism.HomeTrapArmCommand;
 import frc.robot.commands.trapmechanism.IntakeTrapNoteCommandGroup;
 import frc.robot.commands.trapmechanism.ManualRollerCommand;
 import frc.robot.commands.trapmechanism.ManualTrapCommand;
+import frc.robot.commands.trapmechanism.ManyBonksCommand;
 import frc.robot.commands.trapmechanism.ReverseTrapCommand;
 import frc.robot.subsystems.AprilTagSubsystem;
 import frc.robot.subsystems.BonkerSubsystem;
@@ -96,6 +97,7 @@ public class RobotContainer {
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   ManualRollerCommand manualRollerCommand = new ManualRollerCommand(trapMechanismSubsystem, secondaryController);
+  Command manyBonksCommand = new ManyBonksCommand(bonkerSubsystem).repeatedly();
 
   // autos
   Command ampAuto;
@@ -131,7 +133,7 @@ public class RobotContainer {
   Trigger lockTrapSafetyTrigger = buttonBoardTwo.button(8);
   Trigger BonkerForwardButton = buttonBoardOne.button(2);
   Trigger BonkerBackWardButton = buttonBoardOne.button(4);
-  Trigger ToggleBonkerButton = buttonBoardTwo.button(12);
+  Trigger manyBonksTrigger = buttonBoardTwo.button(12);
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
@@ -139,7 +141,7 @@ public class RobotContainer {
   Trigger spinShooterTrigger = driveController.rightBumper();
   Trigger shooterLowAngleTrigger = driveController.povDown();
   Trigger shooterHighAngleTrigger = buttonBoardOne.povUp();
-  Trigger spinShooterManualTrigger = driveController.b();
+  //Trigger spinShooterManualTrigger = driveController.b();
   // intake triggers
   Trigger intakeTrigger = secondaryController.rightTrigger();
   Trigger reverseIntakeTrigger = secondaryController.leftBumper();
@@ -186,8 +188,7 @@ public class RobotContainer {
     reverseTrapAutoTrigger.whileTrue(reverseTrapCommand);
     BonkerBackWardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkBackward));
     BonkerForwardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkForward));
-
-
+    manyBonksTrigger.whileTrue(manyBonksCommand);
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -196,7 +197,7 @@ public class RobotContainer {
     spinShooterTrigger.whileTrue(spinShooterCommand);
     shooterLowAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)));
     shooterHighAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.closeAngle)));
-    spinShooterManualTrigger.whileTrue(new InstantCommand(() -> shooterSubsystem.spin(Constants.ShooterConstants.manualShooterSpeed)));
+    //spinShooterManualTrigger.whileTrue(new InstantCommand(() -> shooterSubsystem.spin(Constants.ShooterConstants.manualShooterSpeed)));
     // intake bindings
     intakeTrigger.whileTrue(intakeCommandGroup);
     reverseIntakeTrigger.whileTrue(new StartEndCommand(intakeSubsystem::reverse, intakeSubsystem::stopAll, intakeSubsystem));

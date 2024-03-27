@@ -22,6 +22,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -119,7 +120,7 @@ public class Constants {
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(150.0) // output (V) per unit error in position (rotations)
-                .withKI(0) // output (V) per unit integrated error (rotations*s)
+                .withKI(50.0) // output (V) per unit integrated error (rotations*s)
                 .withKD(50.0) // output (V) per unit of error derivative (rps)
                 .withKS(0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
@@ -415,14 +416,26 @@ public class Constants {
         public static final int minMicrosecondsBonk = 500;
         public static final int deadbandBonk = 2;
         public static final Servo bonker = new Servo(9);
+        public static final Measure<Time> bonkDelay = Seconds.of(0.5);
+        public static final double bonkWindupPosition = 0.5; // set servo when bonking continuously not all the way back
 
     }
 
     public static final class ClimberConstants {
         public static final TalonFX climberMotor = new TalonFX(4, LowSpeedCANbusName);
         public static final InvertedValue climberInverted = InvertedValue.CounterClockwise_Positive; // CCW climbs
+        public static final Slot0Configs climberGains = new Slot0Configs()
+                .withGravityType(GravityTypeValue.Elevator_Static)
+                .withKG(0.02);
         public static final double climbSpeed = 1;
         public static final double slowClimbSpeed = 0.2;
+        public static final int pdhChannel = 14;
+        public static final CurrentLimitsConfigs climberCurrentConfigs = new CurrentLimitsConfigs()
+                .withSupplyCurrentLimit(40)
+                .withSupplyCurrentThreshold(60)
+                .withSupplyTimeThreshold(0.1)
+                .withSupplyCurrentLimitEnable(true);
+        public static final Measure<Current> maxClimbCurrent = Amps.of(50);
 
         public static final DigitalInput slowLidarSensor = new DigitalInput(4);
         public static final DigitalInput limitLidarSensor = new DigitalInput(5);  
