@@ -312,6 +312,7 @@ public class Constants {
 
         public static final Measure<Velocity<Angle>> topSpeed = RPM.of(6000);
         public static final Measure<Velocity<Angle>> bottomSpeed = topSpeed;
+        public static final Measure<Velocity<Angle>> manualShooterSpeed = RPM.of(4000);
         public static final double readySpeedTolerance = 0.1;
         public static final Measure<Velocity<Velocity<Angle>>> flywheelAccel = RPM.per(Second).of(6000); 
 
@@ -358,7 +359,7 @@ public class Constants {
         public static final double encoderValueAt90Deg = 0.495; // encoder value in rotations
 
         // manual height control
-        public static final Measure<Angle> manualSpeed = Degrees.of(2.5); // how fast to raise/lower manually
+        public static final Measure<Angle> manualSpeed = Degrees.of(3); // how fast to raise/lower manually
 
         // alignment
         public static final Measure<Distance> readyAlignTolerance = Inches.of(12);
@@ -408,6 +409,13 @@ public class Constants {
 
         public static final DigitalInput noteDetectionLidarSensor = new DigitalInput(1);
         public static final Measure<Time> intakeDelay = Seconds.of(0.15); // time to wait after note detected by lidar
+
+        public static final int maxMicrosecondsBonk = 2500;
+        public static final int centerMicrosecondsBonk = 1500;
+        public static final int minMicrosecondsBonk = 500;
+        public static final int deadbandBonk = 2;
+        public static final Servo bonker = new Servo(9);
+
     }
 
     public static final class ClimberConstants {

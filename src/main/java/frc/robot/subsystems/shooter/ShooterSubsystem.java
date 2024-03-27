@@ -60,6 +60,11 @@ public class ShooterSubsystem extends SubsystemBase {
     topMotor.setControl(topRequest.withVelocity(velocity.in(RotationsPerSecond)));
   }
 
+  public void spin(Measure<Velocity<Angle>> speed)
+  {
+    topMotor.setControl(topRequest.withVelocity(speed.in(RotationsPerSecond)));
+  }
+
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();

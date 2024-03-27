@@ -5,6 +5,7 @@
 package frc.robot.commands.trapmechanism;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.trapmechanism.TrapMechanismSubsystem;
 
 public class ReverseTrapCommand extends Command {
@@ -18,7 +19,7 @@ public class ReverseTrapCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    trapMechanismSubsystem.reverse();
+    trapMechanismSubsystem.moveManual(Constants.TrapConstants.slowExpelSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
