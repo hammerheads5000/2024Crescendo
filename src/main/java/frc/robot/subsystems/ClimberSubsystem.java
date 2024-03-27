@@ -11,6 +11,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimberConstants;
@@ -55,6 +57,16 @@ public class ClimberSubsystem extends SubsystemBase {
   public void stopMotor()
   {
     climbMotor.stopMotor();
+  }
+  
+  public int getStageAutoNumber() {
+    Alliance alliance = DriverStation.getAlliance().get();
+    int driverStation = DriverStation.getLocation().getAsInt();
+
+    if (alliance.equals(Alliance.Blue) && driverStation == 1) return 1;
+    if (alliance.equals(Alliance.Red) && driverStation == 3) return 1;
+
+    return 2;
   }
   
   @Override

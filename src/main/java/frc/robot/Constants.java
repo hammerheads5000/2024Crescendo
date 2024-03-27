@@ -98,7 +98,7 @@ public class Constants {
         public static final Measure<Velocity<Distance>> defaultDriveSpeed = MetersPerSecond.of(3); // m/s
         public static final Measure<Velocity<Angle>> defaultRotSpeed = RadiansPerSecond.of(1.5 * Math.PI); // rad/s
         
-        public static final Measure<Velocity<Distance>> fastDriveSpeed = MetersPerSecond.of(6); // m/s
+        public static final Measure<Velocity<Distance>> fastDriveSpeed = MetersPerSecond.of(8); // m/s
         public static final Measure<Velocity<Angle>> fastRotSpeed = RadiansPerSecond.of(4 * Math.PI); // rad/s
         
         public static final Measure<Velocity<Distance>> slowDriveSpeed = MetersPerSecond.of(1); // m/s

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.731454137607071,
-        "y": 6.161335866257842
+        "x": 4.496494568210375,
+        "y": 3.4139354119416203
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.321969032922576,
-        "y": 5.959949749199894
+        "x": 4.455326255785255,
+        "y": 3.3590443287081273
       },
       "isLocked": false,
-      "linkedName": "Shoot 1"
+      "linkedName": "Stage 2"
     },
     {
       "anchor": {
-        "x": 3.5983465304988735,
-        "y": 6.068246750242615
+        "x": 4.395860915615636,
+        "y": 3.2675591899856373
       },
       "prevControl": {
-        "x": 3.9004257060857963,
-        "y": 6.3904645375353315
+        "x": 4.455326255785255,
+        "y": 3.3636185856442524
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,21 +32,21 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 0.5,
     "maxAcceleration": 8.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 1200.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -147.9968946962073,
-    "rotateFast": false
+    "rotation": 59.10680473707311,
+    "rotateFast": true
   },
   "reversed": false,
-  "folder": "Shoot-Close Paths",
+  "folder": "Teleop Paths",
   "previewStartingState": {
-    "rotation": -166.5915157010407,
+    "rotation": 60.06848815949217,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

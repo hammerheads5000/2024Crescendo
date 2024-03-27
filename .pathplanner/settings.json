@@ -19,7 +19,7 @@
     "Timed Autos",
     "Teleop Autos"
   ],
-  "defaultMaxVel": 5.0,
+  "defaultMaxVel": 2.0,
   "defaultMaxAccel": 8.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 1200.0,
