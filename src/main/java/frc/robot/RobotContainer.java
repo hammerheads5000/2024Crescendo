@@ -92,7 +92,9 @@ public class RobotContainer {
   SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
   AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem, trapMechanismSubsystem);
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
-  AutoTrapCommand autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
+  Command autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem)
+  .handleInterrupt(() -> {climberSubsystem.stopMotor(); trapMechanismSubsystem.stopRollers();});
+
   Command ampCommandGroup = new AmpCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   ManualRollerCommand manualRollerCommand = new ManualRollerCommand(trapMechanismSubsystem, secondaryController);

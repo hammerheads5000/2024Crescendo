@@ -36,7 +36,7 @@ public class ClimbCommand extends Command {
   @Override
   public void execute() 
   {
-    if(!climbSubsystem.reachedClimbLimit())
+    if(!climbSubsystem.reachedClimbLimit() || controller.getRightY() > 0)
     {
       climbSubsystem.climb(controller.getRightY());
     }
