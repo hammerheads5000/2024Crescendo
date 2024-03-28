@@ -122,7 +122,6 @@ public class RobotContainer {
   Trigger expelTrapTrigger = buttonBoardOne.button(7).or(secondaryController.start());
   Trigger toggleTrapTrigger = buttonBoardOne.button(9).or(secondaryController.x());
   Trigger homeTrapTrigger = buttonBoardOne.button(11);
-  Trigger reverseTrapTrigger = buttonBoardOne.button(15);
   Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
   Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
   Trigger reverseTrapAutoTrigger = buttonBoardOne.button(1);
@@ -143,7 +142,7 @@ public class RobotContainer {
   Trigger lowerShooterTrigger = secondaryController.a();
   Trigger spinShooterTrigger = driveController.rightBumper();
   Trigger shooterLowAngleTrigger = driveController.povDown();
-  Trigger shooterHighAngleTrigger = buttonBoardOne.povUp();
+  Trigger shooterHighAngleTrigger = driveController.povUp();
   //Trigger spinShooterManualTrigger = driveController.b();
   // intake triggers
   Trigger intakeTrigger = secondaryController.rightTrigger();
@@ -179,7 +178,6 @@ public class RobotContainer {
     homeTrapTrigger.whileTrue(homeTrapArmCommand);
     AutoSourceTrigger.whileTrue(intakeTrapNoteCommand);
     AutoTrapTrigger.whileTrue(autoTrapCommand);
-    reverseTrapTrigger.whileTrue(reverseTrapCommand);
     Amptrigger.whileTrue(ampCommandGroup);
     autoTrapToHomeTrigger.whileTrue(autoTrapHomeCommandGroup);
     TrapMoveJoystickTrigger.whileTrue(manualTrapCommand);

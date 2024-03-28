@@ -119,10 +119,10 @@ public class Constants {
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.1);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                .withKP(150.0) // output (V) per unit error in position (rotations)
+                .withKP(200.0) // output (V) per unit error in position (rotations)
                 .withKI(50.0) // output (V) per unit integrated error (rotations*s)
                 .withKD(50.0) // output (V) per unit of error derivative (rps)
-                .withKS(0) // output (V) to overcome static friction
+                .withKS(10.0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
                 .withKP(1.0) // output (V) per unit error in position (rps)

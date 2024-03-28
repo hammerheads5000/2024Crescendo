@@ -74,6 +74,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    m_robotContainer.shooterHeightPIDSubsystem.setSetpoint(m_robotContainer.shooterHeightPIDSubsystem.getMeasurement());
+    m_robotContainer.shooterHeightPIDSubsystem.enable();
   }
 
   @Override
