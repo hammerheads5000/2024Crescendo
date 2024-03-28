@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 4.125979756384291,
-      "y": 2.897044378159553
-    },
-    "rotation": 81.49129668372969
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -15,31 +9,6 @@
           "type": "path",
           "data": {
             "pathName": "Approach Stage 2"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Engage Stage 2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align Trap Note"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Trap Climb"
           }
         }
       ]

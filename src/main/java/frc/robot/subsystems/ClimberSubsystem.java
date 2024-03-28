@@ -32,6 +32,8 @@ public class ClimberSubsystem extends SubsystemBase {
     climbMotor.getConfigurator().apply(new MotorOutputConfigs()
       .withInverted(ClimberConstants.climberInverted)
       .withNeutralMode(NeutralModeValue.Brake));
+    climbMotor.getConfigurator().apply(ClimberConstants.climberGains);
+    climbMotor.getConfigurator().apply(ClimberConstants.climberCurrentConfigs);
     this.lightsSubsystem = lightsSubsystem;
     limitLidarSensor = ClimberConstants.limitLidarSensor;
     limitLidarSensor2 = ClimberConstants.limitLidarSensor2;
