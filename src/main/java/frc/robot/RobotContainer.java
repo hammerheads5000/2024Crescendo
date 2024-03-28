@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashMap;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.CommandUtil;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.net.PortForwarder;
@@ -234,17 +235,17 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise To Source", new InstantCommand(trapHeightPIDSubsystem::moveToSource));
     NamedCommands.registerCommand("Flip Trap Down", new InstantCommand(trapMechanismSubsystem::extendActuator));
     NamedCommands.registerCommand("Flip Trap Up", new InstantCommand(trapMechanismSubsystem::contractActuator));
-    NamedCommands.registerCommand("Expel Trap Note", new ExpelTrapNoteCommand(trapMechanismSubsystem));
-    NamedCommands.registerCommand("Intake Trap Note", new IntakeTrapNoteCommandGroup(trapMechanismSubsystem, trapHeightPIDSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Expel Trap Note", CommandUtil.wrappedEventCommand(expelTrapNoteCommand));
+    NamedCommands.registerCommand("Intake Trap Note", CommandUtil.wrappedEventCommand(intakeTrapNoteCommand));
     NamedCommands.registerCommand("Lower Trap Arm", new InstantCommand(trapHeightPIDSubsystem::moveToHome));
     NamedCommands.registerCommand("Move Actuator To Amp", new InstantCommand(trapMechanismSubsystem::moveActuatorForAmp));
-    NamedCommands.registerCommand("Trap Climb", new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
-    NamedCommands.registerCommand("Align Trap Note", new ReverseTrapCommand(trapMechanismSubsystem));
+    NamedCommands.registerCommand("Trap Climb", CommandUtil.wrappedEventCommand(autoTrapCommand));
+    NamedCommands.registerCommand("Align Trap Note", CommandUtil.wrappedEventCommand(reverseTrapCommand));
 
     NamedCommands.registerCommand("Pick Up Note and Shoot", new PickUpNoteAndShootCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem,lightsSubsystem));
-    NamedCommands.registerCommand("Pick Up Note", new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Pick Up Note", CommandUtil.wrappedEventCommand(intakeCommandGroup));
     NamedCommands.registerCommand("Shoot", new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem));
-    NamedCommands.registerCommand("Start Intake", new ManualIntakeCommand(intakeSubsystem, lightsSubsystem));
+    NamedCommands.registerCommand("Start Intake", CommandUtil.wrappedEventCommand(manualIntakeCommand));
     NamedCommands.registerCommand("Finish Intake", new FinishIntakeCommand(intakeSubsystem, lightsSubsystem).onlyIf(() -> LoggingConstants.hasNoteSubscriber.get()));
 
     ampAuto = AutoBuilder.buildAuto("Amp");
@@ -262,7 +263,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
-    return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
+    return spinShooterCommand.alongWith(autoStartCommand.andThen(new ProxyCommand(autoChooser::getSelected)));
   }
 
   public void enablePhotonvisionPortForwarding() {
