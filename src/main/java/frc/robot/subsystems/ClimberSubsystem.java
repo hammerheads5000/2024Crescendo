@@ -56,6 +56,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public boolean reachedSlowLimit(){
     return !slowLidarSensor.get();
   }
+  
   public void stopMotor()
   {
     climbMotor.stopMotor();
