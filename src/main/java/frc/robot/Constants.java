@@ -262,7 +262,7 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final PIDController noteAlignmentPID = new PIDController(3.0, 0.2, 0);
+        public static final PIDController noteAlignmentPID = new PIDController(3.0, 1.5, 0);
         public static final Measure<Angle> noteAlignTolerance = Degrees.of(7.5);
         public static final Measure<Time> alignedDelay = Seconds.of(0.1);
     }
