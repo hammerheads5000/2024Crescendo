@@ -73,10 +73,6 @@ public class TrapMechanismSubsystem extends SubsystemBase {
     actuatorPublisher.set(0.0);
   }
 
-  public void dangerContractActuator(){
-    linearActuator.set(0.0);
-    actuatorPublisher.set(0.0);
-  }
   public void toggleActuator() {
     if (linearActuator.get() == 1.0) {
       contractActuator();
