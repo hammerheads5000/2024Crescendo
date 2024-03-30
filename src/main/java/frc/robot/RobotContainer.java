@@ -125,14 +125,12 @@ public class RobotContainer {
   Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
   Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
   Trigger reverseTrapAutoTrigger = buttonBoardOne.button(1);
-  Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight());
-  Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft());
+  Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight()).or(buttonBoardTwo.button(8));
+  Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft()).or(buttonBoardTwo.button(9));
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
   Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
   Trigger TrapMoveJoystickTrigger = secondaryController.axisLessThan(1, -Constants.controllerDeadband).or(secondaryController.axisGreaterThan(1, Constants.controllerDeadband));
   Trigger TrapRollerJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
-  Trigger UnlockTrapSafetyTrigger = buttonBoardTwo.button(9);
-  Trigger lockTrapSafetyTrigger = buttonBoardTwo.button(8);
   Trigger BonkerForwardButton = buttonBoardOne.button(2);
   Trigger BonkerBackWardButton = buttonBoardOne.button(4);
   Trigger manyBonksTrigger = buttonBoardTwo.button(12).or(secondaryController.b());
@@ -186,7 +184,6 @@ public class RobotContainer {
     //UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::disableSafety));
     //UnlockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::disableSafety));
     //lockTrapSafetyTrigger.onTrue(new InstantCommand(trapHeightPIDSubsystem::enableSafety));
-    lockTrapSafetyTrigger.onTrue(new InstantCommand(trapMechanismSubsystem::enableSafety));
     reverseTrapAutoTrigger.whileTrue(reverseTrapCommand);
     BonkerBackWardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkBackward));
     BonkerForwardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkForward));
