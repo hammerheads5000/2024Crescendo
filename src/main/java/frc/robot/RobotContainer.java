@@ -136,6 +136,7 @@ public class RobotContainer {
   Trigger BonkerForwardButton = buttonBoardOne.button(2);
   Trigger BonkerBackWardButton = buttonBoardOne.button(4);
   Trigger manyBonksTrigger = buttonBoardTwo.button(12);
+  Trigger TrapMechToTrapHeightTirgger = buttonBoardOne.button(3);
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
   Trigger raiseShooterTrigger = secondaryController.y();
@@ -190,6 +191,7 @@ public class RobotContainer {
     BonkerBackWardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkBackward));
     BonkerForwardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkForward));
     manyBonksTrigger.whileTrue(manyBonksCommand);
+    TrapMechToTrapHeightTirgger.whileTrue(new StartEndCommand(trapHeightPIDSubsystem::moveToTrap, trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
@@ -263,7 +265,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
     Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
-    return spinShooterCommand.alongWith(autoStartCommand.andThen(new ProxyCommand(autoChooser::getSelected)));
+    return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 
   public void enablePhotonvisionPortForwarding() {

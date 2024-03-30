@@ -293,7 +293,7 @@ public class Constants {
 
     public static final class ShooterConstants {
         public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(640);
-        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(1000); // amount to add to minimum velocity
+        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(200); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);
@@ -389,7 +389,7 @@ public class Constants {
         
         public static final Measure<Distance> homePosition = Inches.of(0);
         public static final Measure<Distance> ampPosition = Inches.of(14); // height to stop at for amp, measured from lowest position
-        public static final Measure<Distance> trapPosition = Inches.of(17.5); // height to stop at for trap, measured from lowest pos
+        public static final Measure<Distance> trapPosition = Inches.of(17.8); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> sourcePosition = Inches.of(5); // height to stop at for trap, measured from lowest pos
         public static final Measure<Distance> maxHeight = Inches.of(20);
 
@@ -428,7 +428,7 @@ public class Constants {
                 .withGravityType(GravityTypeValue.Elevator_Static)
                 .withKG(0.02);
         public static final double climbSpeed = 1;
-        public static final double slowClimbSpeed = 0.2;
+        public static final double slowClimbSpeed = 0.4;
         public static final int pdhChannel = 14;
         public static final CurrentLimitsConfigs climberCurrentConfigs = new CurrentLimitsConfigs()
                 .withSupplyCurrentLimit(40)

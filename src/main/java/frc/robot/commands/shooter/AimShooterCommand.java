@@ -49,21 +49,8 @@ public class AimShooterCommand extends Command {
    * @param shooterHeightPIDSubsystem
    */
   public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
-    this.swerve = swerve;
+    this(swerve, shooterHeightPIDSubsystem);
     this.controller = controller;
-    this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
-
-    // set speaker position
-    Optional<Alliance> team = DriverStation.getAlliance();
-    if (team.isPresent() && team.get() == Alliance.Red){
-      speakerPos = FieldConstants.redSpeakerPos;
-    }else{ //auto blue if there is no team because why not
-      speakerPos = FieldConstants.blueSpeakerPos;
-    }
-
-    alignedToSpeakerPublisher = LoggingConstants.alignedToSpeakerPublisher;
-
-    addRequirements(swerve, shooterHeightPIDSubsystem);
   }
 
   /**
@@ -74,6 +61,14 @@ public class AimShooterCommand extends Command {
   public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
+    
+    // set speaker position
+    Optional<Alliance> team = DriverStation.getAlliance();
+    if (team.isPresent() && team.get() == Alliance.Red){
+      speakerPos = FieldConstants.redSpeakerPos;
+    }else{ //auto blue if there is no team because why not
+      speakerPos = FieldConstants.blueSpeakerPos;
+    }
     
     alignedToSpeakerPublisher = LoggingConstants.alignedToSpeakerPublisher;
 
@@ -203,7 +198,9 @@ public class AimShooterCommand extends Command {
   public void end(boolean interrupted) {
     aligned = false;
     alignedToSpeakerPublisher.set(false);
-    LoggingConstants.shooterSpeedRequestPublisher.set(ShooterConstants.manualShooterSpeed.in(RPM));
+    
+    if (controller != null)
+      LoggingConstants.shooterSpeedRequestPublisher.set(ShooterConstants.manualShooterSpeed.in(RPM));
   }
 
   // Returns true when the command should end.

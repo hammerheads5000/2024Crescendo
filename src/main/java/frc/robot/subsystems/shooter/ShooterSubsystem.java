@@ -50,8 +50,6 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterSpeedRequestPublisher = Constants.LoggingConstants.shooterSpeedRequestPublisher;
     shooterSpeedRequestSubscriber = Constants.LoggingConstants.shooterSpeedRequestSubscriber;
     shooterAtSpeedPublisher = Constants.LoggingConstants.shooterAtSpeedPublisher;
-
-    shooterSpeedRequestPublisher.set(ShooterConstants.topSpeed.in(RPM));
   }
 
   /** Spin wheels up */
@@ -75,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean flywheelsAtSpeed() {
-    double speedDiff = Math.abs(topMotor.getVelocity().getValueAsDouble() - getFlywheelSpeed().in(RotationsPerSecond));
+    double speedDiff = Math.abs(((VelocityTorqueCurrentFOC)topMotor.getAppliedControl()).Velocity - getFlywheelSpeed().in(RotationsPerSecond));
     return speedDiff <= topMotor.getVelocity().getValueAsDouble()*ShooterConstants.readySpeedTolerance;
   }
 
