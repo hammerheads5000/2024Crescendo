@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean flywheelsAtSpeed() {
-    double speedDiff = Math.abs(((VelocityTorqueCurrentFOC)topMotor.getAppliedControl()).Velocity - getFlywheelSpeed().in(RotationsPerSecond));
+    double speedDiff = Math.abs(RPM.of(shooterSpeedRequestSubscriber.get()).in(RotationsPerSecond) - getFlywheelSpeed().in(RotationsPerSecond));
     return speedDiff <= topMotor.getVelocity().getValueAsDouble()*ShooterConstants.readySpeedTolerance;
   }
 
