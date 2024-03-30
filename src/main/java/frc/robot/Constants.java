@@ -88,7 +88,7 @@ public class Constants {
     public static final double controllerDeadband = 0.225;
 
     public static final PowerDistribution pdh = new PowerDistribution();
-    public static final double lowStartVoltage = 1.0;
+    public static final double lowStartVoltage = 12.5;
 
     public static final class UnitConstants {
         public static final long secondsToMicroseconds = 1000000;
@@ -293,7 +293,7 @@ public class Constants {
 
     public static final class ShooterConstants {
         public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(640);
-        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(400); // amount to add to minimum velocity
+        public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(1000); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
         public static final Measure<Angle> defaultAngle = Degrees.of(35);

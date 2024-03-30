@@ -203,6 +203,7 @@ public class AimShooterCommand extends Command {
   public void end(boolean interrupted) {
     aligned = false;
     alignedToSpeakerPublisher.set(false);
+    LoggingConstants.shooterSpeedRequestPublisher.set(ShooterConstants.manualShooterSpeed.in(RPM));
   }
 
   // Returns true when the command should end.

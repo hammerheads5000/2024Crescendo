@@ -68,7 +68,6 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Let wheels spin down */
   public void stop() {
     topMotor.stopMotor();
-    shooterSpeedRequestPublisher.set(0);
   }
 
   public Measure<Velocity<Angle>> getFlywheelSpeed() {
