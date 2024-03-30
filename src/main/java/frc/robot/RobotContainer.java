@@ -135,7 +135,7 @@ public class RobotContainer {
   Trigger lockTrapSafetyTrigger = buttonBoardTwo.button(8);
   Trigger BonkerForwardButton = buttonBoardOne.button(2);
   Trigger BonkerBackWardButton = buttonBoardOne.button(4);
-  Trigger manyBonksTrigger = buttonBoardTwo.button(12);
+  Trigger manyBonksTrigger = buttonBoardTwo.button(12).or(secondaryController.b());
   Trigger TrapMechToTrapHeightTirgger = buttonBoardOne.button(3);
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
