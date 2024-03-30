@@ -39,13 +39,13 @@ public class IntakeSubsystem extends SubsystemBase {
     feedSpeed = IntakeConstants.fastFeedRate;
     // starts feeders
     intakeFeedMotor.set(feedSpeed);
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.shooterFeedRate);
   }
 
   public void startAll(double speed)
   {
     intakeFeedMotor.set(speed);
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, speed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.shooterFeedRate);
   }
 
   public void startIntake() {
@@ -61,8 +61,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   
   public void startShooterFeed() {
-    feedSpeed = IntakeConstants.fastFeedRate;
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, feedSpeed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, IntakeConstants.shooterFeedRate);
   }
 
   public void stopAll() {
@@ -72,7 +71,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void reverse() {
     intakeFeedMotor.set(-feedSpeed);
-    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -feedSpeed);
+    shooterFeedMotor.set(TalonSRXControlMode.PercentOutput, -IntakeConstants.shooterFeedRate);
   }
 
   @Override

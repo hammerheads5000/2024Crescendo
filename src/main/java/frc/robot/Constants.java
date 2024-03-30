@@ -256,8 +256,9 @@ public class Constants {
         public static final TalonSRX shooterFeedMotor = new TalonSRX(3);
         public static final boolean shooterFeedInverted = false; // positive is in
 
-        public static final double fastFeedRate = 0.75; // Out of 1, how fast rollers should be driven
-        public static final double slowFeedRate = .2;
+        public static final double fastFeedRate = 0.5; // Out of 1, how fast rollers should be driven
+        public static final double shooterFeedRate = 1.0;
+        public static final double slowFeedRate = .25;
 
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
