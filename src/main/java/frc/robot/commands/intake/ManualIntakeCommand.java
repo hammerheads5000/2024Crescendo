@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.LoggingConstants;
-import frc.robot.commands.lights.IntakeTrailsLightsCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LightsSubsystem;
 
@@ -26,7 +25,7 @@ public class ManualIntakeCommand extends SequentialCommandGroup {
       new WaitUntilCommand(intakeSubsystem::intakeLidarState),
       new InstantCommand(() -> LoggingConstants.hasNotePublisher.set(true)),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
-      new IntakeTrailsLightsCommand(lightsSubsystem).until(intakeSubsystem::shooterLidarState),
+      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
       new InstantCommand(intakeSubsystem::stopAll),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
     );

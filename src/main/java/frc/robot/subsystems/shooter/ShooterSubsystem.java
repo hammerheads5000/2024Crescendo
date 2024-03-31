@@ -80,6 +80,5 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     shooterSpeedPublisher.set(getFlywheelSpeed().in(RPM));
-    shooterAtSpeedPublisher.set(flywheelsAtSpeed());
   }
 }

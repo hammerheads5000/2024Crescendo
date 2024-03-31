@@ -256,9 +256,9 @@ public class Constants {
         public static final TalonSRX shooterFeedMotor = new TalonSRX(3);
         public static final boolean shooterFeedInverted = false; // positive is in
 
-        public static final double fastFeedRate = 0.5; // Out of 1, how fast rollers should be driven
-        public static final double shooterFeedRate = 1.0;
-        public static final double slowFeedRate = .25;
+        public static final double fastFeedRate = 0.3; // Out of 1, how fast rollers should be driven
+        public static final double shooterFeedRate = 0.5;
+        public static final double slowFeedRate = .125;
 
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
@@ -336,7 +336,7 @@ public class Constants {
         public static final double arbitraryFeedforward = 0.015; // duty cycle arbitrary feed forward to account for gravity
         public static final double heightMotorGearRatio = 100.0/1; // 100:1
         public static final Measure<Angle> lowMotorAngle = Rotations.of(0.419);
-        public static final Measure<Angle> highMotorAngle = Rotations.of(0.236);
+        public static final Measure<Angle> highMotorAngle = Rotations.of(0.230);
         
         // height motor configuration
         private static final MotorOutputConfigs heightMotorOutputConfigs = new MotorOutputConfigs()
@@ -478,11 +478,14 @@ public class Constants {
         public static final DoublePublisher shooterSpeedPublisher = shooterTable.getDoubleTopic("Shooter Speed").publish();
         public static final DoublePublisher shooterSpeedRequestPublisher = shooterTable.getDoubleTopic("Shooter Speed Request").publish();
         public static final BooleanPublisher shooterAtSpeedPublisher = shooterTable.getBooleanTopic("Shooter At Speed").publish();
+        public static final BooleanSubscriber shooterAtSpeedSubscriber = shooterTable.getBooleanTopic("Shooter At Speed").subscribe(false);
         public static final BooleanPublisher shooterNearSpeedPublisher = shooterTable.getBooleanTopic("Shooter Near Speed").publish();
         public static final DoublePublisher shooterAnglePublisher = shooterTable.getDoubleTopic("Shooter Angle").publish();
         public static final DoublePublisher shooterAngleRequestPublisher = shooterTable.getDoubleTopic("Shooter Angle request").publish();
         public static final BooleanPublisher alignedToSpeakerPublisher = shooterTable.getBooleanTopic("Aligned To Speaker").publish();
         public static final DoubleSubscriber shooterSpeedRequestSubscriber = shooterTable.getDoubleTopic("Shooter Speed Request").subscribe(0);
+        public static final BooleanPublisher shooterAimedPublisher = shooterTable.getBooleanTopic("Shooter Angle Aligned").publish();
+        public static final BooleanSubscriber shooterAimedSubscriber = shooterTable.getBooleanTopic("Shooter Angle Aligned").subscribe(false);
 
         // Intake Logs
         public static final BooleanPublisher intakeLIDARPublisher = intakeTable.getBooleanTopic("Intake LIDAR").publish();

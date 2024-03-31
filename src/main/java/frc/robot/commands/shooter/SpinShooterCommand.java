@@ -5,6 +5,7 @@
 package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -28,12 +29,14 @@ public class SpinShooterCommand extends Command {
   @Override
   public void execute() {
     shooterSubsystem.spin();
+    LoggingConstants.shooterAtSpeedPublisher.set(shooterSubsystem.flywheelsAtSpeed());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooterSubsystem.stop();
+    LoggingConstants.shooterAtSpeedPublisher.set(false);
   }
 
   // Returns true when the command should end.

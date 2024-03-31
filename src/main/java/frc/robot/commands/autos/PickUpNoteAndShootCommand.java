@@ -31,7 +31,7 @@ public class PickUpNoteAndShootCommand extends SequentialCommandGroup {
   public PickUpNoteAndShootCommand(Swerve swerve, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem, LightsSubsystem lightsSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
+    AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem, lightsSubsystem);
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.ORANGE)),

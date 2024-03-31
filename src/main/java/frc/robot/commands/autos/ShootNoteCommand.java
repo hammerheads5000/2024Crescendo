@@ -26,17 +26,15 @@ public class ShootNoteCommand extends SequentialCommandGroup {
   public ShootNoteCommand(Swerve swerve, IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem, LightsSubsystem lightsSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem);
+    AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, shooterHeightPIDSubsystem, lightsSubsystem);
     addCommands(
       new InstantCommand(() -> shooterHeightPIDSubsystem.enable()),
-      new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
       Commands.race(
         aimShooterCommand,
         Commands.sequence(
             new WaitUntilCommand(() -> shooterSubsystem.flywheelsAtSpeed()
                 && shooterHeightPIDSubsystem.getController().atSetpoint()
                 && aimShooterCommand.isAligned()), // wait until ready to shoot
-            new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.PINK)),
             new StartEndCommand(intakeSubsystem::startShooterFeed, intakeSubsystem::stopAll, intakeSubsystem)
                 .onlyWhile(intakeSubsystem::shooterLidarState), // feed to shoot until note not detected
               new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))

@@ -27,9 +27,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.subsystems.LightsSubsystem;
 import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.shooter.ShooterHeightPIDSubsystem;
 
@@ -38,6 +40,7 @@ public class AimShooterCommand extends Command {
   CommandXboxController controller;
   Translation3d speakerPos;
   ShooterHeightPIDSubsystem shooterHeightPIDSubsystem;
+  LightsSubsystem lightsSubsystem;
   boolean aligned = false;
 
   BooleanPublisher alignedToSpeakerPublisher;
@@ -47,9 +50,10 @@ public class AimShooterCommand extends Command {
    * @param swerve
    * @param controller
    * @param shooterHeightPIDSubsystem
+   * @param lightsSubsystem
    */
-  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
-    this(swerve, shooterHeightPIDSubsystem);
+  public AimShooterCommand(Swerve swerve, CommandXboxController controller, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem, LightsSubsystem lightsSubsystem) {
+    this(swerve, shooterHeightPIDSubsystem, lightsSubsystem);
     this.controller = controller;
   }
 
@@ -58,9 +62,10 @@ public class AimShooterCommand extends Command {
    * @param swerve
    * @param shooterHeightPIDSubsystem
    */
-  public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem) {
+  public AimShooterCommand(Swerve swerve, ShooterHeightPIDSubsystem shooterHeightPIDSubsystem, LightsSubsystem lightsSubsystem) {
     this.swerve = swerve;
     this.shooterHeightPIDSubsystem = shooterHeightPIDSubsystem;
+    this.lightsSubsystem = lightsSubsystem;
     
     // set speaker position
     Optional<Alliance> team = DriverStation.getAlliance();
@@ -88,6 +93,8 @@ public class AimShooterCommand extends Command {
     }else{ //auto blue if there is no team because why not
       speakerPos = FieldConstants.blueSpeakerPos;
     }
+
+    lightsSubsystem.setSolidColor(LightConstants.ORANGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -123,6 +130,10 @@ public class AimShooterCommand extends Command {
     Translation2d destinationPos = swerve.getPose().getTranslation().plus(robotToDestination); // where the note would reach distance of speaker
     aligned = Meters.of(speakerPos.toTranslation2d().getDistance(destinationPos)).lte(ShooterConstants.readyAlignTolerance);
     alignedToSpeakerPublisher.set(aligned);
+
+    if (aligned && LoggingConstants.shooterAimedSubscriber.get() && LoggingConstants.shooterAtSpeedSubscriber.get()) {
+      lightsSubsystem.setSolidColor(LightConstants.GREEN);
+    }
   }
 
   private Translation2d getApproachVelocityVec(Translation2d speakerToRobot) {

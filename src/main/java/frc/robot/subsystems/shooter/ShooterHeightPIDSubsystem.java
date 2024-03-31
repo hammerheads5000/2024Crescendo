@@ -20,6 +20,7 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import frc.robot.Constants;
+import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterHeightPIDSubsystem extends PIDSubsystem {
@@ -65,6 +66,7 @@ public class ShooterHeightPIDSubsystem extends PIDSubsystem {
     double measured = 0.25+ShooterConstants.encoderValueAt90Deg-encoder.get();
     shooterAnglePublisher.set(motorPositionToAngle(Rotations.of(measured)).in(Degrees));
     shooterAngleRequestPublisher.set(targetAngle.in(Degrees));
+    LoggingConstants.shooterAimedPublisher.set(getController().atSetpoint());
 
     return measured;
   }
