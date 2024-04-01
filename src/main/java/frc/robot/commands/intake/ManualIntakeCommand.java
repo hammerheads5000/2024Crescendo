@@ -26,6 +26,7 @@ public class ManualIntakeCommand extends SequentialCommandGroup {
       new InstantCommand(() -> LoggingConstants.hasNotePublisher.set(true)),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(IntakeConstants.slowFeedRate)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
+      new WaitUntilCommand(intakeSubsystem::shooterLidarState),
       new InstantCommand(intakeSubsystem::stopAll),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
     );

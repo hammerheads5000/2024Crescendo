@@ -83,6 +83,7 @@ public class RobotContainer {
   TeleopSwerve teleopSwerve = new TeleopSwerve(swerve, driveController);
   Command intakeCommandGroup = new IntakeCommandGroup(swerve, intakeSubsystem, lightsSubsystem).handleInterrupt(intakeSubsystem::stopAll);
   Command manualIntakeCommand = new ManualIntakeCommand(intakeSubsystem, lightsSubsystem).handleInterrupt(intakeSubsystem::stopAll);
+  Command finishIntakeCommmand = new FinishIntakeCommand(intakeSubsystem, lightsSubsystem).handleInterrupt(intakeSubsystem::stopAll);
   Command expelTrapNoteCommand = new ExpelTrapNoteCommand(trapMechanismSubsystem)
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt  
   HomeTrapArmCommand homeTrapArmCommand = new HomeTrapArmCommand(trapHeightPIDSubsystem);

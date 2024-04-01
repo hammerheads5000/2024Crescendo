@@ -6,6 +6,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.LightConstants;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -27,6 +28,7 @@ public class IntakeCommandGroup extends SequentialCommandGroup {
       new MoveOverNoteCommand(swerve, intakeSubsystem),
       new InstantCommand(() -> intakeSubsystem.setFeedSpeed(Constants.IntakeConstants.slowFeedRate)),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.GREEN)),
+      new WaitUntilCommand(intakeSubsystem::shooterLidarState),
       new InstantCommand(intakeSubsystem::stopAll),
       new InstantCommand(() -> lightsSubsystem.setSolidColor(LightConstants.BLANK))
     );
