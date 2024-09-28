@@ -9,10 +9,14 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LoggingConstants;
+import frc.robot.Constants.VisionConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
   private TalonFX intakeFeedMotor;
@@ -22,10 +26,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private double feedSpeed = IntakeConstants.fastFeedRate;
 
+  private BooleanSubscriber hasTargetSubscriber;
+
+  private CommandXboxController controller;
+
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {
+  public IntakeSubsystem(CommandXboxController controller) {
+    this.controller = controller;
+
     intakeLidar = IntakeConstants.intakeLidarSensor;
     shooterLidar = IntakeConstants.loadedNoteLidarSensor;
+
+    hasTargetSubscriber = VisionConstants.colorHasTargetsTopic.subscribe(false);
     
     intakeFeedMotor = IntakeConstants.intakeFeedMotor;
     intakeFeedMotor.getConfigurator()
@@ -78,6 +90,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     LoggingConstants.intakeLIDARPublisher.set(intakeLidarState());
     LoggingConstants.noteLoadedPublisher.set(shooterLidarState());
+
+    controller.getHID().setRumble(RumbleType.kBothRumble, hasTargetSubscriber.get() ? 0.5 : 0.0);
   }
 
   public boolean intakeLidarState()

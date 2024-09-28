@@ -67,7 +67,7 @@ public class RobotContainer {
   LightsSubsystem lightsSubsystem = new LightsSubsystem();
   Swerve swerve = new Swerve();
   AprilTagSubsystem aprilTagSubsystem = new AprilTagSubsystem(); // DO NOT REMOVE. Need periodic
-  IntakeSubsystem intakeSubsystem = new IntakeSubsystem(); 
+  IntakeSubsystem intakeSubsystem = new IntakeSubsystem(secondaryController); 
   BonkerSubsystem bonkerSubsystem = new BonkerSubsystem();
   TrapMechanismSubsystem trapMechanismSubsystem = new TrapMechanismSubsystem();
   TrapHeightPIDSubsystem trapHeightPIDSubsystem = new TrapHeightPIDSubsystem();
