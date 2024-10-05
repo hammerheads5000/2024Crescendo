@@ -38,7 +38,7 @@ public class MoveOverNoteCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    swerve.driveRobotCentric(MetersPerSecond.zero(), MetersPerSecond.zero(), RadiansPerSecond.zero()); // stop
+    swerve.brake(); // stop
     if (!interrupted) {
       LoggingConstants.hasNotePublisher.set(true);
     }

@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-   //m_robotContainer.disabledLightsCommand.schedule();
+   m_robotContainer.disabledLightsCommand.schedule();
    trapMechanismSubsystem.contractActuator();
    if (isClimbing) {
     m_robotContainer.autoTrapCommand.schedule();
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledExit() {
-    //m_robotContainer.disabledLightsCommand.cancel();
+    m_robotContainer.disabledLightsCommand.cancel();
   }
 
   @Override

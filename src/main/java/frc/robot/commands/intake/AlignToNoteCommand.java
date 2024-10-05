@@ -60,7 +60,9 @@ public class AlignToNoteCommand extends Command {
     Rotation2d robotAngle = swerve.getPose().getRotation();
     Rotation2d robotToNoteRotation = Rotation2d.fromDegrees(-angleSubscriber.get());
     desiredRotation = robotAngle.rotateBy(robotToNoteRotation);
-
+    // System.out.print(robotAngle.getDegrees());
+    // System.out.print(robotToNoteRotation.getDegrees());
+    // System.out.println(desiredRotation.getDegrees());
     swerve.driveFacingNote(
         MetersPerSecond.zero(),
         MetersPerSecond.zero(),

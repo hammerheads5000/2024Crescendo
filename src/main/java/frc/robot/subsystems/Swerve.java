@@ -45,6 +45,7 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.FieldCentric fieldCentricRequest;
   private SwerveRequest.RobotCentric robotCentricRequest;
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
+  private SwerveRequest.SwerveDriveBrake brakeRequest;
 
   private DoubleArraySubscriber aprilTagSubscriberFront;
   private DoubleArraySubscriber aprilTagSubscriberBack;
@@ -68,8 +69,12 @@ public class Swerve extends SubsystemBase {
       module.getDriveMotor().getConfigurator().apply(SwerveConstants.driveCurrentLimits);
       module.getSteerMotor().getConfigurator().apply(SwerveConstants.angleCurrentLimits);
     }
-
+    
     // setup drive requests
+    brakeRequest = new SwerveRequest.SwerveDriveBrake()
+        .withDriveRequestType(SwerveConstants.driveRequestType)
+        .withSteerRequestType(SwerveConstants.steerRequestType);
+
     fieldCentricRequest = new SwerveRequest.FieldCentric()
         .withDeadband(SwerveConstants.velocityDeadband.in(MetersPerSecond))
         .withRotationalDeadband(SwerveConstants.rotationDeadband.in(RadiansPerSecond))
@@ -142,12 +147,12 @@ public class Swerve extends SubsystemBase {
     double omega = SwerveConstants.headingPID.calculate(
         getPose().getRotation().getRadians(),
         angle.getRadians());
-
-    drivetrain.setControl(fieldCentricRequest
+        
+        drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))
         .withVelocityY(yVel.in(MetersPerSecond))
         .withRotationalRate(omega));
-  }
+      }
 
   /**
    * Drive robot while facing note
@@ -158,9 +163,12 @@ public class Swerve extends SubsystemBase {
    */
   public void driveFacingNote(Measure<Velocity<Distance>> xVel, Measure<Velocity<Distance>> yVel, Rotation2d angle) {
     // calculate rotational velocity with pid (radians per second)
+    double heading = getPose().getRotation().getRadians();
+    double setpoint = angle.getRadians();
+    if (heading - setpoint < -Math.PI) heading += 2*Math.PI;
+    if (heading - setpoint > Math.PI) heading -= 2*Math.PI;
     double omega = IntakeConstants.noteAlignmentPID.calculate(
-        getPose().getRotation().getRadians(),
-        angle.getRadians());
+        heading, setpoint);
 
     drivetrain.setControl(fieldCentricRequest
         .withVelocityX(xVel.in(MetersPerSecond))
@@ -190,6 +198,13 @@ public class Swerve extends SubsystemBase {
    */
   public void driveRobotCentric(ChassisSpeeds chassisSpeeds) {
     drivetrain.setControl(chassisSpeedsRequest.withSpeeds(chassisSpeeds));
+  }
+
+  /**
+   * Brake by pointing wheels in X
+   */
+  public void brake() {
+    drivetrain.setControl(brakeRequest);
   }
 
   /**

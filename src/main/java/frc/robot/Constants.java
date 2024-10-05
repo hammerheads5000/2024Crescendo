@@ -109,8 +109,8 @@ public class Constants {
                                                                             // from left to right
         private static final Measure<Distance> swerveLength = Inches.of(24); // length between centers of swerve modules
                                                                              // from front to back
-        private static final double driveMotorGearRatio = (8.14 / 1.0); // 8.14:1
-        private static final double steerMotorGearRatio = (150.0 / 7 / 1.0); // 7:1
+        private static final double driveMotorGearRatio = (6.75 / 1.0); // 8.14:1
+        private static final double steerMotorGearRatio = (150.0 / 7 / 1.0); // 150/7:1
         private static final Measure<Distance> wheelRadius = Inches.of(1.97);
         private static final Measure<Current> slipCurrent = Amps.of(400);
         
@@ -119,8 +119,8 @@ public class Constants {
         public static final Measure<Angle> rotationalPIDTolerance = Degrees.of(0.1);
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
-                .withKP(200.0) // output (V) per unit error in position (rotations)
-                .withKI(50.0) // output (V) per unit integrated error (rotations*s)
+                .withKP(300.0) // output (V) per unit error in position (rotations)
+                .withKI(100.0) // output (V) per unit integrated error (rotations*s)
                 .withKD(50.0) // output (V) per unit of error derivative (rps)
                 .withKS(10.0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
@@ -161,7 +161,7 @@ public class Constants {
             private static final int steerId = 7;
             private static final int driveId = 22;
             private static final int encoderId = 2;
-            private static final double encoderOffset = -0.446;
+            private static final double encoderOffset = -0.453;
             private static final double xPos = swerveLength.in(Meters) / 2; // to front
             private static final double yPos = swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
@@ -206,7 +206,7 @@ public class Constants {
             private static final int steerId = 20;
             private static final int driveId = 23;
             private static final int encoderId = 3;
-            private static final double encoderOffset = -0.4035;
+            private static final double encoderOffset = -0.398;
             private static final double xPos = -swerveLength.in(Meters) / 2; // to front
             private static final double yPos = -swerveWidth.in(Meters) / 2; // to left
             private static final boolean invertedSteer = true;
@@ -273,8 +273,8 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCamFront = new Transform3d(
-                        new Translation3d(Inches.of(-13.5), Inches.of(-3.25), Inches.of(7)),
-                        new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
+                        new Translation3d(Inches.of(13.5), Inches.of(3.25), Inches.of(7)),
+                        new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(0).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
@@ -284,8 +284,8 @@ public class Constants {
 
         public static final PhotonCamera aprilTagCamBack = new PhotonCamera("AprilTag Camera Back");
         public static final Transform3d robotToAprilTagCamBack = new Transform3d(
-                        new Translation3d(Inches.of(13.5), Inches.of(2.0), Inches.of(18)),
-                        new Rotation3d(0.0, Degrees.of(0).in(Radians), Degrees.of(0).in(Radians)));
+                        new Translation3d(Inches.of(-13.5), Inches.of(-2.0), Inches.of(18)),
+                        new Rotation3d(0.0, Degrees.of(0).in(Radians), Degrees.of(180).in(Radians)));
         
         public static final DoubleArrayTopic poseTopicBack = inst.getDoubleArrayTopic("/Vision/Estimated Pose Back");
 
@@ -405,7 +405,7 @@ public class Constants {
         private static final int pulsesPerRev = 2048; // number full encoder cycles per revolution
         public static final Measure<Distance> distancePerPulse = Inches.of(9.0/pulsesPerRev); // distance per encoder pulse (9in per revolution)
         public static final Measure<Distance> heightTolerance = Inches.of(0.25);
-        public static final PIDController heightPIDController = new PIDController(0.3, 0.0, 0.0);
+        public static final PIDController heightPIDController = new PIDController(0.5, 0.0, 0.0);
 
         public static final ColorSensorV3 colorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         public static final Color colorToMatch = new Color("#20617C"); // match blue tape
