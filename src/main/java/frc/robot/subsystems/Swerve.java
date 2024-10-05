@@ -46,7 +46,8 @@ public class Swerve extends SubsystemBase {
   private SwerveRequest.RobotCentric robotCentricRequest;
   private SwerveRequest.ApplyChassisSpeeds chassisSpeedsRequest;
 
-  private DoubleArraySubscriber aprilTagSubscriber;
+  private DoubleArraySubscriber aprilTagSubscriberFront;
+  private DoubleArraySubscriber aprilTagSubscriberBack;
   StructArrayPublisher<SwerveModuleState> statesPublisher = LoggingConstants.moduleStatesPublisher;
   StructArrayPublisher<SwerveModuleState> desiredStatesPublisher = LoggingConstants.desiredModuleStatesPublisher;
   DoublePublisher rotationPublisher = LoggingConstants.rotationPublisher;
@@ -89,12 +90,22 @@ public class Swerve extends SubsystemBase {
     SwerveConstants.headingPID.enableContinuousInput(-Math.PI, Math.PI);
     SwerveConstants.headingPID.setTolerance(SwerveConstants.rotationalPIDTolerance.in(Radians));
         
-    aprilTagSubscriber = VisionConstants.poseTopic.subscribe(new double[3]);
+    aprilTagSubscriberFront = VisionConstants.poseTopicFront.subscribe(new double[3]);
+    aprilTagSubscriberBack = VisionConstants.poseTopicBack.subscribe(new double[3]);
 
     // creates listener such that when the pose estimate NetworkTables topic
     //  is updated, it calls applyVisionMeasurement to update pose
     NetworkTableListener.createListener(
-        aprilTagSubscriber,
+        aprilTagSubscriberFront,
+        EnumSet.of(NetworkTableEvent.Kind.kValueAll), // listens for any value change
+        event -> {
+          applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());
+        });
+
+    // creates listener such that when the pose estimate back NetworkTables topic
+    //  is updated, it calls applyVisionMeasurement to update pose
+    NetworkTableListener.createListener(
+        aprilTagSubscriberBack,
         EnumSet.of(NetworkTableEvent.Kind.kValueAll), // listens for any value change
         event -> {
           applyVisionMeasurement(event.valueData.value.getDoubleArray(), event.valueData.value.getTime());

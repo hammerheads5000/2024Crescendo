@@ -239,7 +239,7 @@ public class Constants {
                 .withSupplyTimeThreshold(0.1);
 
         public static final CurrentLimitsConfigs driveCurrentLimits = new CurrentLimitsConfigs()
-                .withSupplyCurrentLimit(40)
+                .withSupplyCurrentLimit(30)
                 .withSupplyCurrentThreshold(40)
                 .withSupplyTimeThreshold(0.1);
 
@@ -263,16 +263,16 @@ public class Constants {
         public static final DigitalInput intakeLidarSensor = new DigitalInput(2);
         public static final DigitalInput loadedNoteLidarSensor = new DigitalInput(3);
 
-        public static final PIDController noteAlignmentPID = new PIDController(3.0, 1.5, 0);
+        public static final PIDController noteAlignmentPID = new PIDController(4.5, 1.5, 0);
         public static final Measure<Angle> noteAlignTolerance = Degrees.of(7.5);
         public static final Measure<Time> alignedDelay = Seconds.of(0.1);
     }
 
     public static final class VisionConstants {
-        public static final PhotonCamera aprilTagCam = new PhotonCamera("AprilTag Camera");
+        public static final PhotonCamera aprilTagCamFront = new PhotonCamera("AprilTag Camera Front");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
-        public static final Transform3d robotToAprilTagCam = new Transform3d(
+        public static final Transform3d robotToAprilTagCamFront = new Transform3d(
                         new Translation3d(Inches.of(-13.5), Inches.of(-3.25), Inches.of(7)),
                         new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
@@ -280,9 +280,16 @@ public class Constants {
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
         
         public static final PoseStrategy poseStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
-        public static final DoubleArrayTopic poseTopic = inst.getDoubleArrayTopic("/Vision/Estimated Pose");
+        public static final DoubleArrayTopic poseTopicFront = inst.getDoubleArrayTopic("/Vision/Estimated Pose Front");
 
-        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Limelight");
+        public static final PhotonCamera aprilTagCamBack = new PhotonCamera("AprilTag Camera Back");
+        public static final Transform3d robotToAprilTagCamBack = new Transform3d(
+                        new Translation3d(Inches.of(13.5), Inches.of(2.0), Inches.of(18)),
+                        new Rotation3d(0.0, Degrees.of(0).in(Radians), Degrees.of(0).in(Radians)));
+        
+        public static final DoubleArrayTopic poseTopicBack = inst.getDoubleArrayTopic("/Vision/Estimated Pose Back");
+
+        private static final NetworkTable colorVisionTable = inst.getTable("photonvision").getSubTable("Note Detection Camera");
 
         public static final DoubleTopic noteYawTopic = colorVisionTable.getDoubleTopic("targetYaw");
         public static final BooleanTopic colorHasTargetsTopic = colorVisionTable.getBooleanTopic("hasTarget");

@@ -17,30 +17,40 @@ import frc.robot.Constants.VisionConstants;
 
 public class AprilTagSubsystem extends SubsystemBase {
   private AprilTagFieldLayout fieldLayout;
-  private PhotonPoseEstimator poseEstimator;
+  private PhotonPoseEstimator poseEstimatorFront;
+  private PhotonPoseEstimator poseEstimatorBack;
 
-  private DoubleArrayPublisher publisher;
+  private DoubleArrayPublisher publisherFront;
+  private DoubleArrayPublisher publisherBack;
 
   private boolean hasTarget = false;
 
   /** Creates a new AprilTagSubsystem. */
   public AprilTagSubsystem() {
     fieldLayout = VisionConstants.aprilTagFieldLayout;
-    poseEstimator = new PhotonPoseEstimator(fieldLayout, VisionConstants.poseStrategy,
-        VisionConstants.aprilTagCam, VisionConstants.robotToAprilTagCam);
+    poseEstimatorFront = new PhotonPoseEstimator(fieldLayout, VisionConstants.poseStrategy,
+        VisionConstants.aprilTagCamFront, VisionConstants.robotToAprilTagCamFront);
+    poseEstimatorBack = new PhotonPoseEstimator(fieldLayout, VisionConstants.poseStrategy,
+        VisionConstants.aprilTagCamBack, VisionConstants.robotToAprilTagCamBack);
 
-    publisher = VisionConstants.poseTopic.publish();
+    publisherFront = VisionConstants.poseTopicFront.publish();
+    publisherBack = VisionConstants.poseTopicBack.publish();
   }
 
   public void update() {
-    Optional<EstimatedRobotPose> optionalPose = poseEstimator.update();
+    boolean frontTarget = updatePublisher(poseEstimatorFront, publisherFront);
+    boolean backTarget = updatePublisher(poseEstimatorBack, publisherBack);
+
+    hasTarget = frontTarget || backTarget;
+  }
+
+  private boolean updatePublisher(PhotonPoseEstimator estimator, DoubleArrayPublisher publisher) {
+    Optional<EstimatedRobotPose> optionalPose = estimator.update();
 
     if (optionalPose.isEmpty()) {
-      hasTarget = false;
-      return;
+      return false;
     }
 
-    hasTarget = true;
     EstimatedRobotPose estimatedRobotPose = optionalPose.get();
     Pose2d pose = estimatedRobotPose.estimatedPose.toPose2d();
     
@@ -52,7 +62,10 @@ public class AprilTagSubsystem extends SubsystemBase {
     long timeMicroseconds = (long)(estimatedRobotPose.timestampSeconds * UnitConstants.secondsToMicroseconds);
 
     publisher.set(poseArray, timeMicroseconds);
+
+    return true;
   }
+  
 
   public boolean hasAprilTag() {
     return hasTarget;
