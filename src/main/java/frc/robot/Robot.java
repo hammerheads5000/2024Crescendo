@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     }
     m_robotContainer.shooterHeightPIDSubsystem.setSetpoint(m_robotContainer.shooterHeightPIDSubsystem.getMeasurement());
     m_robotContainer.shooterHeightPIDSubsystem.enable();
+    trapMechanismSubsystem.extendActuator();
   }
 
   @Override
