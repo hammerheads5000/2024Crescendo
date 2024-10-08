@@ -122,33 +122,31 @@ public class RobotContainer {
   Trigger feedTrapTrigger = buttonBoardOne.button(12).or(secondaryController.back());
   Trigger expelTrapTrigger = buttonBoardOne.button(7).or(secondaryController.start());
   Trigger toggleTrapTrigger = buttonBoardOne.button(9).or(secondaryController.x());
-  Trigger homeTrapTrigger = buttonBoardOne.button(11);
+  Trigger homeTrapTrigger = buttonBoardOne.button(11).or(secondaryController.leftTrigger());
   Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
   Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
   Trigger reverseTrapAutoTrigger = buttonBoardOne.button(1);
   Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight()).or(buttonBoardTwo.button(8));
   Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft()).or(buttonBoardTwo.button(9));
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
-  Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10); 
+  Trigger autoTrapToHomeTrigger = buttonBoardOne.button(10).or(secondaryController.povDown()); 
   Trigger TrapMoveJoystickTrigger = secondaryController.axisLessThan(1, -Constants.controllerDeadband).or(secondaryController.axisGreaterThan(1, Constants.controllerDeadband));
   Trigger TrapRollerJoystickTrigger = secondaryController.axisGreaterThan(5, Constants.controllerDeadband).or(secondaryController.axisLessThan(5, -Constants.controllerDeadband));
   Trigger BonkerForwardButton = buttonBoardOne.button(2);
   Trigger BonkerBackWardButton = buttonBoardOne.button(4);
-  Trigger manyBonksTrigger = buttonBoardTwo.button(12).or(secondaryController.b());
-  Trigger TrapMechToTrapHeightTirgger = buttonBoardOne.button(3);
+  Trigger bonkToggleTrigger = secondaryController.b();
+  Trigger manyBonksTrigger = buttonBoardTwo.button(12);
+  Trigger TrapMechToTrapHeightTirgger = buttonBoardOne.button(3).or(secondaryController.y());
   // shooter triggers
   Trigger aimShooterTrigger = driveController.leftBumper();
-  Trigger raiseShooterTrigger = secondaryController.y();
-  Trigger lowerShooterTrigger = secondaryController.a();
   Trigger spinShooterTrigger = driveController.rightBumper();
   Trigger shooterLowAngleTrigger = driveController.povDown();
   Trigger shooterHighAngleTrigger = driveController.povUp();
-  //Trigger spinShooterManualTrigger = driveController.b();
   // intake triggers
   Trigger intakeTrigger = secondaryController.rightTrigger();
   Trigger reverseIntakeTrigger = secondaryController.leftBumper();
   Trigger intakeFeedTrigger = secondaryController.rightBumper();
-  Trigger shooterFeedTrigger = driveController.rightTrigger().or(secondaryController.leftTrigger());
+  Trigger shooterFeedTrigger = driveController.rightTrigger();
   Trigger slowRollIntakeTrigger = buttonBoardTwo.button(4);
   // climb triggers
   Trigger climbUpTrigger = buttonBoardTwo.button(10);
@@ -193,8 +191,6 @@ public class RobotContainer {
 
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
-    raiseShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::increaseAngle));
-    lowerShooterTrigger.onTrue(new InstantCommand(shooterHeightPIDSubsystem::decreaseAngle));
     spinShooterTrigger.whileTrue(spinShooterCommand);
     shooterLowAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.farAngle)));
     shooterHighAngleTrigger.onTrue(new InstantCommand(() -> shooterHeightPIDSubsystem.setTargetAngle(ShooterConstants.closeAngle)));
