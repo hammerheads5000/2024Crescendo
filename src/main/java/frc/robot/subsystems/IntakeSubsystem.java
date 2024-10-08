@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LoggingConstants;
 import frc.robot.Constants.VisionConstants;
@@ -91,7 +92,7 @@ public class IntakeSubsystem extends SubsystemBase {
     LoggingConstants.intakeLIDARPublisher.set(intakeLidarState());
     LoggingConstants.noteLoadedPublisher.set(shooterLidarState());
 
-    controller.getHID().setRumble(RumbleType.kBothRumble, hasTargetSubscriber.get() ? 0.5 : 0.0);
+    controller.getHID().setRumble(RumbleType.kBothRumble, hasTargetSubscriber.get() ? Constants.controllerRumble : 0.0);
   }
 
   public boolean intakeLidarState()

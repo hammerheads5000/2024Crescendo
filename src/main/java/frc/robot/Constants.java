@@ -86,6 +86,7 @@ public class Constants {
     public static final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
     public static final double controllerDeadband = 0.225;
+    public static final double controllerRumble = 0.5;
 
     public static final PowerDistribution pdh = new PowerDistribution();
     public static final double lowStartVoltage = 12.5;

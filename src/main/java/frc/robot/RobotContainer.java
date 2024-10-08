@@ -92,7 +92,7 @@ public class RobotContainer {
       .handleInterrupt(trapMechanismSubsystem::stopRollers); // stop on interrupt
   DisabledLightsCommand disabledLightsCommand = new DisabledLightsCommand(lightsSubsystem, aprilTagSubsystem, powerSubsystem);
   AimShooterCommand aimShooterCommand = new AimShooterCommand(swerve, driveController, shooterHeightPIDSubsystem, lightsSubsystem);
-  SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
+  SpinShooterCommand spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem, driveController);
   AutoTrapHomeCommandGroup autoTrapHomeCommandGroup = new AutoTrapHomeCommandGroup(trapHeightPIDSubsystem, trapMechanismSubsystem);
   ClimbCommand climbCommand = new ClimbCommand(climberSubsystem, secondaryController, shooterHeightPIDSubsystem, trapHeightPIDSubsystem);
   Command autoTrapCommand = new AutoTrapCommand(trapHeightPIDSubsystem, trapMechanismSubsystem, climberSubsystem, shooterHeightPIDSubsystem, lightsSubsystem)
@@ -258,7 +258,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     Command autoStartCommand = new ShootNoteCommand(swerve, intakeSubsystem, shooterSubsystem, shooterHeightPIDSubsystem, lightsSubsystem);
-    Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem);
+    Command spinShooterCommand = new SpinShooterCommand(shooterSubsystem, lightsSubsystem, driveController);
     return spinShooterCommand.alongWith(autoStartCommand.andThen(autoChooser.getSelected()));
   }
 
