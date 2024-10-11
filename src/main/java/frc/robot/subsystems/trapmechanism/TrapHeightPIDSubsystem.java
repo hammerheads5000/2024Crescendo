@@ -57,8 +57,8 @@ public class TrapHeightPIDSubsystem extends PIDSubsystem {
 
   @Override
   public double getMeasurement() {
-    trapHeightPublisher.set(encoder.getDistance());
-    colorSensorPublisher.set(colorDetected());
+    //trapHeightPublisher.set(encoder.getDistance());
+    //colorSensorPublisher.set(colorDetected());
     
     return encoder.getDistance();
   }

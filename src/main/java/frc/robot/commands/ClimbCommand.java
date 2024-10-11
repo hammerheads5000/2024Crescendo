@@ -40,6 +40,9 @@ public class ClimbCommand extends Command {
     {
       climbSubsystem.climb(controller.getRightY());
     }
+    else {
+      climbSubsystem.stopMotor();
+    }
   }
 
   // Called once the command ends or is interrupted.

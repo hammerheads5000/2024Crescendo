@@ -125,7 +125,7 @@ public class RobotContainer {
   Trigger homeTrapTrigger = buttonBoardOne.button(11).or(secondaryController.leftTrigger());
   Trigger moveUpManualTrigger = buttonBoardTwo.button(9);
   Trigger moveDownManualTrigger = buttonBoardTwo.button(8);
-  Trigger reverseTrapAutoTrigger = buttonBoardOne.button(1);
+  Trigger reverseTrapAutoTrigger = buttonBoardOne.button(1).or(secondaryController.a());
   Trigger AutoSourceTrigger = buttonBoardOne.button(8).or(secondaryController.povRight()).or(buttonBoardTwo.button(8));
   Trigger AutoTrapTrigger = buttonBoardOne.button(6).or(secondaryController.povLeft()).or(buttonBoardTwo.button(9));
   Trigger Amptrigger = buttonBoardOne.button(5).or(secondaryController.povUp());
@@ -188,7 +188,7 @@ public class RobotContainer {
     BonkerForwardButton.onTrue(new InstantCommand(bonkerSubsystem::bonkForward));
     manyBonksTrigger.whileTrue(manyBonksCommand);
     TrapMechToTrapHeightTirgger.whileTrue(new StartEndCommand(trapHeightPIDSubsystem::moveToTrap, trapHeightPIDSubsystem::stop, trapHeightPIDSubsystem));
-
+    bonkToggleTrigger.onTrue(new InstantCommand(bonkerSubsystem::toggleBonk));
     // shooter bindings
     aimShooterTrigger.whileTrue(aimShooterCommand);
     spinShooterTrigger.whileTrue(spinShooterCommand);
