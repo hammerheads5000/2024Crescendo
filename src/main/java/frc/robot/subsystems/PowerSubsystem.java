@@ -12,7 +12,9 @@ import frc.robot.Constants;
 public class PowerSubsystem extends SubsystemBase {
   PowerDistribution pdh = Constants.pdh;
   /** Creates a new PowerSubsystem. */
-  public PowerSubsystem() {}
+  public PowerSubsystem() {
+    SmartDashboard.putData(pdh);
+  }
 
   public double getVoltage() {
     return pdh.getVoltage();
@@ -24,6 +26,5 @@ public class PowerSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putData(pdh);
   }
 }

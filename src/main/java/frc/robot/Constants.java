@@ -106,6 +106,8 @@ public class Constants {
         public static final Measure<Velocity<Distance>> slowDriveSpeed = MetersPerSecond.of(1); // m/s
         public static final Measure<Velocity<Angle>> slowRotSpeed = RadiansPerSecond.of(1 * Math.PI); // rad/s
 
+        public static final Measure<Velocity<Velocity<Distance>>> maxTeleopAccel = MetersPerSecondPerSecond.of(15);
+
         private static final Measure<Distance> swerveWidth = Inches.of(24); // width between centers of swerve modules
                                                                             // from left to right
         private static final Measure<Distance> swerveLength = Inches.of(24); // length between centers of swerve modules
@@ -121,15 +123,15 @@ public class Constants {
 
         private static final Slot0Configs steerMotorGains = new Slot0Configs()
                 .withKP(300.0) // output (V) per unit error in position (rotations)
-                .withKI(100.0) // output (V) per unit integrated error (rotations*s)
+                .withKI(150.0) // output (V) per unit integrated error (rotations*s)
                 .withKD(50.0) // output (V) per unit of error derivative (rps)
                 .withKS(10.0) // output (V) to overcome static friction
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
-                .withKP(1.0) // output (V) per unit error in position (rps)
-                .withKI(0.0) // output (V) per unit integrated error (rotations)
-                .withKD(0.0) // output (V) per unit of error derivative (rps/s)
-                .withKS(0) // output (V) to overcome static friction
+                .withKP(3.5) // output (V) per unit error in position (rps)
+                .withKI(1.0) // output (V) per unit integrated error (rotations)
+                .withKD(0.1) // output (V) per unit of error derivative (rps/s)
+                .withKS(2.0) // output (V) to overcome static friction
                 .withKV(0.123) // output (V) per unit of velocity (rps)
                 .withKA(0); // output (V) per unit of acceleration (rps/s)
 
@@ -274,8 +276,8 @@ public class Constants {
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
         public static final Transform3d robotToAprilTagCamFront = new Transform3d(
-                        new Translation3d(Inches.of(13.5), Inches.of(3.25), Inches.of(7)),
-                        new Rotation3d(0.0, Degrees.of(20).in(Radians), Degrees.of(0).in(Radians)));
+                        new Translation3d(Inches.of(13.0), Inches.of(3.25), Inches.of(7)),
+                        new Rotation3d(0.0, Degrees.of(33).in(Radians), Degrees.of(0).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
@@ -286,7 +288,7 @@ public class Constants {
         public static final PhotonCamera aprilTagCamBack = new PhotonCamera("AprilTag Camera Back");
         public static final Transform3d robotToAprilTagCamBack = new Transform3d(
                         new Translation3d(Inches.of(-13.5), Inches.of(-2.0), Inches.of(18)),
-                        new Rotation3d(0.0, Degrees.of(0).in(Radians), Degrees.of(180).in(Radians)));
+                        new Rotation3d(0.0, Degrees.of(4).in(Radians), Degrees.of(180).in(Radians)));
         
         public static final DoubleArrayTopic poseTopicBack = inst.getDoubleArrayTopic("/Vision/Estimated Pose Back");
 
