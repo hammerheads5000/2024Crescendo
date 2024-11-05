@@ -129,7 +129,7 @@ public class Constants {
                 .withKV(2.5); // output (V) per unit of velocity (rps)
         private static final Slot0Configs driveMotorGains = new Slot0Configs()
                 .withKP(3.5) // output (V) per unit error in position (rps)
-                .withKI(1.0) // output (V) per unit integrated error (rotations)
+                .withKI(0.0) // output (V) per unit integrated error (rotations)
                 .withKD(0.1) // output (V) per unit of error derivative (rps/s)
                 .withKS(2.0) // output (V) to overcome static friction
                 .withKV(0.123) // output (V) per unit of velocity (rps)
@@ -275,9 +275,9 @@ public class Constants {
         public static final PhotonCamera aprilTagCamFront = new PhotonCamera("AprilTag Camera Front");
         public static final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
         
-        public static final Transform3d robotToAprilTagCamFront = new Transform3d(
-                        new Translation3d(Inches.of(13.0), Inches.of(3.25), Inches.of(7)),
-                        new Rotation3d(0.0, Degrees.of(33).in(Radians), Degrees.of(0).in(Radians)));
+        public static final Transform3d robotToAprilTagCamBack = new Transform3d(
+                        new Translation3d(Inches.of(-13), Inches.of(3.25), Inches.of(7)),
+                        new Rotation3d(0.0, Degrees.of(-33).in(Radians), Degrees.of(180).in(Radians)));
         public static final Transform3d robotToNoteDetectionCam = new Transform3d(
                 new Translation3d(SwerveConstants.swerveLength.times(0.5), Meters.zero(), Inches.of(15)),
                 new Rotation3d(0.0, Degrees.of(-34).in(Radians), 0.0));
@@ -286,9 +286,9 @@ public class Constants {
         public static final DoubleArrayTopic poseTopicFront = inst.getDoubleArrayTopic("/Vision/Estimated Pose Front");
 
         public static final PhotonCamera aprilTagCamBack = new PhotonCamera("AprilTag Camera Back");
-        public static final Transform3d robotToAprilTagCamBack = new Transform3d(
-                        new Translation3d(Inches.of(-13.5), Inches.of(-2.0), Inches.of(18)),
-                        new Rotation3d(0.0, Degrees.of(4).in(Radians), Degrees.of(180).in(Radians)));
+        public static final Transform3d robotToAprilTagCamFront = new Transform3d(
+                        new Translation3d(Inches.of(13.5), Inches.of(-2.0), Inches.of(18)),
+                        new Rotation3d(0.0, Degrees.of(4).in(Radians), Degrees.of(0).in(Radians)));
         
         public static final DoubleArrayTopic poseTopicBack = inst.getDoubleArrayTopic("/Vision/Estimated Pose Back");
 
@@ -303,7 +303,7 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(640);
+        public static final Measure<Velocity<Distance>> exitVelocity = InchesPerSecond.of(600);
         public static final Measure<Velocity<Distance>> variableVelocityGain = InchesPerSecond.of(200); // amount to add to minimum velocity
         public static final Measure<Angle> farAngle = Degrees.of(27);
         public static final Measure<Angle> closeAngle = Degrees.of(57);
